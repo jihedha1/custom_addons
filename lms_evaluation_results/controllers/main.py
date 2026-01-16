@@ -1,17 +1,16 @@
-# custom_addons/lms_evaluation_results/controllers/main.py
 # -*- coding: utf-8 -*-
 from odoo import http
 from odoo.http import request, content_disposition
+from datetime import datetime, timedelta
 import json
 
 
 class EvaluationResultsWebsiteController(http.Controller):
 
-
     @http.route('/lms/results/export', type='http', auth='user')
     def export_results(self, **kwargs):
         """Exporter les résultats"""
-        wizard = request.env['formation.export.results.wizard'].create({
+        wizard = request.env['lms_evaluation_results.export_results_wizard'].create({
             'export_format': kwargs.get('format', 'xlsx'),
             'period_start': kwargs.get('start_date'),
             'period_end': kwargs.get('end_date'),
@@ -124,13 +123,6 @@ class EvaluationResultsWebsiteController(http.Controller):
         period = kwargs.get('period', 'month')
         channel_id = kwargs.get('channel_id')
         trainer_id = kwargs.get('trainer_id')
-
-        # Construire le domaine
-        domain = []
-        if channel_id:
-            domain.append(('channel_id', '=', int(channel_id)))
-        if trainer_id:
-            domain.append(('trainer_id', '=', int(trainer_id)))
 
         # Créer dashboard
         dashboard = request.env['lms_evaluation_results.results_dashboard'].create({

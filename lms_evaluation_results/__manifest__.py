@@ -15,23 +15,30 @@
     """,
     'author': 'Votre Société',
     'website': 'https://www.votresociete.com',
-    'depends': ['formevo', 'survey', 'website'],
+    'depends': ['base', 'web', 'mail', 'survey', 'website', 'website_slides'],
     'data': [
+        # Sécurité (toujours en premier)
         'security/evaluation_security.xml',
         'security/ir.model.access.csv',
+
+        # Données de base
         'data/evaluation_data.xml',
         'data/cold_assessment_cron.xml',
-        'data/survey_templates_cold.xml',
+
+        # Vues
         'views/cold_assessment_views.xml',
         'views/results_dashboard_views.xml',
-        'views/slide_channel_views.xml',
         'views/evaluation_results_templates.xml',
         'views/evaluation_menu_views.xml',
+
+        # Wizards
         'wizards/schedule_assessment_wizard_views.xml',
         'wizards/export_results_wizard_views.xml',
     ],
     'demo': [
-        'data/evaluation_demo.xml',
+        # Données de démo (commentées pour éviter les erreurs)
+        # 'data/evaluation_demo.xml',
+        # 'data/objectives_demo.xml',
     ],
     'installable': True,
     'application': True,

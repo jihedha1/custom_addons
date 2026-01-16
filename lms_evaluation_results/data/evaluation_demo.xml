@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
+        <!-- ========================================== -->
+        <!-- DONNÉES DE DÉMONSTRATION                   -->
+        <!-- ========================================== -->
 
+        <!-- ATTENTION: Ces données nécessitent des références qui doivent exister
+             Commentez ce fichier si vous n'avez pas de données de démo -->
 
-        <!-- Évaluation à froid de démonstration -->
-        <record id="demo_cold_assessment_1" model="formation.cold.assessment">
+        <!--
+        <record id="demo_cold_assessment_1" model="lms_evaluation_results.cold_assessment">
             <field name="name">EVAL-FROID-0001</field>
             <field name="channel_id" ref="demo_formation_1"/>
             <field name="partner_id" ref="demo_trainer_1"/>
@@ -16,9 +22,11 @@
             <field name="satisfaction_rate">95.0</field>
             <field name="effectiveness_rate">85.0</field>
             <field name="professional_impact">high</field>
-            <field name="applied_skills">True</field>
-            <field name="career_progression">True</field>
+            <field name="applied_skills" eval="True"/>
+            <field name="career_progression" eval="True"/>
             <field name="feedback">Formation très utile, j'ai pu appliquer immédiatement les concepts dans mon travail.</field>
         </record>
+        -->
 
+    </data>
 </odoo>

@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Action pour voir les réponses du questionnaire -->
+        <record id="action_view_survey_user_input" model="ir.actions.act_window">
+            <field name="name">Voir les réponses du questionnaire</field>
+            <field name="res_model">survey.user_input</field>
+            <field name="view_mode">form</field>
+            <field name="view_type">form</field>
+            <field name="target">current</field>
+            <field name="context">{'create': False, 'edit': False, 'delete': False}</field>
+        </record>
 
         <!-- Tree view évaluations à froid -->
         <record id="view_cold_assessment_tree" model="ir.ui.view">
             <field name="name">lms_evaluation_results.cold_assessment.tree</field>
             <field name="model">lms_evaluation_results.cold_assessment</field>
             <field name="arch" type="xml">
-                <tree string="Évaluations à froid" decoration-success="state=='completed'" decoration-info="state=='sent'" decoration-warning="state=='scheduled'" decoration-danger="state=='expired'">
+                <tree string="Évaluations à froid"
+                      decoration-success="state=='completed'"
+                      decoration-info="state=='sent'"
+                      decoration-warning="state=='scheduled'"
+                      decoration-danger="state in ['expired', 'cancelled']">
                     <field name="name"/>
-                    <field name="channel_id"/>
-                    <field name="partner_id"/>
+                    <field name="channel_id" widget="many2one_clickable"/>
+                    <field name="partner_id" widget="many2one_clickable"/>
                     <field name="assessment_type"/>
                     <field name="scheduled_date"/>
                     <field name="sent_date"/>
                     <field name="response_date"/>
-                    <field name="state" widget="badge" decoration-success="state=='completed'" decoration-info="state=='sent'" decoration-warning="state=='scheduled'" decoration-danger="state=='expired'"/>
+                    <field name="state" widget="badge"
+                            decoration-success="state=='completed'"
+                            decoration-info="state=='sent'"
+                            decoration-warning="state=='scheduled'"
+                            decoration-danger="state in ['expired', 'cancelled']"/>
                     <field name="score" optional="hide" widget="progressbar"/>
                     <field name="satisfaction_rate" optional="hide" widget="progressbar"/>
                 </tree>
@@ -39,14 +56,20 @@
                                 attrs="{'invisible': ['|', ('state', '!=', 'sent'), ('reminder_count', '>=', 'max_reminders')]}"/>
                         <button name="action_cancel" type="object" string="Annuler"
                                 attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])]}"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,scheduled,sent,in_progress,completed"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,scheduled,sent,in_progress,completed,expired,cancelled"
+                               statusbar_colors='{"completed":"success","sent":"info","scheduled":"warning","expired":"danger","cancelled":"danger"}'/>
                     </header>
 
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="%(action_view_survey_user_input)d" type="action"
-                                    class="oe_stat_button" icon="fa-list-alt"
-                                    attrs="{'invisible': [('user_input_id', '=', False)]}">
+                            <!-- Utilisez cette version si vous utilisez l'Option B (action XML) -->
+                            <button type="action"
+                                    name="%(action_view_survey_user_input)d"
+                                    class="oe_stat_button"
+                                    icon="fa-list-alt"
+                                    attrs="{'invisible': [('user_input_id', '=', False)]}"
+                                    context="{'res_id': user_input_id}">
                                 <field name="user_input_id" invisible="1"/>
                                 <div class="o_stat_info">
                                     <span class="o_stat_text">Voir</span>
@@ -63,16 +86,16 @@
 
                         <group>
                             <group string="Contexte formation">
-                                <field name="channel_id" options="{'no_create': True}"/>
-                                <field name="partner_id" options="{'no_create': True}"/>
-                                <field name="completion_id" readonly="1"/>
+                                <field name="channel_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="partner_id" options="{'no_create': True, 'no_open': True}"/>
                                 <field name="completion_date"/>
+                                <field name="progress_id" options="{'no_create': True, 'no_open': True}" widget="many2one" attrs="{'invisible': [('progress_id', '=', False)]}"/>
                             </group>
                             <group string="Configuration évaluation">
                                 <field name="assessment_type"/>
-                                <field name="survey_id" options="{'no_create': True}"/>
-                                <field name="scheduled_date"/>
-                                <field name="deadline_date"/>
+                                <field name="survey_id" options="{'no_create': True}" context="{'search_default_is_published': 1}"/>
+                                <field name="scheduled_date" readonly="1"/>
+                                <field name="deadline_date" readonly="1"/>
                             </group>
                         </group>
 
@@ -94,20 +117,20 @@
                             <page string="Résultats" name="results" attrs="{'invisible': [('state', '!=', 'completed')]}">
                                 <group>
                                     <group string="Scores">
-                                        <field name="score" widget="percentage"/>
-                                        <field name="satisfaction_rate" widget="percentage"/>
-                                        <field name="effectiveness_rate" widget="percentage"/>
+                                        <field name="score" widget="percentage" readonly="1"/>
+                                        <field name="satisfaction_rate" widget="percentage" readonly="1"/>
+                                        <field name="effectiveness_rate" widget="percentage" readonly="1"/>
                                     </group>
 
                                     <group string="Impact professionnel">
-                                        <field name="professional_impact"/>
-                                        <field name="applied_skills"/>
-                                        <field name="career_progression"/>
+                                        <field name="professional_impact" readonly="1"/>
+                                        <field name="applied_skills" readonly="1"/>
+                                        <field name="career_progression" readonly="1"/>
                                     </group>
                                 </group>
 
                                 <group string="Feedback apprenant">
-                                    <field name="feedback" nolabel="1" readonly="1"/>
+                                    <field name="feedback" nolabel="1" readonly="1" widget="html"/>
                                 </group>
                             </page>
 
@@ -152,6 +175,7 @@
                     <filter string="J+90" name="type_90" domain="[('assessment_type', '=', '90_days')]"/>
 
                     <separator/>
+                    <filter string="Aujourd'hui" name="today" domain="[('scheduled_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
                     <filter string="Cette semaine" name="this_week"
                             domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
                     <filter string="Ce mois" name="this_month"

@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- Objectifs SMART de démonstration -->
+    <data>
+        <!-- ========================================== -->
+        <!-- DONNÉES DE DÉMONSTRATION                   -->
+        <!-- Ces enregistrements sont optionnels        -->
+        <!-- ========================================== -->
+
+        <!-- ATTENTION: Ces enregistrements nécessitent que les modèles
+             formation.smart.objective et formation.placement.assessment existent.
+             Si ces modèles ne sont pas dans votre module, commentez ou supprimez ce fichier. -->
+
+        <!--
         <record id="demo_objective_1" model="formation.smart.objective">
             <field name="name">Maîtriser les concepts fondamentaux d'Agile</field>
             <field name="channel_id" ref="demo_formation_1"/>
@@ -14,7 +24,6 @@
             <field name="weight">20</field>
         </record>
 
-        <!-- Évaluation de positionnement de démonstration -->
         <record id="demo_placement_1" model="formation.placement.assessment">
             <field name="name">POS-2024-0001</field>
             <field name="channel_id" ref="demo_formation_1"/>
@@ -31,5 +40,7 @@
                 </ul>
             </field>
         </record>
+        -->
 
+    </data>
 </odoo>
