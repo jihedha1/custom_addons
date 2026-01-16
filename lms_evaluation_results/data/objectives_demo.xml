@@ -1,8 +1,5 @@
-<!-- custom_addons/lms_objectives/data/objectives_demo.xml -->
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
-
         <!-- Objectifs SMART de démonstration -->
         <record id="demo_objective_1" model="formation.smart.objective">
             <field name="name">Maîtriser les concepts fondamentaux d'Agile</field>
@@ -35,5 +32,4 @@
             </field>
         </record>
 
-    </data>
 </odoo>

@@ -17,8 +17,8 @@
     'website': 'https://www.votresociete.com',
     'depends': ['formevo', 'survey', 'website'],
     'data': [
-        'security/ir.model.access.csv',
         'security/evaluation_security.xml',
+        'security/ir.model.access.csv',
         'data/evaluation_data.xml',
         'data/cold_assessment_cron.xml',
         'data/survey_templates_cold.xml',

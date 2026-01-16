@@ -4,13 +4,14 @@
         <!-- Vue formulaire du wizard -->
         <record id="view_schedule_assessment_wizard_form" model="ir.ui.view">
             <field name="name">schedule.assessment.wizard.form</field>
-            <field name="model">lms_evaluation_results.schedule_assessment_wizard</field>
+            <!-- CHANGEMENT ICI : Modifiez le modèle -->
+            <field name="model">lms_eval.sched_wizard</field>
             <field name="arch" type="xml">
                 <form string="Planifier des Évaluations à Froid">
                     <sheet>
                         <group>
-                            <!-- CHANGEMENT ICI : channel_ids devient channels -->
-                            <field name="channels" widget="many2many" required="1"/>
+                            <field name="channel_ids" widget="many2many"
+                                   string="Formations" required="1"/>
                         </group>
 
                         <group>
@@ -45,7 +46,8 @@
         <!-- Action pour ouvrir le wizard -->
         <record id="action_schedule_assessment_wizard" model="ir.actions.act_window">
             <field name="name">Planifier des évaluations</field>
-            <field name="res_model">lms_evaluation_results.schedule_assessment_wizard</field>
+            <!-- CHANGEMENT ICI : Modifiez le modèle -->
+            <field name="res_model">lms_eval.sched_wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="binding_model_id" ref="lms_evaluation_results.model_lms_evaluation_results_cold_assessment"/>

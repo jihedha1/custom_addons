@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue formulaire du wizard d'export -->
+        <record id="view_export_results_wizard_form" model="ir.ui.view">
+            <field name="name">export.results.wizard.form</field>
+            <field name="model">lms_evaluation_results.export_results_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Exporter les résultats Qualiopi">
+                    <header>
+                        <button name="action_export" string="Générer l'export" type="object" class="btn-primary"/>
+                        <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_export" string="Générer" type="object" class="oe_stat_button" icon="fa-download">
+                                <field name="export_format" widget="statinfo" string="Format"/>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <h1>Export des résultats Qualiopi</h1>
+                            <div class="text-muted">Générez des rapports pour la certification Qualiopi</div>
+                        </div>
+
+                        <group>
+                            <group string="Configuration">
+                                <field name="export_format" widget="radio"/>
+                                <field name="include_details"/>
+                            </group>
+
+                            <group string="Période">
+                                <field name="period_start"
+                                       attrs="{'required': True}"/>
+                                <field name="period_end"
+                                       attrs="{'required': True}"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Formations">
+                                <field name="channel_ids" widget="many2many_tags"
+                                       placeholder="Sélectionnez des formations (optionnel)"/>
+                                <div class="alert alert-info mt-2">
+                                    <i class="fa fa-info-circle"/>
+                                    Si aucune formation n'est sélectionnée, l'export inclura toutes les formations.
+                                </div>
+                            </page>
+
+                            <page string="Aperçu">
+                                <div class="alert alert-success">
+                                    <strong>Indicateurs inclus :</strong>
+                                    <ul class="mb-0 mt-1">
+                                        <li>Taux de complétion</li>
+                                        <li>Taux de réussite</li>
+                                        <li>Taux de satisfaction</li>
+                                        <li>Taux d'abandon</li>
+                                        <li>Taux de réponse évaluations à chaud</li>
+                                        <li>Taux de réponse évaluations à froid</li>
+                                    </ul>
+                                </div>
+                            </page>
+                        </notebook>
+
+                        <div class="oe_chatter">
+                            <field name="filename" widget="url"
+                                   string="Fichier généré"
+                                   attrs="{'invisible': [('file_data', '=', False)]}"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour ouvrir le wizard d'export -->
+        <record id="action_export_results_wizard" model="ir.actions.act_window">
+            <field name="name">Exporter les résultats</field>
+            <field name="res_model">lms_evaluation_results.export_results_wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_lms_evaluation_results_results_dashboard"/>
+            <field name="binding_type">action</field>
+        </record>
+    </data>
+</odoo>

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
-
-        <!-- Groupes de sécurité -->
+    <data noupdate="1">
         <record id="group_evaluation_editor" model="res.groups">
             <field name="name">Éditeur Évaluations</field>
             <field name="category_id" ref="base.module_category_hidden"/>
@@ -14,16 +12,5 @@
             <field name="category_id" ref="base.module_category_hidden"/>
             <field name="implied_ids" eval="[(4, ref('group_evaluation_editor'))]"/>
         </record>
-
-        <!-- Règles d'accès -->
-        <record id="cold_assessment_rule" model="ir.rule">
-            <field name="name">Éditeurs: leurs évaluations froides</field>
-            <field name="model_id" ref="model_lms_evaluation_results_cold_assessment"/>
-            <field name="groups" eval="[(4, ref('group_evaluation_editor'))]"/>
-            <field name="domain_force">
-                ['|', ('partner_id', '=', user.partner_id.id), ('channel_id.create_uid', '=', user.id)]
-            </field>
-        </record>
-
     </data>
 </odoo>

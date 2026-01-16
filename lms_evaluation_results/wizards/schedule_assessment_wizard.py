@@ -7,12 +7,12 @@ class ScheduleAssessmentWizard(models.TransientModel):
     """
     Assistant pour planifier les évaluations à froid en masse
     """
-    _name = 'lms_evaluation_results.schedule_assessment_wizard'
+    # CHANGEMENT : nom du modèle plus court
+    _name = 'lms_eval.sched_wizard'
     _description = 'Assistant planification évaluations à froid'
 
-    # Champs du wizard
-    # CHANGEMENT ICI : 'channel_ids' devient 'channels'
-    channels = fields.Many2many(
+    # Utiliser un nom de champ plus court
+    ch_ids = fields.Many2many(
         'slide.channel',
         string='Formations',
         required=True,
@@ -86,24 +86,17 @@ class ScheduleAssessmentWizard(models.TransientModel):
         ColdAssessment = self.env['lms_evaluation_results.cold_assessment']
         created_assessments = []
 
-        # Pour chaque formation
-        # CHANGEMENT ICI : 'channel_ids' devient 'channels'
-        for channel in self.channels:
-            # Trouver les participants ayant terminé (via formevo)
+        for channel in self.ch_ids:
             if self.partner_ids:
-                # Limiter aux partenaires spécifiés
                 partners = self.partner_ids
             else:
-                # Tous les participants ayant terminé
                 completions = self.env['slide.slide.partner'].search([
                     ('channel_id', '=', channel.id),
                     ('completed', '=', True),
                 ])
                 partners = completions.mapped('partner_id')
 
-            # Pour chaque participant
             for partner in partners:
-                # Trouver sa date de complétion
                 completion = self.env['slide.slide.partner'].search([
                     ('channel_id', '=', channel.id),
                     ('partner_id', '=', partner.id),
@@ -115,9 +108,7 @@ class ScheduleAssessmentWizard(models.TransientModel):
 
                 completion_date = completion.x_completion_date
 
-                # Créer J+30
                 if self.create_j30:
-                    # Vérifier qu'elle n'existe pas déjà
                     existing = ColdAssessment.search([
                         ('channel_id', '=', channel.id),
                         ('partner_id', '=', partner.id),
@@ -140,7 +131,6 @@ class ScheduleAssessmentWizard(models.TransientModel):
                             })
                             created_assessments.append(assessment.id)
 
-                # Créer J+90
                 if self.create_j90:
                     existing = ColdAssessment.search([
                         ('channel_id', '=', channel.id),
@@ -164,7 +154,6 @@ class ScheduleAssessmentWizard(models.TransientModel):
                             })
                             created_assessments.append(assessment.id)
 
-        # Afficher les évaluations créées
         return {
             'name': _('Évaluations planifiées'),
             'type': 'ir.actions.act_window',
