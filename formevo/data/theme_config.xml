@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Version 1 : Avec noupdate sur data -->
+    <data noupdate="1">
+        <record id="theme_primary_color" model="ir.config_parameter">
+            <field name="key">muk_web_theme.primary_color</field>
+            <field name="value">#1abc9c</field>
+        </record>
+
+        <record id="theme_secondary_color" model="ir.config_parameter">
+            <field name="key">muk_web_theme.secondary_color</field>
+            <field name="value">#34495e</field>
+        </record>
+
+        <!-- Note: Assurez-vous que le chemin du logo est correct -->
+        <record id="base.main_company" model="res.company">
+            <field name="logo" type="base64" file="formevo/static/src/img/logo.jpg"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Type de rendez-vous par défaut pour les formations -->
+        <record id="appointment_type_information" model="calendar.appointment.type">
+            <field name="name">Rendez-vous information formation</field>
+            <field name="category">custom</field>
+            <field name="duration">30</field>
+            <field name="slot_ids" eval="[(0,0,{
+                'weekday': '1',
+                'start_hour': 9,
+                'end_hour': 12,
+            }), (0,0,{
+                'weekday': '2',
+                'start_hour': 9,
+                'end_hour': 12,
+            }), (0,0,{
+                'weekday': '3',
+                'start_hour': 9,
+                'end_hour': 12,
+            }), (0,0,{
+                'weekday': '4',
+                'start_hour': 9,
+                'end_hour': 12,
+            }), (0,0,{
+                'weekday': '5',
+                'start_hour': 9,
+                'end_hour': 12,
+            })]"/>
+        </record>
+
+    </data>
+</odoo>

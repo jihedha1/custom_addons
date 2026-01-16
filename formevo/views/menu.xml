@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="yonn_elearning_menu_root"
+                  name="FORMEVO"
+                  web_icon="formevo,static/description/icon.png"
+                  sequence="10"
+                  groups="formevo.group_yonn_elearning_teacher,formevo.group_yonn_elearning_director"/>
+
+        <menuitem id="dashboard_menu"
+                  name="Tous les Cours"
+                  parent="yonn_elearning_menu_root"
+                  action="website_slides.slide_channel_action_overview"
+                  sequence="10"
+                  groups="formevo.group_yonn_elearning_director"/>
+
+        <menuitem id="my_courses_menu"
+                  name="Mes Cours"
+                  parent="yonn_elearning_menu_root"
+                  action="formevo.slide_channel_teacher_action"
+                  groups="formevo.group_yonn_elearning_teacher"
+                  sequence="15"/>
+
+
+        <menuitem id="student_class_menu"
+                  name="Classes d'étudiants"
+                  parent="yonn_elearning_menu_root"
+                  action="formevo.student_class_action"
+                  sequence="30"
+                  groups="formevo.group_yonn_elearning_director,formevo.group_yonn_elearning_teacher"/>
+
+
+        <menuitem id="slide_slide_menu"
+                  name="Bibliothèque de Contenus"
+                  parent="yonn_elearning_menu_root"
+                  action="website_slides.slide_slide_action"
+                  sequence="50"
+                  groups="formevo.group_yonn_elearning_director,formevo.group_yonn_elearning_teacher"/>
+
+
+        <menuitem id="course_assign_wizard_menu"
+                  name="Assigner Cours"
+                  parent="yonn_elearning_menu_root"
+                  action="formevo.course_assign_wizard_action"
+                  sequence="70"
+                  groups="formevo.group_yonn_elearning_director,formevo.group_yonn_elearning_teacher"/>
+        <menuitem id="teacher_student_progress_menu"
+                  name="Suivi des Étudiants"
+                  parent="yonn_elearning_menu_root"
+                  action="action_teacher_student_progress"
+                  sequence="20"
+                  groups="formevo.group_yonn_elearning_teacher"/>
+        <menuitem id="menu_slide_slide_partner_tracking"
+                  name="Suivi Détaillé"
+                  parent="yonn_elearning_menu_root"
+                  action="action_slide_slide_partner_tracking"
+                  sequence="80"
+                  groups="formevo.group_yonn_elearning_director"/>
+
+        <menuitem id="user_group_wizard_menu"
+                  name="Configurer Utilisateur"
+                  parent="yonn_elearning_menu_root"
+                  action="user_group_wizard_action"
+                  sequence="90"
+                  groups="formevo.group_yonn_elearning_director"/>
+        <menuitem id="formevo_menu_export"
+                  name="Export Progress"
+                  parent="yonn_elearning_menu_root"
+                  action="action_export_progress_wizard"
+                  sequence="90"
+                  groups="formevo.group_yonn_elearning_director"/>
+    </data>
+
+</odoo>

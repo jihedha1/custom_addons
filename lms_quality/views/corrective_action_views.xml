@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree view actions correctives -->
+        <record id="view_corrective_action_tree" model="ir.ui.view">
+            <field name="name">quality.corrective.action.tree</field>
+            <field name="model">quality.corrective.action</field>
+            <field name="arch" type="xml">
+                <tree string="Actions correctives">
+                    <field name="name"/>
+                    <field name="non_conformity_id"/>
+                    <field name="description"/>
+                    <field name="responsible_user_id"/>
+                    <field name="deadline"/>
+                    <field name="state" widget="badge"/>
+                    <field name="progress" widget="progressbar" options="{'current_value': 'progress', 'max_value': '100'}"/>
+                    <field name="is_overdue" invisible="1"/>
+                    <field name="days_overdue" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view actions correctives -->
+        <record id="view_corrective_action_form" model="ir.ui.view">
+            <field name="name">quality.corrective.action.form</field>
+            <field name="model">quality.corrective.action</field>
+            <field name="arch" type="xml">
+                <form string="Action corrective">
+                    <header>
+                        <button name="action_start" type="object" string="Démarrer"
+                                class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_mark_done" type="object" string="Marquer comme terminé"
+                                invisible="state != 'in_progress'"/>
+                        <button name="action_close" type="object" string="Clôturer"
+                                class="oe_highlight" invisible="state != 'done'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done,closed,cancelled"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" string="Référence"/>
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Contexte">
+                                <field name="non_conformity_id"/>
+                                <field name="description" placeholder="Description de l'action..."/>
+                                <field name="objective" placeholder="Objectif à atteindre..."/>
+                            </group>
+                            <group string="Planning">
+                                <field name="responsible_user_id"/>
+                                <field name="start_date"/>
+                                <field name="deadline"/>
+                                <field name="completion_date" invisible="state != 'done'"/>
+                                <field name="progress"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Évaluation" name="evaluation">
+                                <group>
+                                    <field name="effectiveness"/>
+                                    <field name="evaluation_notes" nolabel="1"/>
+                                </group>
+                            </page>
+
+                            <page string="Documents" name="documents">
+                                <field name="attachment_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="mimetype"/>
+                                        <field name="create_date"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="Statut" name="status">
+                                <group>
+                                    <group string="Délais">
+                                        <!-- Add the fields used in modifiers even if invisible -->
+                                        <field name="deadline" invisible="1"/>
+                                        <field name="is_overdue" invisible="1"/>
+                                        <field name="days_overdue" invisible="1"/>
+
+                                        <div class="o_stat_info" invisible="deadline == False">
+                                            <span class="o_stat_value">
+                                                <field name="deadline" readonly="1"/>
+                                            </span>
+                                            <span class="o_stat_text">Échéance</span>
+                                        </div>
+
+                                        <div class="o_stat_info" invisible="is_overdue == False">
+                                            <span class="o_stat_value" style="color: #dc3545;">
+                                                <field name="days_overdue" readonly="1"/> jours
+                                            </span>
+                                            <span class="o_stat_text">Retard</span>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view actions correctives -->
+        <record id="view_corrective_action_search" model="ir.ui.view">
+            <field name="name">quality.corrective.action.search</field>
+            <field name="model">quality.corrective.action</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher actions correctives">
+                    <field name="name"/>
+                    <field name="non_conformity_id"/>
+                    <field name="responsible_user_id"/>
+                    <field name="state"/>
+                    <filter string="En retard" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                    <filter string="À démarrer" name="to_start" domain="[('state', '=', 'draft')]"/>
+                    <filter string="En cours" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                    <separator/>
+                    <filter string="Mes actions" name="my_actions" domain="[('responsible_user_id', '=', uid)]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter string="Non-conformité" name="group_by_nc" context="{'group_by': 'non_conformity_id'}"/>
+                        <filter string="Responsable" name="group_by_responsible" context="{'group_by': 'responsible_user_id'}"/>
+                        <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

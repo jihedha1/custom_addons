@@ -1,0 +1,5 @@
+odoo_chatbot_assistant/
+gestion_risques/
+__pycache__/
+*.pyc
+*.swp

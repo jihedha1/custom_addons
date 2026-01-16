@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Données de démonstration pour la suite Qualiopi -->
+
+        <!-- Exemple de preuve Qualiopi -->
+        <record id="demo_qualiopi_evidence_1" model="lms_quality.quality_evidence">
+            <field name="name">Procédure d'information du public</field>
+            <field name="evidence_number" eval="'QUA/2025/00001'"/>
+            <field name="category">procedure</field>
+            <field name="description">Procédure documentée pour l'information des prospects et apprenants</field>
+            <field name="responsible_id" ref="base.user_root"/>
+            <field name="validity_start_date">2025-01-01</field>
+            <field name="validity_end_date">2025-12-31</field>
+            <field name="state">valid</field>
+        </record>
+
+        <!-- Exemple de tableau de bord KPI public -->
+        <record id="demo_public_kpi_1" model="lms_public_kpi.public_kpi">
+            <field name="name">Taux de satisfaction globale</field>
+            <field name="code">SAT_GLOBAL</field>
+            <field name="value">96.0</field>
+            <field name="unit">%</field>
+            <field name="periodicity">monthly</field>
+            <field name="last_update">2025-10-31</field>
+            <field name="state">published</field>
+            <field name="description">Satisfaction globale des apprenants mesurée par les évaluations à chaud</field>
+        </record>
+
+        <!-- Exemple de non-conformité résolue -->
+        <record id="demo_nc_resolved" model="lms_quality.non_conformity">
+            <field name="name">NC-2025-001: Fiche formation incomplète</field>
+            <field name="category_id" ref="nc_category_public_info"/>
+            <field name="description">La fiche formation F001 ne contient pas les objectifs pédagogiques mesurables</field>
+            <field name="detection_date">2025-10-15</field>
+            <field name="responsible_id" ref="base.user_root"/>
+            <field name="state">closed</field>
+            <field name="severity">minor</field>
+        </record>
+
+        <!-- Action corrective associée -->
+        <record id="demo_corrective_action" model="lms_quality.corrective_action">
+            <field name="name">CA-2025-001: Compléter toutes les fiches formation</field>
+            <field name="nc_id" ref="demo_nc_resolved"/>
+            <field name="description">1. Auditer toutes les fiches formation existantes
+2. Compléter les objectifs pédagogiques manquants
+3. Mettre en place un contrôle systématique avant publication</field>
+            <field name="responsible_id" ref="base.user_root"/>
+            <field name="deadline">2025-11-15</field>
+            <field name="state">implemented</field>
+            <field name="effectiveness">effective</field>
+        </record>
+    </data>
+</odoo>

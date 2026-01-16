@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tableau de bord des objectifs -->
+        <record id="view_objectives_dashboard" model="ir.ui.view">
+            <field name="name">objectives.dashboard</field>
+            <field name="model">lms_objectives.dashboard</field>
+            <field name="arch" type="xml">
+                <form string="Tableau de bord des Objectifs">
+                    <sheet>
+                        <div class="o_dashboard_container">
+                            <!-- Première ligne: KPI -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Objectifs SMART</h5>
+                                            <h2 class="display-4">
+                                                <field name="total_objectives" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">définis</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Plans Individualisés</h5>
+                                            <h2 class="display-4">
+                                                <field name="total_plans" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">signés</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Positionnements</h5>
+                                            <h2 class="display-4">
+                                                <field name="total_assessments" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">réalisés</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Taux Complétion</h5>
+                                            <h2 class="display-4">
+                                                <field name="completion_rate" widget="percentage" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">des plans</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Deuxième ligne: Graphiques -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Objectifs par Cours</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="objectives_by_course_chart" widget="chart" nolabel="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Statut des Plans</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="plans_by_status_chart" widget="chart" nolabel="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Troisième ligne: Listes -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Derniers Plans</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="recent_plans" nolabel="1">
+                                                <tree>
+                                                    <field name="partner_id"/>
+                                                    <field name="course_id"/>
+                                                    <field name="plan_type"/>
+                                                    <field name="state" widget="badge"/>
+                                                    <field name="start_date"/>
+                                                </tree>
+                                            </field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Positionnements Récents</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="recent_assessments" nolabel="1">
+                                                <tree>
+                                                    <field name="partner_id"/>
+                                                    <field name="course_id"/>
+                                                    <field name="score" widget="progressbar"/>
+                                                    <field name="state" widget="badge"/>
+                                                    <field name="end_date"/>
+                                                </tree>
+                                            </field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour le tableau de bord -->
+        <record id="action_objectives_dashboard" model="ir.actions.act_window">
+            <field name="name">Tableau de bord Objectifs</field>
+            <field name="res_model">lms_objectives.dashboard</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="view_id" ref="view_objectives_dashboard"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Suivez l'avancement des objectifs pédagogiques et des plans individualisés.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Séquences -->
+        <record id="seq_quality_non_conformity" model="ir.sequence">
+            <field name="name">Non-conformité Qualiopi</field>
+            <field name="code">quality.non_conformity</field>
+            <field name="prefix">NC-%(year)s%(month)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quality_corrective_action" model="ir.sequence">
+            <field name="name">Action corrective Qualiopi</field>
+            <field name="code">quality.corrective.action</field>
+            <field name="prefix">AC-%(year)s%(month)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- ✅ SUPPRIMÉ : Catégories de NC (remplacées par selection dans le modèle) -->
+
+        <!-- Modèle de mail : Notification nouvelle NC -->
+        <record id="mail_template_new_nc_notification" model="mail.template">
+            <field name="name">Notification nouvelle non-conformité</field>
+            <field name="model_id" ref="model_quality_non_conformity"/>
+            <field name="email_from">${object.create_uid.email or ''}</field>
+            <field name="email_to">${object.responsible_user_id.email or ''}</field>
+            <field name="subject">Nouvelle non-conformité : ${object.name}</field>
+            <field name="body_html"><![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .header { background-color: #dc3545; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background-color: #f8f9fa; }
+        .nc-card { background-color: white; padding: 20px; margin: 20px 0; border-left: 4px solid #dc3545; }
+        .info-row { margin: 10px 0; }
+        .label { font-weight: bold; color: #495057; }
+        .value { color: #212529; }
+        .footer { background-color: #343a40; color: white; padding: 15px; text-align: center; margin-top: 20px; }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚨 Nouvelle Non-Conformité</h1>
+    </div>
+
+    <div class="content">
+        <p>Bonjour ${object.responsible_user_id.name},</p>
+
+        <p>Une nouvelle non-conformité vous a été assignée et nécessite votre attention.</p>
+
+        <div class="nc-card">
+            <h2>${object.title}</h2>
+
+            <div class="info-row">
+                <span class="label">Référence :</span>
+                <span class="value">${object.name}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="label">Type :</span>
+                <span class="value">${dict(object._fields['type'].selection).get(object.type)}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="label">Catégorie :</span>
+                <span class="value">${dict(object._fields['category'].selection).get(object.category)}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="label">Source :</span>
+                <span class="value">${dict(object._fields['source'].selection).get(object.source)}</span>
+            </div>
+
+            <div class="info-row">
+                <span class="label">Date de détection :</span>
+                <span class="value">${format_date(object.detection_date, date_format='dd/MM/yyyy')}</span>
+            </div>
+
+            % if object.treatment_deadline:
+            <div class="info-row">
+                <span class="label">⏰ Échéance de traitement :</span>
+                <span class="value" style="color: #dc3545; font-weight: bold;">
+                    ${format_date(object.treatment_deadline, date_format='dd/MM/yyyy')}
+                </span>
+            </div>
+            % endif
+
+            % if object.impact_qualiopi:
+            <div class="info-row">
+                <span class="label">Impact Qualiopi :</span>
+                <span class="value">${dict(object._fields['impact_qualiopi'].selection).get(object.impact_qualiopi)}</span>
+            </div>
+            % endif
+        </div>
+
+        <div style="text-align: center;">
+            <a href="${object.get_base_url()}/web#id=${object.id}&view_type=form&model=quality.non_conformity" class="btn">
+                📋 Consulter la non-conformité
+            </a>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border-left: 4px solid #ffc107;">
+            <h3 style="margin-top: 0;">📌 Prochaines étapes :</h3>
+            <ol>
+                <li>Analyser la non-conformité</li>
+                <li>Identifier la cause racine</li>
+                <li>Définir des actions correctives</li>
+                <li>Planifier la mise en œuvre</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Cordialement,<br/>L'équipe Qualité</p>
+        <p style="font-size: 12px; opacity: 0.8;">
+            Cet email a été envoyé automatiquement par le système de gestion de la qualité
+        </p>
+    </div>
+</body>
+</html>
+            ]]></field>
+        </record>
+
+        <!-- Modèle de mail : Rappel échéance NC -->
+        <record id="mail_template_nc_deadline_reminder" model="mail.template">
+            <field name="name">Rappel échéance non-conformité</field>
+            <field name="model_id" ref="model_quality_non_conformity"/>
+            <field name="email_from">noreply@${object.company_id.domain or 'example.com'}</field>
+            <field name="email_to">${object.responsible_user_id.email or ''}</field>
+            <field name="subject">⚠️ [RAPPEL] Non-conformité ${object.name} - Échéance proche</field>
+            <field name="body_html"><![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .header { background-color: #ffc107; color: #212529; padding: 20px; text-align: center; }
+        .content { padding: 20px; background-color: #f8f9fa; }
+        .warning-card { background-color: white; padding: 20px; margin: 20px 0; border-left: 4px solid #ffc107; }
+        .urgent { color: #dc3545; font-weight: bold; font-size: 18px; }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #ffc107;
+            color: #212529;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚠️ RAPPEL - Échéance proche</h1>
+    </div>
+
+    <div class="content">
+        <p>Bonjour ${object.responsible_user_id.name},</p>
+
+        <p class="urgent">⏰ L'échéance de traitement de cette non-conformité approche !</p>
+
+        <div class="warning-card">
+            <h2>${object.title}</h2>
+
+            <p><strong>Référence :</strong> ${object.name}</p>
+            <p><strong>État :</strong> ${dict(object._fields['state'].selection).get(object.state)}</p>
+            <p><strong>Échéance :</strong> ${format_date(object.treatment_deadline, date_format='dd/MM/yyyy')}</p>
+
+            % if object.days_overdue > 0:
+            <p class="urgent">
+                🚨 RETARD DE ${object.days_overdue} JOUR(S) 🚨
+            </p>
+            % else:
+            <p>
+                <strong>Jours restants :</strong>
+                ${(object.treatment_deadline - datetime.date.today()).days} jour(s)
+            </p>
+            % endif
+
+            <p><strong>Actions correctives :</strong> ${object.action_count}</p>
+            <p><strong>Progression :</strong> ${object.completion_rate}%</p>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="${object.get_base_url()}/web#id=${object.id}&view_type=form&model=quality.non_conformity" class="btn">
+                🔧 Traiter la non-conformité
+            </a>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background-color: #f8d7da; border-left: 4px solid #dc3545;">
+            <h3 style="margin-top: 0; color: #721c24;">⚡ Action requise :</h3>
+            <p>Veuillez prendre les mesures nécessaires pour respecter l'échéance et assurer la conformité Qualiopi.</p>
+        </div>
+    </div>
+
+    <div style="background-color: #343a40; color: white; padding: 15px; text-align: center;">
+        <p>Cordialement,<br/>L'équipe Qualité</p>
+    </div>
+</body>
+</html>
+            ]]></field>
+        </record>
+
+        <!-- ✅ AJOUTÉ : Modèle de mail pour actions correctives -->
+        <record id="mail_template_action_reminder" model="mail.template">
+            <field name="name">Rappel action corrective</field>
+            <field name="model_id" ref="model_quality_corrective_action"/>
+            <field name="email_from">noreply@${object.company_id.domain or 'example.com'}</field>
+            <field name="email_to">${object.responsible_user_id.email or ''}</field>
+            <field name="subject">⏰ Action corrective ${object.name} - Échéance dans ${(object.deadline - datetime.date.today()).days} jour(s)</field>
+            <field name="body_html"><![CDATA[
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .header { background-color: #17a2b8; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #28a745;
+            line-height: 30px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⏰ Rappel Action Corrective</h1>
+    </div>
+
+    <div class="content">
+        <p>Bonjour ${object.responsible_user_id.name},</p>
+
+        <h2>${object.description}</h2>
+
+        <p><strong>Référence :</strong> ${object.name}</p>
+        <p><strong>NC associée :</strong> ${object.non_conformity_id.name}</p>
+        <p><strong>Échéance :</strong> ${format_date(object.deadline, date_format='dd/MM/yyyy')}</p>
+        <p><strong>Jours restants :</strong> ${(object.deadline - datetime.date.today()).days}</p>
+
+        <p><strong>Progression actuelle :</strong></p>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: ${object.progress}%;">
+                ${object.progress}%
+            </div>
+        </div>
+
+        <p style="margin-top: 20px;">
+            <a href="${object.get_base_url()}/web#id=${object.id}&view_type=form&model=quality.corrective.action"
+               style="display: inline-block; padding: 10px 20px; background-color: #17a2b8; color: white; text-decoration: none; border-radius: 5px;">
+                📊 Mettre à jour la progression
+            </a>
+        </p>
+    </div>
+</body>
+</html>
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>

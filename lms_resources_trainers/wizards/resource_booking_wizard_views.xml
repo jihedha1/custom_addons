@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue formulaire du wizard -->
+        <record id="view_resource_booking_wizard_form" model="ir.ui.view">
+            <field name="name">resource.booking.wizard.form</field>
+            <field name="model">lms_resources_trainers.resource_booking_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Réserver une ressource">
+                    <sheet>
+                        <div class="alert alert-info" role="alert" attrs="{'invisible': [('is_available','=',True)]}">
+                            <strong>Attention:</strong> Cette ressource n'est pas disponible sur cette plage horaire.
+                        </div>
+                        <div class="alert alert-success" role="alert" attrs="{'invisible': [('is_available','=',False)]}">
+                            <strong>Disponible:</strong> Cette ressource est libre pour cette plage horaire.
+                        </div>
+
+                        <group>
+                            <group string="Ressource">
+                                <field name="resource_id" widget="many2one" options="{'no_create': True}"/>
+                                <div class="row">
+                                    <label class="col-3">Capacité:</label>
+                                    <span class="col-9">
+                                        <field name="resource_id.capacity" readonly="1" nolabel="1"/>
+                                    </span>
+                                </div>
+                                <div class="row">
+                                    <label class="col-3">Localisation:</label>
+                                    <span class="col-9">
+                                        <field name="resource_id.location" readonly="1" nolabel="1"/>
+                                    </span>
+                                </div>
+                            </group>
+                            <group string="Plage horaire">
+                                <field name="start_date" required="1"/>
+                                <field name="end_date" required="1"/>
+                                <field name="duration_hours" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <group string="Détails de la réservation">
+                            <field name="requester_id" widget="many2one"/>
+                            <field name="trainer_id" widget="many2one"/>
+                            <field name="course_id" widget="many2one" options="{'no_create': True}"/>
+                            <field name="participants_count"/>
+                            <field name="purpose" placeholder="Objet de la réservation..." colspan="2"/>
+                        </group>
+
+                        <group string="Options">
+                            <field name="send_confirmation" string="Envoyer un email de confirmation"/>
+                            <field name="create_calendar_event" string="Créer un événement dans le calendrier"/>
+                        </group>
+
+                        <footer>
+                            <button name="action_check_availability" string="Vérifier disponibilité" type="object" class="btn-secondary"/>
+                            <button name="action_book_resource" string="Réserver" type="object" class="btn-primary"
+                                    attrs="{'invisible': [('is_available','=',False)]}"/>
+                            <button string="Annuler" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour ouvrir le wizard -->
+        <record id="action_open_resource_booking_wizard" model="ir.actions.act_window">
+            <field name="name">Réserver une ressource</field>
+            <field name="res_model">lms_resources_trainers.resource_booking_wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="lms_resources_trainers.model_lms_resources_trainers_resource_management"/>
+            <field name="binding_type">action</field>
+        </record>
+    </data>
+</odoo>

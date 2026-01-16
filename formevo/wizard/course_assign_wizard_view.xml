@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_course_assign_wizard" model="ir.ui.view">
+        <field name="name">yonn.course.assign.wizard.form</field>
+        <field name="model">yonn.course.assign.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assigner un cours">
+                <sheet>
+                    <group>
+
+                        <field name="assignment_type" widget="radio"/>
+                    </group>
+                    <group>
+                        <field name="class_id"
+                               options="{'no_create': True}"
+                               placeholder="Sélectionnez une classe"
+                               invisible="assignment_type != 'class'"/>
+                        <field name="teacher_id"
+                               placeholder="Sélectionnez un enseignant"
+                                />
+
+                        <field name="student_ids" widget="many2many_tags"
+                               placeholder="Sélectionnez des étudiants"
+                               readonly="assignment_type == 'class'"
+                               />
+
+                        <field name="course_id"
+                               placeholder="Sélectionnez un cours"
+                               domain="[('user_id', '=', teacher_id)]"/>
+                    </group>
+                    <footer>
+                        <button string="Annuler" special="cancel" class="btn-secondary"/>
+                        <button name="assign" string="Assigner" type="object" class="btn-primary"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action de l'assistant -->
+    <record id="course_assign_wizard_action" model="ir.actions.act_window">
+        <field name="name">Assigner un cours</field>
+        <field name="res_model">yonn.course.assign.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

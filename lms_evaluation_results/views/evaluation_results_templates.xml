@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- =============================================== -->
+        <!--    TEMPLATE : Résultats publics évaluations    -->
+        <!-- =============================================== -->
+        <template id="evaluation_results_public_page" name="Résultats Évaluations">
+            <t t-call="website.layout">
+
+                <!-- Hero Section avec gradient -->
+                <section style="background: linear-gradient(135deg, #09171E 0%, #1B3E41 50%, #2B6559 100%); padding: 100px 0 60px;">
+                    <div class="container text-center">
+                        <div class="mb-4">
+                            <i class="fa fa-certificate" style="font-size: 72px; color: #7AF7A7; opacity: 0.9;"></i>
+                        </div>
+                        <h1 class="display-3 font-weight-bold text-white mb-3">
+                            Nos Résultats Qualiopi
+                        </h1>
+                        <p class="lead text-white-50 mb-4" style="font-size: 20px; max-width: 700px; margin: 0 auto;">
+                            Transparence et qualité : Découvrez les résultats de nos formations certifiées
+                        </p>
+
+                        <!-- Badges certifications -->
+                        <div class="d-flex justify-content-center flex-wrap mt-4" style="gap: 15px;">
+                            <span class="badge badge-pill px-4 py-3" style="background: rgba(122, 247, 167, 0.9); color: #09171E; font-size: 16px; font-weight: 600;">
+                                <i class="fa fa-check-circle mr-2"></i>
+                                Certifié Qualiopi
+                            </span>
+                            <span class="badge badge-pill px-4 py-3" style="background: rgba(33, 86, 74, 0.9); color: white; font-size: 16px; font-weight: 600;">
+                                <i class="fa fa-line-chart mr-2"></i>
+                                Résultats vérifiés
+                            </span>
+                            <span class="badge badge-pill px-4 py-3" style="background: rgba(3, 31, 45, 0.9); color: white; font-size: 16px; font-weight: 600;">
+                                <i class="fa fa-refresh mr-2"></i>
+                                Mis à jour mensuellement
+                            </span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Indicateurs clés -->
+                <section class="py-5" style="background: #f8f9fa;">
+                    <div class="container">
+                        <div class="text-center mb-5">
+                            <h2 class="font-weight-bold mb-3" style="color: #1B3E41;">
+                                📊 Nos Indicateurs Clés
+                            </h2>
+                            <p class="lead text-muted">
+                                Période : <strong t-esc="period_label"/> •
+                                <span class="text-muted">Dernière mise à jour : <t t-esc="last_update_date"/></span>
+                            </p>
+                        </div>
+
+                        <!-- Grille indicateurs -->
+                        <div class="row">
+                            <!-- Taux de complétion -->
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="card border-0 shadow-lg h-100" style="border-radius: 20px; overflow: hidden; border-top: 5px solid #7AF7A7;">
+                                    <div class="card-body text-center p-4">
+                                        <div class="mb-3">
+                                            <i class="fa fa-trophy" style="font-size: 48px; color: #7AF7A7;"></i>
+                                        </div>
+                                        <h3 class="display-4 font-weight-bold mb-2" style="color: #2B6559;">
+                                            <t t-esc="int(completion_rate)"/>%
+                                        </h3>
+                                        <h6 class="text-uppercase mb-2" style="color: #1B3E41; font-weight: 600; letter-spacing: 1px;">
+                                            Taux de complétion
+                                        </h6>
+                                        <p class="small text-muted mb-0">
+                                            <i class="fa fa-users mr-1"></i>
+                                            <t t-esc="total_completions"/> / <t t-esc="total_participants"/> participants
+                                        </p>
+
+                                        <!-- Barre de progression -->
+                                        <div class="progress mt-3" style="height: 8px; border-radius: 10px; background: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 t-att-style="'width: ' + str(completion_rate) + '%; background: linear-gradient(90deg, #2B6559, #7AF7A7);'"
+                                                 t-att-aria-valuenow="completion_rate" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+
+                                        <!-- Statut -->
+                                        <div class="mt-3">
+                                            <t t-if="completion_rate >= 80">
+                                                <span class="badge badge-success px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-check-circle mr-1"></i>
+                                                    Objectif atteint
+                                                </span>
+                                            </t>
+                                            <t t-elif="completion_rate >= 60">
+                                                <span class="badge badge-warning px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-exclamation-triangle mr-1"></i>
+                                                    En progression
+                                                </span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge badge-danger px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-arrow-up mr-1"></i>
+                                                    À améliorer
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Taux de satisfaction -->
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="card border-0 shadow-lg h-100" style="border-radius: 20px; overflow: hidden; border-top: 5px solid #2B6559;">
+                                    <div class="card-body text-center p-4">
+                                        <div class="mb-3">
+                                            <i class="fa fa-heart" style="font-size: 48px; color: #2B6559;"></i>
+                                        </div>
+                                        <h3 class="display-4 font-weight-bold mb-2" style="color: #2B6559;">
+                                            <t t-esc="int(satisfaction_rate)"/>%
+                                        </h3>
+                                        <h6 class="text-uppercase mb-2" style="color: #1B3E41; font-weight: 600; letter-spacing: 1px;">
+                                            Taux de satisfaction
+                                        </h6>
+                                        <p class="small text-muted mb-0">
+                                            <i class="fa fa-star mr-1"></i>
+                                            Moyenne des évaluations
+                                        </p>
+
+                                        <!-- Barre de progression -->
+                                        <div class="progress mt-3" style="height: 8px; border-radius: 10px; background: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 t-att-style="'width: ' + str(satisfaction_rate) + '%; background: #2B6559;'"
+                                                 t-att-aria-valuenow="satisfaction_rate" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+
+                                        <!-- Statut -->
+                                        <div class="mt-3">
+                                            <t t-if="satisfaction_rate >= 85">
+                                                <span class="badge badge-success px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-thumbs-up mr-1"></i>
+                                                    Excellence
+                                                </span>
+                                            </t>
+                                            <t t-elif="satisfaction_rate >= 70">
+                                                <span class="badge badge-info px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-smile-o mr-1"></i>
+                                                    Satisfaisant
+                                                </span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge badge-warning px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-bar-chart mr-1"></i>
+                                                    En amélioration
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Taux de réussite -->
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="card border-0 shadow-lg h-100" style="border-radius: 20px; overflow: hidden; border-top: 5px solid #21564A;">
+                                    <div class="card-body text-center p-4">
+                                        <div class="mb-3">
+                                            <i class="fa fa-graduation-cap" style="font-size: 48px; color: #21564A;"></i>
+                                        </div>
+                                        <h3 class="display-4 font-weight-bold mb-2" style="color: #21564A;">
+                                            <t t-esc="int(success_rate)"/>%
+                                        </h3>
+                                        <h6 class="text-uppercase mb-2" style="color: #1B3E41; font-weight: 600; letter-spacing: 1px;">
+                                            Taux de réussite
+                                        </h6>
+                                        <p class="small text-muted mb-0">
+                                            <i class="fa fa-check-square-o mr-1"></i>
+                                            Certifications obtenues
+                                        </p>
+
+                                        <!-- Barre de progression -->
+                                        <div class="progress mt-3" style="height: 8px; border-radius: 10px; background: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 t-att-style="'width: ' + str(success_rate) + '%; background: #21564A;'"
+                                                 t-att-aria-valuenow="success_rate" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+
+                                        <!-- Statut -->
+                                        <div class="mt-3">
+                                            <t t-if="success_rate >= 75">
+                                                <span class="badge badge-success px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-star mr-1"></i>
+                                                    Performant
+                                                </span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge badge-info px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-arrow-circle-up mr-1"></i>
+                                                    Bon niveau
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Taux d'abandon -->
+                            <div class="col-lg-3 col-md-6 mb-4">
+                                <div class="card border-0 shadow-lg h-100" style="border-radius: 20px; overflow: hidden; border-top: 5px solid #031F2D;">
+                                    <div class="card-body text-center p-4">
+                                        <div class="mb-3">
+                                            <i class="fa fa-shield" style="font-size: 48px; color: #031F2D;"></i>
+                                        </div>
+                                        <h3 class="display-4 font-weight-bold mb-2" style="color: #031F2D;">
+                                            <t t-esc="int(dropout_rate)"/>%
+                                        </h3>
+                                        <h6 class="text-uppercase mb-2" style="color: #1B3E41; font-weight: 600; letter-spacing: 1px;">
+                                            Taux d'abandon
+                                        </h6>
+                                        <p class="small text-muted mb-0">
+                                            <i class="fa fa-user-times mr-1"></i>
+                                            Engagement élevé
+                                        </p>
+
+                                        <!-- Barre de progression inversée -->
+                                        <div class="progress mt-3" style="height: 8px; border-radius: 10px; background: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar"
+                                                 t-att-style="'width: ' + str(dropout_rate) + '%; background: #dc3545;'"
+                                                 t-att-aria-valuenow="dropout_rate" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+
+                                        <!-- Statut -->
+                                        <div class="mt-3">
+                                            <t t-if="dropout_rate <= 10">
+                                                <span class="badge badge-success px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-check-circle mr-1"></i>
+                                                    Excellent
+                                                </span>
+                                            </t>
+                                            <t t-elif="dropout_rate <= 20">
+                                                <span class="badge badge-warning px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-info-circle mr-1"></i>
+                                                    À surveiller
+                                                </span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge badge-danger px-3 py-2" style="border-radius: 20px;">
+                                                    <i class="fa fa-exclamation-circle mr-1"></i>
+                                                    Action requise
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Évaluations à froid -->
+                <section class="py-5">
+                    <div class="container">
+                        <div class="row align-items-center mb-5">
+                            <div class="col-lg-6">
+                                <div class="pr-lg-5">
+                                    <h2 class="font-weight-bold mb-3" style="color: #1B3E41;">
+                                        🔍 Évaluations à Froid
+                                    </h2>
+                                    <p class="lead mb-4" style="color: #1B3E41;">
+                                        Nous mesurons l'impact de nos formations à J+30 et J+90
+                                        pour garantir une efficacité durable.
+                                    </p>
+
+                                    <div class="mb-4">
+                                        <div class="d-flex align-items-start mb-3">
+                                            <div class="mr-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width: 50px; height: 50px; background: rgba(122, 247, 167, 0.15);">
+                                                    <i class="fa fa-calendar" style="color: #2B6559; font-size: 22px;"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h5 style="color: #1B3E41; font-weight: 600;">Évaluation J+30</h5>
+                                                <p class="text-muted mb-0">
+                                                    Mesure de l'application immédiate des compétences acquises
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex align-items-start">
+                                            <div class="mr-3">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width: 50px; height: 50px; background: rgba(43, 101, 89, 0.15);">
+                                                    <i class="fa fa-line-chart" style="color: #2B6559; font-size: 22px;"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h5 style="color: #1B3E41; font-weight: 600;">Évaluation J+90</h5>
+                                                <p class="text-muted mb-0">
+                                                    Analyse de l'impact à long terme sur la pratique professionnelle
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <!-- Taux réponse J+30 -->
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; background: linear-gradient(135deg, rgba(122, 247, 167, 0.1), rgba(43, 101, 89, 0.05));">
+                                            <div class="card-body text-center p-4">
+                                                <h3 class="display-5 font-weight-bold mb-2" style="color: #2B6559;">
+                                                    <t t-esc="int(cold_30_response_rate)"/>%
+                                                </h3>
+                                                <h6 class="text-uppercase mb-0" style="color: #1B3E41; font-weight: 600; font-size: 12px; letter-spacing: 1px;">
+                                                    Taux réponse J+30
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Taux réponse J+90 -->
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; background: linear-gradient(135deg, rgba(43, 101, 89, 0.1), rgba(27, 62, 65, 0.05));">
+                                            <div class="card-body text-center p-4">
+                                                <h3 class="display-5 font-weight-bold mb-2" style="color: #21564A;">
+                                                    <t t-esc="int(cold_90_response_rate)"/>%
+                                                </h3>
+                                                <h6 class="text-uppercase mb-0" style="color: #1B3E41; font-weight: 600; font-size: 12px; letter-spacing: 1px;">
+                                                    Taux réponse J+90
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Impact professionnel -->
+                                    <div class="col-12">
+                                        <div class="card border-0 shadow-sm" style="border-radius: 15px; background: linear-gradient(135deg, #2B6559, #7AF7A7); color: white;">
+                                            <div class="card-body text-center p-4">
+                                                <h3 class="display-5 font-weight-bold mb-2">
+                                                    <t t-esc="int(professional_impact_rate)"/>%
+                                                </h3>
+                                                <h6 class="text-uppercase mb-0" style="font-weight: 600; font-size: 14px; letter-spacing: 1px; opacity: 0.95;">
+                                                    <i class="fa fa-briefcase mr-2"></i>
+                                                    Application professionnelle
+                                                </h6>
+                                                <p class="small mb-0 mt-2" style="opacity: 0.9;">
+                                                    Des apprenants appliquent les compétences dans leur travail
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Témoignages -->
+                <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                    <div class="container">
+                        <div class="text-center mb-5">
+                            <h2 class="font-weight-bold mb-3" style="color: #1B3E41;">
+                                💬 Témoignages Récents
+                            </h2>
+                            <p class="lead text-muted">
+                                Ce qu'ils disent de nos formations
+                            </p>
+                        </div>
+
+                        <t t-if="testimonials">
+                            <div class="row">
+                                <t t-foreach="testimonials[:3]" t-as="testimonial">
+                                    <div class="col-lg-4 mb-4">
+                                        <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
+                                            <div class="card-body p-4">
+                                                <!-- Stars -->
+                                                <div class="mb-3">
+                                                    <t t-foreach="range(5)" t-as="star">
+                                                        <i class="fa fa-star" style="color: #FFD700; font-size: 18px;"></i>
+                                                    </t>
+                                                </div>
+
+                                                <!-- Feedback -->
+                                                <p class="mb-4" style="font-style: italic; color: #1B3E41; line-height: 1.7;">
+                                                    "<t t-esc="testimonial.feedback[:150]"/>..."
+                                                </p>
+
+                                                <!-- Apprenant -->
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center mr-3"
+                                                         style="width: 50px; height: 50px; background: linear-gradient(135deg, #2B6559, #7AF7A7); color: white; font-size: 20px; font-weight: 700;">
+                                                        <t t-esc="testimonial.partner_name[0]"/>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0" style="color: #1B3E41; font-weight: 600;">
+                                                            <t t-esc="testimonial.partner_name"/>
+                                                        </h6>
+                                                        <small class="text-muted">
+                                                            <t t-esc="testimonial.formation_name"/>
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+
+                <!-- Méthodologie -->
+                <section class="py-5">
+                    <div class="container">
+                        <div class="card border-0 shadow-lg" style="border-radius: 25px; overflow: hidden;">
+                            <div class="card-header py-4" style="background: linear-gradient(135deg, #09171E, #1B3E41);">
+                                <h3 class="mb-0 text-white text-center">
+                                    <i class="fa fa-cogs mr-2"></i>
+                                    Notre Méthodologie de Mesure
+                                </h3>
+                            </div>
+                            <div class="card-body p-5">
+                                <div class="row">
+                                    <div class="col-md-4 mb-4 mb-md-0 text-center">
+                                        <div class="mb-3">
+                                            <i class="fa fa-clipboard" style="font-size: 48px; color: #2B6559;"></i>
+                                        </div>
+                                        <h5 style="color: #1B3E41; font-weight: 600;">Évaluation à chaud</h5>
+                                        <p class="text-muted">
+                                            Mesure immédiate de la satisfaction à la fin de la formation
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-4 mb-4 mb-md-0 text-center">
+                                        <div class="mb-3">
+                                            <i class="fa fa-calendar-check-o" style="font-size: 48px; color: #21564A;"></i>
+                                        </div>
+                                        <h5 style="color: #1B3E41; font-weight: 600;">Suivi J+30 & J+90</h5>
+                                        <p class="text-muted">
+                                            Analyse de l'application des compétences sur le terrain
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-4 text-center">
+                                        <div class="mb-3">
+                                            <i class="fa fa-bar-chart" style="font-size: 48px; color: #031F2D;"></i>
+                                        </div>
+                                        <h5 style="color: #1B3E41; font-weight: 600;">Amélioration continue</h5>
+                                        <p class="text-muted">
+                                            Adaptation constante de nos contenus selon les retours
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CTA Final -->
+                <section class="py-5" style="background: linear-gradient(135deg, #2B6559, #7AF7A7);">
+                    <div class="container text-center">
+                        <h2 class="display-4 font-weight-bold text-white mb-4">
+                            Rejoignez nos formations certifiées
+                        </h2>
+                        <p class="lead text-white mb-4" style="opacity: 0.95;">
+                            Des résultats prouvés, une qualité reconnue
+                        </p>
+                        <div class="d-flex justify-content-center flex-wrap" style="gap: 15px;">
+                            <a href="/formations/catalogue" class="btn btn-lg px-5 py-3 shadow-lg"
+                               style="background: white; color: #2B6559; border: none; border-radius: 50px; font-weight: 700; transition: all 0.3s;">
+                                <i class="fa fa-book mr-2"></i>
+                                Voir nos formations
+                            </a>
+                            <a href="/contactus" class="btn btn-outline-light btn-lg px-5 py-3"
+                               style="border: 2px solid white; border-radius: 50px; font-weight: 700;">
+                                <i class="fa fa-envelope mr-2"></i>
+                                Nous contacter
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Styles CSS -->
+                <style>
+                    /* Animations */
+                    .card {
+                        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    }
+
+                    .card:hover {
+                        transform: translateY(-10px);
+                        box-shadow: 0 20px 40px rgba(43, 101, 89, 0.2) !important;
+                    }
+
+                    /* Badges animés */
+                    .badge {
+                        transition: all 0.3s ease;
+                    }
+
+                    .badge:hover {
+                        transform: scale(1.05);
+                    }
+
+                    /* Progress bars */
+                    .progress-bar {
+                        transition: width 1s ease-in-out;
+                    }
+
+                    /* Boutons */
+                    .btn {
+                        transition: all 0.3s ease;
+                    }
+
+                    .btn:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                    }
+
+                    /* Responsive */
+                    @media (max-width: 768px) {
+                        .display-3 { font-size: 2.5rem !important; }
+                        .display-4 { font-size: 2rem !important; }
+                        .lead { font-size: 1.1rem !important; }
+                    }
+                </style>
+
+            </t>
+        </template>
+
+    </data>
+</odoo>

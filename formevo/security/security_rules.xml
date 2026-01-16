@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ========== RÈGLES POUR ELEARNING.TRACKING ========== -->
+
+        <!-- Apprenants: leurs propres enregistrements -->
+        <record id="rule_tracking_student_own" model="ir.rule">
+            <field name="name">Tracking: Student Own Records</field>
+            <field name="model_id" ref="model_elearning_tracking"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Enseignants peuvent créer et gérer leurs cours -->
+        <record id="rule_slide_channel_teacher_create" model="ir.rule">
+            <field name="name">Slide Channel: Teachers can create courses</field>
+            <field name="model_id" ref="website_slides.model_slide_channel"/>
+            <field name="domain_force">['|', ('user_id','=',user.id), ('user_id','=',False)]</field>
+            <field name="groups" eval="[(4, ref('formevo.group_yonn_elearning_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Enseignants peuvent gérer les slides de leurs cours -->
+        <record id="rule_slide_slide_teacher_manage" model="ir.rule">
+            <field name="name">Slide: Teachers can manage slides of own courses</field>
+            <field name="model_id" ref="website_slides.model_slide_slide"/>
+            <field name="domain_force">[('channel_id.user_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('formevo.group_yonn_elearning_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Enseignants: leurs étudiants -->
+        <record id="rule_tracking_teacher_students" model="ir.rule">
+            <field name="name">Tracking: Teacher Students</field>
+            <field name="model_id" ref="model_elearning_tracking"/>
+            <field name="domain_force">[('course_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Directeurs: tout -->
+        <record id="rule_tracking_director_all" model="ir.rule">
+            <field name="name">Tracking: Director All</field>
+            <field name="model_id" ref="model_elearning_tracking"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_director'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- ========== RÈGLES POUR SLIDE.CHANNEL ========== -->
+
+        <!-- Apprenants: cours où ils sont inscrits -->
+        <record id="rule_channel_student_enrolled" model="ir.rule">
+            <field name="name">Channel: Student Enrolled</field>
+            <field name="model_id" ref="website_slides.model_slide_channel"/>
+            <field name="domain_force">[('slide_partner_ids.partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Enseignants: leurs cours -->
+        <record id="rule_channel_teacher_own" model="ir.rule">
+            <field name="name">Channel: Teacher Own</field>
+            <field name="model_id" ref="website_slides.model_slide_channel"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Directeurs: tout -->
+        <record id="rule_channel_director_all" model="ir.rule">
+            <field name="name">Channel: Director All</field>
+            <field name="model_id" ref="website_slides.model_slide_channel"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_director'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

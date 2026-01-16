@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Extension de la vue form partenaire -->
+        <record id="view_partner_form_trainer" model="ir.ui.view">
+            <field name="name">res.partner.form.trainer</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='internal_notes']" position="before">
+                    <page string="Formateur" invisible="is_company or not is_trainer">
+
+                        <group string="Statut">
+                            <group>
+                                <field name="is_trainer"/>
+                                <field name="trainer_type"/>
+                            </group>
+                        </group>
+
+                        <group string="Compétences">
+                            <field name="competency_ids" widget="many2many_tags"/>
+                        </group>
+
+                        <group string="Expérience professionnelle">
+                            <field name="diploma" widget="textarea"/>
+                            <field name="certifications" widget="textarea"/>
+                            <field name="professional_experience" widget="textarea"/>
+                            <field name="training_experience" widget="textarea"/>
+                        </group>
+
+                        <group string="Documents">
+                            <group>
+                                <field name="cv_attachment" filename="cv_filename"/>
+                                <!-- Commenter ou supprimer les champs qui n'existent pas -->
+                                <!-- <field name="diploma_attachment_ids" widget="many2many_tags"/> -->
+                                <!-- <field name="certification_attachment_ids" widget="many2many_tags"/> -->
+                            </group>
+                        </group>
+
+                        <group string="Disponibilités">
+                            <field name="availability_notes" widget="textarea"/>
+                        </group>
+
+                        <group string="Habilitation">
+                            <field name="habilitation_name"/>
+                            <field name="habilitation_date"/>
+                            <field name="habilitation_expiry_date"/>
+                            <field name="habilitation_status" widget="badge"
+                                   decoration-danger="habilitation_status == 'expired'"
+                                   decoration-warning="habilitation_status == 'expiring'"/>
+                            <field name="days_to_expiry"/>
+                        </group>
+
+                        <group string="Statistiques">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="trained_channel_count" readonly="1"/>
+                                </span>
+                                <span class="o_stat_text">Formations animées</span>
+                            </div>
+                            <field name="inactive_months"/>
+                            <field name="last_activity_date"/>
+                        </group>
+
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

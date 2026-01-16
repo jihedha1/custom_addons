@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- APPROCHE ULTRA-SIMPLE : TEMPLATE STANDALONE (pas d'héritage) -->
+    <!-- ================================================================== -->
+
+    <template id="quiz_results_button_standalone" name="Quiz Results Button">
+        <!-- Ce template sera appelé depuis notre custom quiz page -->
+        <t t-if="slide and slide.slide_category == 'quiz' and request.env.user and not request.env.user._is_public()">
+            <t t-set="my_answers" t-value="request.env['slide.question.pending.answer'].sudo().search([
+                ('user_id', '=', request.env.user.id),
+                ('slide_id', '=', slide.id)
+            ], order='create_date desc', limit=50)"/>
+
+            <div class="alert alert-info border-0 shadow-sm mb-4" role="alert">
+                <div class="row align-items-center g-3">
+                    <div class="col-md-8">
+                        <h6 class="mb-2">
+                            <i class="fa fa-chart-bar text-primary me-2"></i>
+                            Votre progression sur ce quiz
+                        </h6>
+
+                        <t t-if="len(my_answers) > 0">
+                            <div class="d-flex gap-3 flex-wrap small">
+                                <div>
+                                    <span class="text-muted">Total :</span>
+                                    <strong class="text-primary ms-1">
+                                        <t t-esc="len(my_answers)"/>
+                                    </strong>
+                                </div>
+
+                                <t t-set="pending" t-value="my_answers.filtered(lambda a: a.state == 'pending')"/>
+                                <div t-if="len(pending) > 0">
+                                    <span class="text-muted">En attente :</span>
+                                    <strong class="text-warning ms-1">
+                                        <t t-esc="len(pending)"/>
+                                    </strong>
+                                </div>
+
+                                <t t-set="scored" t-value="my_answers.filtered(lambda a: a.final_score is not False)"/>
+                                <div t-if="len(scored) > 0">
+                                    <span class="text-muted">Score moyen :</span>
+                                    <t t-set="avg" t-value="sum(scored.mapped('final_score')) / len(scored)"/>
+                                    <strong class="ms-1" t-attf-style="color: {{ '#28a745' if avg >= 80 else '#ffc107' if avg >= 50 else '#dc3545' }};">
+                                        <t t-esc="round(avg)"/>%
+                                    </strong>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <small class="text-muted">
+                                <i class="fa fa-info-circle me-1"></i>
+                                Vous n'avez pas encore tenté ce quiz
+                            </small>
+                        </t>
+                    </div>
+
+                    <div class="col-md-4 text-md-end">
+                        <a t-attf-href="/slides/my_results?slide_id={{slide.id}}"
+                           class="btn btn-primary shadow-sm">
+                            <i class="fa fa-chart-bar me-2"></i>
+                            Voir détails
+                            <t t-if="len(my_answers.filtered(lambda a: a.state == 'pending')) > 0">
+                                <span class="badge bg-warning text-dark ms-2">
+                                    <t t-esc="len(my_answers.filtered(lambda a: a.state == 'pending'))"/>
+                                </span>
+                            </t>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ================================================================== -->
+    <!-- INCLURE LE TEMPLATE DANS NOTRE QUIZ CUSTOM -->
+    <!-- ================================================================== -->
+
+    <template id="quiz_page_with_results_btn"
+              inherit_id="odoo_gpt_integration.quiz_page_custom"
+              name="Add Results Button to Quiz Page">
+        <xpath expr="//div[@class='row mb-4']" position="after">
+            <div class="row mb-3">
+                <div class="col-lg-10 col-xl-9 mx-auto">
+                    <t t-call="odoo_gpt_integration.quiz_results_button_standalone"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- ================================================================== -->
+    <!-- AMÉLIORATION PAGE MY_RESULTS AVEC FILTRES -->
+    <!-- ================================================================== -->
+
+    <template id="my_results_add_filters"
+              inherit_id="odoo_gpt_integration.my_quiz_results_page"
+              name="Add Filters">
+        <xpath expr="//div[@class='row mb-4'][1]" position="after">
+
+            <!-- Indicateur de filtres actifs -->
+            <div class="row mb-3" t-if="filter_channel_id or filter_slide_id or filter_state">
+                <div class="col-12">
+                    <div class="alert alert-info d-flex justify-content-between align-items-center mb-0" role="alert">
+                        <div>
+                            <i class="fa fa-filter me-2"></i>
+                            <strong>Filtres actifs :</strong>
+
+                            <t t-if="filter_channel_id">
+                                <t t-set="selected_channel" t-value="request.env['slide.channel'].sudo().browse(int(filter_channel_id))"/>
+                                <span class="badge bg-primary ms-2">
+                                    <i class="fa fa-book me-1"></i>
+                                    <t t-esc="selected_channel.name if selected_channel.exists() else 'Cours inconnu'"/>
+                                </span>
+                            </t>
+
+                            <t t-if="filter_slide_id">
+                                <t t-set="selected_slide" t-value="request.env['slide.slide'].sudo().browse(int(filter_slide_id))"/>
+                                <span class="badge bg-info ms-2">
+                                    <i class="fa fa-graduation-cap me-1"></i>
+                                    <t t-esc="selected_slide.name if selected_slide.exists() else 'Quiz inconnu'"/>
+                                </span>
+                            </t>
+
+                            <t t-if="filter_state">
+                                <span class="badge ms-2" t-attf-class="bg-{{
+                                    'warning text-dark' if filter_state == 'pending'
+                                    else 'success' if filter_state == 'validated'
+                                    else 'info' if filter_state == 'corrected'
+                                    else 'secondary'
+                                }}">
+                                    <i class="fa fa-flag me-1"></i>
+                                    <t t-if="filter_state == 'pending'">En attente</t>
+                                    <t t-elif="filter_state == 'validated'">Validé</t>
+                                    <t t-elif="filter_state == 'corrected'">Corrigé</t>
+                                    <t t-elif="filter_state == 'rejected'">Rejeté</t>
+                                </span>
+                            </t>
+                        </div>
+
+                        <a href="/slides/my_results" class="btn btn-sm btn-outline-secondary">
+                            <i class="fa fa-times me-1"></i>
+                            Effacer filtres
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire de filtres -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-sliders me-2"></i>
+                                    Rechercher et filtrer
+                                </h5>
+                                <button class="btn btn-sm btn-link text-decoration-none"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#filterCollapse"
+                                        aria-expanded="true">
+                                    <i class="fa fa-chevron-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="filterCollapse">
+                            <div class="card-body">
+                                <form method="get" action="/slides/my_results" class="row g-3" id="filterForm">
+
+                                    <!-- Filtre Cours -->
+                                    <div class="col-md-4">
+                                        <label for="filter_channel" class="form-label fw-bold">
+                                            <i class="fa fa-book text-primary me-1"></i>
+                                            Cours
+                                        </label>
+                                        <select name="channel_id"
+                                                id="filter_channel"
+                                                class="form-select">
+                                            <option value="">Tous les cours</option>
+                                            <t t-set="all_channels" t-value="request.env['slide.channel'].sudo().search([], order='name')"/>
+                                            <t t-foreach="all_channels" t-as="ch">
+                                                <option t-att-value="ch.id">
+                                                    <t t-att-selected="'selected' if filter_channel_id and str(ch.id) == str(filter_channel_id) else ''"/>
+                                                    <t t-esc="ch.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <!-- Filtre Quiz -->
+                                    <div class="col-md-4">
+                                        <label for="filter_slide" class="form-label fw-bold">
+                                            <i class="fa fa-graduation-cap text-info me-1"></i>
+                                            Quiz spécifique
+                                        </label>
+                                        <select name="slide_id"
+                                                id="filter_slide"
+                                                class="form-select">
+                                            <option value="">Tous les quiz</option>
+                                            <t t-set="all_quizzes" t-value="request.env['slide.slide'].sudo().search([
+                                                ('slide_category', '=', 'quiz')
+                                            ], order='name')"/>
+                                            <t t-foreach="all_quizzes" t-as="quiz">
+                                                <option t-att-value="quiz.id"
+                                                        t-att-data-channel="quiz.channel_id.id">
+                                                    <t t-att-selected="'selected' if filter_slide_id and str(quiz.id) == str(filter_slide_id) else ''"/>
+                                                    <t t-esc="quiz.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+
+                                    <!-- Filtre Statut -->
+                                    <div class="col-md-4">
+                                        <label for="filter_state" class="form-label fw-bold">
+                                            <i class="fa fa-flag text-warning me-1"></i>
+                                            Statut
+                                        </label>
+                                        <select name="state"
+                                                id="filter_state"
+                                                class="form-select">
+                                            <option value="">Tous les statuts</option>
+                                            <option value="pending">
+                                                <t t-att-selected="'selected' if filter_state == 'pending' else ''"/>
+                                                En attente de correction
+                                            </option>
+                                            <option value="validated">
+                                                <t t-att-selected="'selected' if filter_state == 'validated' else ''"/>
+                                                Validé automatiquement
+                                            </option>
+                                            <option value="corrected">
+                                                <t t-att-selected="'selected' if filter_state == 'corrected' else ''"/>
+                                                Corrigé manuellement
+                                            </option>
+                                            <option value="rejected">
+                                                <t t-att-selected="'selected' if filter_state == 'rejected' else ''"/>
+                                                Rejeté
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Boutons Action -->
+                                    <div class="col-12">
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-search me-2"></i>
+                                                Appliquer les filtres
+                                            </button>
+                                            <a href="/slides/my_results" class="btn btn-outline-secondary">
+                                                <i class="fa fa-eraser me-2"></i>
+                                                Réinitialiser
+                                            </a>
+                                            <button type="button" class="btn btn-outline-info ms-auto" id="quickFilterPending">
+                                                <i class="fa fa-clock-o me-2"></i>
+                                                Voir uniquement en attente
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JavaScript pour améliorer l'UX -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Filtrage rapide "En attente"
+                    const quickPendingBtn = document.getElementById('quickFilterPending');
+                    if (quickPendingBtn) {
+                        quickPendingBtn.addEventListener('click', function() {
+                            document.getElementById('filter_state').value = 'pending';
+                            document.getElementById('filterForm').submit();
+                        });
+                    }
+
+                    // Filtrer les quiz selon le cours sélectionné
+                    const channelSelect = document.getElementById('filter_channel');
+                    const slideSelect = document.getElementById('filter_slide');
+
+                    if (channelSelect &amp;&amp; slideSelect) {
+                        channelSelect.addEventListener('change', function() {
+                            const selectedChannel = this.value;
+                            const slideOptions = slideSelect.querySelectorAll('option[data-channel]');
+
+                            slideOptions.forEach(option => {
+                                if (!selectedChannel || option.dataset.channel === selectedChannel) {
+                                    option.style.display = '';
+                                } else {
+                                    option.style.display = 'none';
+                                }
+                            });
+
+                            // Réinitialiser la sélection du quiz si le cours change
+                            if (slideSelect.value &amp;&amp; slideSelect.options[slideSelect.selectedIndex].style.display === 'none') {
+                                slideSelect.value = '';
+                            }
+                        });
+                    }
+                });
+            </script>
+        </xpath>
+    </template>
+
+    <!-- ================================================================== -->
+    <!-- BOUTON FLOTTANT NOTIFICATION (uniquement si réponses en attente) -->
+    <!-- ================================================================== -->
+
+    <template id="floating_notification_btn"
+              inherit_id="website.layout"
+              name="Floating Notification">
+        <xpath expr="//body" position="inside">
+            <t t-if="request.env.user and not request.env.user._is_public()">
+                <t t-set="urgent_pending" t-value="request.env['slide.question.pending.answer'].sudo().search_count([
+                    ('user_id', '=', request.env.user.id),
+                    ('state', '=', 'pending')
+                ])"/>
+
+                <div t-if="urgent_pending > 0"
+                     id="floating-pending-badge"
+                     style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+                    <a href="/slides/my_results?state=pending"
+                       class="btn btn-warning shadow-lg rounded-pill px-3 py-2 d-flex align-items-center gap-2"
+                       style="animation: pulse 2s infinite;">
+                        <i class="fa fa-clock-o"></i>
+                        <span class="fw-bold">
+                            <t t-esc="urgent_pending"/> en attente
+                        </span>
+                    </a>
+                </div>
+
+                <style>
+                    @keyframes pulse {
+                        0%, 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+                        50% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+                    }
+
+                    #floating-pending-badge:hover a {
+                        transform: scale(1.05);
+                        transition: transform 0.3s ease;
+                    }
+
+                    @media (max-width: 768px) {
+                        #floating-pending-badge {
+                            bottom: 10px;
+                            right: 10px;
+                        }
+                        #floating-pending-badge a {
+                            font-size: 0.875rem;
+                            padding: 0.5rem 1rem !important;
+                        }
+                    }
+                </style>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ================================================================== -->
+    <!-- LIEN DANS LE MENU UTILISATEUR PORTAL -->
+    <!-- ================================================================== -->
+
+    <template id="portal_user_menu_results"
+              inherit_id="portal.user_dropdown"
+              name="Results Link in User Menu">
+        <xpath expr="//a[@href='/my/home']" position="after">
+            <t t-if="request.env.user and not request.env.user._is_public()">
+                <a href="/slides/my_results" class="dropdown-item">
+                    <i class="fa fa-chart-bar me-2"></i>
+                    Mes Résultats Quiz
+                    <t t-set="my_pending" t-value="request.env['slide.question.pending.answer'].sudo().search_count([
+                        ('user_id', '=', request.env.user.id),
+                        ('state', '=', 'pending')
+                    ])"/>
+                    <span class="badge bg-warning text-dark ms-2" t-if="my_pending > 0">
+                        <t t-esc="my_pending"/>
+                    </span>
+                </a>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

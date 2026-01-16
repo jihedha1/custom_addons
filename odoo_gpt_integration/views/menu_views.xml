@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- MENUS POUR LA CORRECTION -->
+    <!-- ================================================================== -->
+
+    <!-- Menu racine AI Education -->
+    <menuitem id="menu_ai_root"
+              name="AI Éducation"
+              sequence="50"
+              groups="group_elearning_teacher"/>
+
+    <!-- Sous-menu Correction (visible par enseignants seulement) -->
+    <menuitem id="menu_correction_root"
+              name="Correction"
+              parent="menu_ai_root"
+              sequence="10"
+              groups="group_elearning_teacher"/>
+
+    <!-- Menu : Réponses à valider -->
+    <menuitem id="menu_pending_answers"
+              name="Réponses à Valider"
+              parent="menu_correction_root"
+              action="action_pending_answers_all"
+              sequence="10"
+              groups="group_elearning_teacher"/>
+
+    <!-- Menu : Réponses en retard -->
+    <menuitem id="menu_pending_answers_overdue"
+              name="Réponses en Retard"
+              parent="menu_correction_root"
+              action="action_pending_answers_overdue"
+              sequence="20"
+              groups="group_elearning_teacher"/>
+
+    <!-- Menu : Historique -->
+    <menuitem id="menu_pending_answers_history"
+              name="Historique des Corrections"
+              parent="menu_correction_root"
+              action="action_pending_answers_history"
+              sequence="30"
+              groups="group_elearning_teacher"/>
+
+    <!-- ================================================================== -->
+    <!-- MENU CONFIGURATION IA (pour admin seulement) -->
+    <!-- ================================================================== -->
+
+    <menuitem id="menu_ai_config_root"
+              name="Configuration IA"
+              parent="menu_ai_root"
+              sequence="100"
+              groups="group_elearning_admin"/>
+
+    <!-- Si vous avez une action pour la configuration IA -->
+    <menuitem id="menu_ai_provider_config"
+              name="Fournisseurs IA"
+              parent="menu_ai_config_root"
+              action="action_ai_provider_config"
+              sequence="10"
+              groups="group_elearning_admin"/>
+
+    <!-- ================================================================== -->
+    <!-- MENU QUESTIONS (si vous voulez l'ajouter ici aussi) -->
+    <!-- ================================================================== -->
+
+    <menuitem id="menu_ai_questions"
+              name="Gestion des Questions"
+              parent="menu_ai_root"
+              action="action_slide_question_all"
+              sequence="50"
+              groups="group_elearning_teacher"/>
+
+</odoo>

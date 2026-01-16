@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- 1. VUE FORMULAIRE POUR SLIDE.CHANNEL (COURS) -->
+    <!-- ================================================================== -->
+    <record id="view_slide_channel_form_inherit_ai_fields" model="ir.ui.view">
+        <field name="name">slide.channel.view.form.inherit.ai.fields</field>
+        <field name="model">slide.channel</field>
+        <field name="inherit_id" ref="website_slides.view_slide_channel_form"/>
+        <field name="arch" type="xml">
+            <!-- Ajout dans le notebook existant -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Configuration IA" name="ai_config">
+                    <group>
+                        <p class="text-muted" colspan="2">
+                            Sélectionnez un fournisseur d'IA par défaut pour toutes les générations de contenu de ce
+                            cours.
+                        </p>
+                        <field name="can_edit_ai_config" invisible="1"/>
+                        <field name="ai_provider_config_id"
+                               options="{'no_create': True}"
+                               readonly="not can_edit_ai_config"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- 2. AJOUT DES BOUTONS DANS L'EN-TÊTE DU FORMULAIRE DU COURS -->
+    <!-- ================================================================== -->
+    <record id="slide_channel_view_form_add_buttons" model="ir.ui.view">
+        <field name="name">slide.channel.view.form.add.buttons</field>
+        <field name="model">slide.channel</field>
+        <field name="inherit_id" ref="website_slides.view_slide_channel_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <!-- Bouton pour l'assistant de génération IA -->
+                <button name="%(odoo_gpt_integration.action_launch_ai_main_wizard)d"
+                        string="Générer par IA"
+                        type="action"
+                        class="btn-primary"
+                        help="Lancer l'assistant de génération de contenu par IA"/>
+
+                <!-- Bouton pour ajouter une question manuellement -->
+                <button name="%(odoo_gpt_integration.action_open_slide_question_wizard)d"
+                        string="Ajouter Question"
+                        type="action"
+                        class="btn-secondary"
+                        help="Ouvre un assistant pour créer une nouvelle question dans un chapitre"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- 3. VUE FORMULAIRE POUR SLIDE.SLIDE (CHAPITRE) - AVEC CONTEXTE RAG -->
+    <!-- ================================================================== -->
+    <record id="view_slide_slide_form_inherit_context" model="ir.ui.view">
+        <field name="name">slide.slide.form.inherit.context</field>
+        <field name="model">slide.slide</field>
+        <field name="inherit_id" ref="website_slides.view_slide_slide_form"/>
+        <field name="arch" type="xml">
+            <!-- Ajout d'un onglet pour le contexte RAG -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Contexte IA" name="ai_context">
+                    <div class="alert alert-info" role="alert" invisible="x_ai_context_id == False">
+                        <strong>✓ Contexte RAG Actif</strong>
+                        <p>Ce chapitre a été analysé par l'IA et peut être utilisé pour générer du contenu.</p>
+                        <p invisible="x_ai_context_is_expired == False">
+                            <span class="text-danger">⚠️ Le contexte a expiré et sera régénéré automatiquement si
+                                nécessaire.
+                            </span>
+                        </p>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="x_ai_context_id" readonly="1"/>
+                            <field name="x_ai_context_file_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="x_ai_context_expires_at" readonly="1"/>
+                            <field name="x_ai_context_is_expired" readonly="1" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-warning" role="alert" invisible="x_ai_context_id != False">
+                        <strong>ℹ️ Aucun Contexte</strong>
+                        <p>Ce chapitre n'a pas encore été analysé par l'IA.
+                            Le contexte sera créé automatiquement lors de la première génération de contenu.
+                        </p>
+                    </div>
+
+                    <group>
+                        <button name="action_regenerate_context"
+                                string="🔄 Régénérer le Contexte"
+                                type="object"
+                                class="btn-warning"
+                                help="Force la régénération du contexte RAG"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- 4. AJOUT DE BOUTONS D'ACTION RAPIDE SUR LE FORMULAIRE DE LA LEÇON -->
+    <!-- ================================================================== -->
+    <record id="view_slide_slide_form_inherit_ai_buttons" model="ir.ui.view">
+        <field name="name">slide.slide.form.inherit.ai.buttons</field>
+        <field name="model">slide.slide</field>
+        <field name="inherit_id" ref="website_slides.view_slide_slide_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                <button name="action_generate_summary"
+                        string="Générer Résumé"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-magic"
+                        help="Générer un résumé de cette leçon avec l'IA"
+                        invisible="slide_category not in ['document', 'article', 'infographic']"/>
+                <button name="action_generate_question_targeted"
+                        string="Générer Question"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-question-circle"
+                        help="Générer une question ciblée sur cette leçon avec l'IA"
+                        invisible="slide_category not in ['document', 'article', 'infographic']"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Formateur de démonstration -->
+        <record id="demo_trainer_1" model="lms_resources_trainers.trainer_profile">
+            <field name="partner_id" ref="base.partner_demo"/>
+            <field name="specialization">Développement Odoo</field>
+            <field name="years_experience">5</field>
+            <field name="hourly_rate">65.00</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Salle de démonstration -->
+        <record id="demo_resource_1" model="lms_resources_trainers.resource_management">
+            <field name="name">Salle de formation A</field>
+            <field name="resource_type_id" ref="resource_type_classroom"/>
+            <field name="capacity">20</field>
+            <field name="location">Étage 1, Bureau 101</field>
+            <field name="available_for_booking">True</field>
+            <field name="state">available</field>
+        </record>
+
+        <!-- Évaluation de support de démonstration -->
+        <record id="demo_material_evaluation_1" model="lms_resources_trainers.material_evaluation">
+            <field name="material_name">Support Python avancé</field>
+            <field name="course_id" ref="slide.slide_channel_demo_0"/>
+            <field name="material_type">presentation</field>
+            <field name="evaluator_id" ref="base.user_admin"/>
+            <field name="deadline_date">2025-12-31</field>
+            <field name="state">in_progress</field>
+        </record>
+    </data>
+</odoo>

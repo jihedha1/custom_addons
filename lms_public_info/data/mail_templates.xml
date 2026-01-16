@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Template : Confirmation rendez-vous -->
+        <record id="mail_template_appointment_confirmation" model="mail.template">
+            <field name="name">Confirmation rendez-vous formation</field>
+            <field name="model_id" ref="model_calendar_event"/>
+            <field name="email_from">${object.user_id.email or ''}</field>
+            <field name="email_to">${object.partner_ids[0].email if object.partner_ids else ''}</field>
+            <field name="subject">Confirmation de votre rendez-vous information</field>
+            <field name="body_html"><![CDATA[
+                <p>Bonjour ${object.partner_ids[0].name or ''},</p>
+
+                <p>Votre rendez-vous pour la formation a été confirmé :</p>
+
+                <div style="background-color: #f8f9fa; padding: 15px; margin: 15px 0; border-left: 4px solid #007bff;">
+                    <h3 style="margin-top: 0;">${object.channel_id.name}</h3>
+                    <p><strong>Date et heure :</strong> ${object.start_datetime}</p>
+                    <p><strong>Durée :</strong> ${object.duration} minutes</p>
+                    <p><strong>Type :</strong> ${dict(object._fields['appointment_type'].selection).get(object.appointment_type)}</p>
+                    % if object.description:
+                    <p><strong>Notes :</strong> ${object.description}</p>
+                    % endif
+                </div>
+
+                <p>Vous serez contacté par : ${object.user_id.name}</p>
+
+                <p>Nous vous remercions de votre intérêt pour notre formation.</p>
+
+                <p>Cordialement,<br/>L'équipe de formation</p>
+            ]]></field>
+        </record>
+
+        <!-- Template : Publication formation -->
+        <record id="mail_template_formation_published" model="mail.template">
+            <field name="name">Notification publication formation</field>
+            <field name="model_id" ref="model_slide_channel"/>
+            <field name="email_from">formations@votresociete.com</field>
+            <field name="email_to">${object.create_uid.email or ''}</field>
+            <field name="subject">Formation publiée : ${object.name}</field>
+            <field name="body_html"><![CDATA[
+                <p>Bonjour ${object.create_uid.name},</p>
+
+                <p>La formation a été publiée avec succès :</p>
+
+                <div style="background-color: #d4edda; padding: 15px; margin: 15px 0; border-left: 4px solid #28a745;">
+                    <h3 style="margin-top: 0;">${object.name}</h3>
+                    <p><strong>Référence :</strong> ${object.id}</p>
+                    <p><strong>Date de publication :</strong> ${object.write_date}</p>
+                    <p><strong>URL publique :</strong> <a href="${object.website_url}">${object.website_url}</a></p>
+                </div>
+
+                <p>La formation est maintenant visible sur le site public.</p>
+
+                <p>Cordialement,<br/>Système de gestion des formations</p>
+            ]]></field>
+        </record>
+
+    </data>
+</odoo>

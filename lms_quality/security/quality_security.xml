@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Catégorie de module -->
+        <record id="module_category_quality" model="ir.module.category">
+            <field name="name">Qualité</field>
+            <field name="description">Gestion de la qualité et conformité Qualiopi</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <!-- Groupes de sécurité -->
+        <record id="group_quality_user" model="res.groups">
+            <field name="name">Utilisateur Qualité</field>
+            <field name="category_id" ref="module_category_quality"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Peut consulter et modifier ses non-conformités et actions</field>
+        </record>
+
+        <record id="group_quality_manager" model="res.groups">
+            <field name="name">Manager Qualité</field>
+            <field name="category_id" ref="module_category_quality"/>
+            <field name="implied_ids" eval="[(4, ref('group_quality_user'))]"/>
+            <field name="comment">Accès complet à toutes les non-conformités et actions</field>
+        </record>
+
+        <!-- ✅ AJOUTÉ : Groupe Auditeur (lecture seule) -->
+        <record id="group_quality_auditor" model="res.groups">
+            <field name="name">Auditeur Qualité</field>
+            <field name="category_id" ref="module_category_quality"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Lecture seule pour audits et revues</field>
+        </record>
+
+        <!-- Règles d'accès : Non-conformités -->
+
+        <!-- Manager : accès total -->
+        <record id="non_conformity_manager_rule" model="ir.rule">
+            <field name="name">Manager qualité: toutes les NC</field>
+            <field name="model_id" ref="model_quality_non_conformity"/>
+            <field name="groups" eval="[(4, ref('group_quality_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <!-- Utilisateur : ses NC ou celles qu'il a créées -->
+        <record id="non_conformity_user_rule" model="ir.rule">
+            <field name="name">Utilisateur qualité: leurs NC</field>
+            <field name="model_id" ref="model_quality_non_conformity"/>
+            <field name="groups" eval="[(4, ref('group_quality_user'))]"/>
+            <field name="domain_force">
+                ['|',
+                    ('responsible_user_id', '=', user.id),
+                    ('create_uid', '=', user.id)
+                ]
+            </field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!-- ✅ AJOUTÉ : Auditeur (lecture seule) -->
+        <record id="non_conformity_auditor_rule" model="ir.rule">
+            <field name="name">Auditeur: lecture seule NC</field>
+            <field name="model_id" ref="model_quality_non_conformity"/>
+            <field name="groups" eval="[(4, ref('group_quality_auditor'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!-- Règles d'accès : Actions correctives -->
+
+        <!-- Manager : accès total -->
+        <record id="corrective_action_manager_rule" model="ir.rule">
+            <field name="name">Manager qualité: toutes les actions</field>
+            <field name="model_id" ref="model_quality_corrective_action"/>
+            <field name="groups" eval="[(4, ref('group_quality_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+        </record>
+
+        <!-- Utilisateur : ses actions ou actions de ses NC -->
+        <record id="corrective_action_user_rule" model="ir.rule">
+            <field name="name">Utilisateur qualité: leurs actions</field>
+            <field name="model_id" ref="model_quality_corrective_action"/>
+            <field name="groups" eval="[(4, ref('group_quality_user'))]"/>
+            <field name="domain_force">
+                ['|',
+                    ('responsible_user_id', '=', user.id),
+                    ('non_conformity_id.responsible_user_id', '=', user.id)
+                ]
+            </field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+        <!-- ✅ AJOUTÉ : Auditeur (lecture seule) -->
+        <record id="corrective_action_auditor_rule" model="ir.rule">
+            <field name="name">Auditeur: lecture seule actions</field>
+            <field name="model_id" ref="model_quality_corrective_action"/>
+            <field name="groups" eval="[(4, ref('group_quality_auditor'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+
+    </data>
+</odoo>

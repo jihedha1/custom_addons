@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue formulaire étendue pour les partenaires (apprenants) -->
+        <record id="view_res_partner_form_inherit_objectives" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit.objectives</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='internal_notes']" position="after">
+                    <page string="Formation et Objectifs">
+                        <group string="Plans de Formation Individualisés">
+                            <field name="individual_plan_ids" colspan="4" nolabel="1">
+                                <tree string="Plans" editable="bottom">
+                                    <field name="course_id"/>
+                                    <field name="plan_type"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="signature_date"/>
+                                    <field name="signed_document" filename="signed_filename" widget="binary" string="Document signé"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                        <group string="Positionnements">
+                            <field name="placement_assessment_ids" colspan="4" nolabel="1">
+                                <tree string="Questionnaires" editable="bottom">
+                                    <field name="survey_id"/>
+                                    <field name="course_id"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="score" widget="progressbar" options="{'editable': false}"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Action pour gérer les plans d'un apprenant -->
+        <record id="action_partner_individual_plans" model="ir.actions.act_window">
+            <field name="name">Plans de Formation</field>
+            <field name="res_model">lms_objectives.individual_plan</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('partner_id', '=', active_id)]</field>
+            <field name="context">{'default_partner_id': active_id}</field>
+        </record>
+
+        <!-- Bouton dans la vue partenaire -->
+        <record id="view_res_partner_form_button" model="ir.ui.view">
+            <field name="name">res.partner.form.button.objectives</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='category_id']/../.." position="after">
+                    <button name="%(action_partner_individual_plans)d"
+                            type="action"
+                            string="Voir les Plans"
+                            class="oe_highlight"
+                            groups="base.group_user"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

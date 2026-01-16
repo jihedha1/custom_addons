@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Actions - VERSION SIMPLIFIÉE -->
+        <record id="action_public_kpi_snapshot" model="ir.actions.act_window">
+            <field name="name">Snapshots d'indicateurs</field>
+            <field name="res_model">public.kpi.snapshot</field>
+            <field name="view_mode">tree,form</field>
+            <!-- PAS de search_view_id -->
+            <field name="context">{'default_state': 'draft'}</field>
+        </record>
+
+        <record id="action_my_public_kpi_snapshots" model="ir.actions.act_window">
+            <field name="name">Mes snapshots</field>
+            <field name="res_model">public.kpi.snapshot</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('create_uid', '=', uid)]</field>
+            <!-- PAS de search_view_id -->
+            <field name="context">{'default_state': 'draft'}</field>
+        </record>
+
+        <record id="action_public_kpi_version" model="ir.actions.act_window">
+            <field name="name">Indicateurs publics</field>
+            <field name="res_model">public.kpi.version</field>
+            <field name="view_mode">tree,form</field>
+            <!-- PAS de search_view_id -->
+        </record>
+
+        <record id="action_public_kpi_category" model="ir.actions.act_window">
+            <field name="name">Catégories d'indicateurs</field>
+            <field name="res_model">public.kpi.category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menus -->
+        <!-- Menu principal KPI -->
+        <menuitem id="menu_public_kpi_main"
+                  name="Indicateurs Publics"
+                  sequence="10"/>
+
+        <!-- Sous-menu Snapshots -->
+        <menuitem id="menu_public_kpi_snapshots"
+                  name="Snapshots"
+                  parent="menu_public_kpi_main"
+                  sequence="10"/>
+
+        <menuitem id="menu_public_kpi_snapshot_all"
+                  name="Tous les snapshots"
+                  parent="menu_public_kpi_snapshots"
+                  action="action_public_kpi_snapshot"
+                  sequence="10"/>
+
+        <menuitem id="menu_public_kpi_snapshot_my"
+                  name="Mes snapshots"
+                  parent="menu_public_kpi_snapshots"
+                  action="action_my_public_kpi_snapshots"
+                  sequence="20"/>
+
+        <!-- Sous-menu Indicateurs -->
+        <menuitem id="menu_public_kpi_versions"
+                  name="Indicateurs"
+                  parent="menu_public_kpi_main"
+                  sequence="20"/>
+
+        <menuitem id="menu_public_kpi_version_all"
+                  name="Tous les indicateurs"
+                  parent="menu_public_kpi_versions"
+                  action="action_public_kpi_version"
+                  sequence="10"/>
+
+        <!-- Sous-menu Catégories -->
+        <menuitem id="menu_public_kpi_categories"
+                  name="Catégories"
+                  parent="menu_public_kpi_main"
+                  sequence="30"
+                  groups="base.group_system"
+                  action="action_public_kpi_category"/>
+
+    </data>
+</odoo>

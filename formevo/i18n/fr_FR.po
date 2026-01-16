@@ -1,0 +1,1020 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * formevo
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-07 19:57+0000\n"
+"PO-Revision-Date: 2025-10-07 19:57+0000\n"
+"Last-Translator: \n"
+"Language: fr_FR\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+msgid "<i class=\"fa fa-book\" title=\"Cours\"/>"
+msgstr "<i class=\"fa fa-book\" title=\"Cours\"/>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+msgid "<i class=\"fa fa-user\" title=\"Enseignant\"/>"
+msgstr "<i class=\"fa fa-user\" title=\"Enseignant\"/>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+msgid "<i class=\"fa fa-users\" title=\"Étudiants\"/>"
+msgstr "<i class=\"fa fa-users\" title=\"Étudiants\"/>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "<span class=\"o_stat_text\">Contenus</span>"
+msgstr "<span class=\"o_stat_text\">Contenus</span>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "<span class=\"o_stat_text\">Cours</span>"
+msgstr "<span class=\"o_stat_text\">Cours</span>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "<span class=\"o_stat_text\">Inscriptions</span>"
+msgstr "<span class=\"o_stat_text\">Inscriptions</span>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "<span class=\"o_stat_text\">Étudiants</span>"
+msgstr "<span class=\"o_stat_text\">Étudiants</span>"
+
+#. module: formevo
+#: model:res.groups,comment:formevo.group_yonn_elearning_director
+msgid "Accès complet à tous les cours, classes et statistiques."
+msgstr "Accès complet à tous les cours, classes et statistiques."
+
+#. module: formevo
+#: model:res.groups,comment:formevo.group_yonn_elearning_student
+msgid ""
+"Accès limité au portail et aux cours assignés. Ne peut pas voir le back-"
+"office."
+msgstr ""
+"Accès limité au portail et aux cours assignés. Ne peut pas voir le back-"
+"office."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__active
+msgid "Actif"
+msgstr "Actif"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_needaction
+msgid "Action Needed"
+msgstr "Action Requise"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_search_view
+msgid "Actives"
+msgstr "Actives"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'Exception d'Activité"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_state
+msgid "Activity State"
+msgstr "État de l'Activité"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône du Type d'Activité"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.user_group_wizard_form
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Annuler"
+msgstr "Annuler"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__partner_id
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__yonn_role__student
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Apprenant"
+msgstr "Apprenant"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Assigner"
+msgstr "Assigner"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.course_assign_wizard_menu
+msgid "Assigner Cours"
+msgstr "Assigner Cours"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Assigner aux classes"
+msgstr "Assigner aux classes"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.course_assign_wizard_action
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Assigner un cours"
+msgstr "Assigner un cours"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_custom
+msgid "Assigner à des classes"
+msgstr "Assigner à des classes"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_yonn_course_assign_wizard
+msgid "Assistant pour assigner des cours"
+msgstr "Assistant pour assigner des cours"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_yonn_user_group_wizard
+msgid "Assistant pour assigner les groupes Yonn"
+msgstr "Assistant pour assigner les groupes Yonn"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de Pièces Jointes"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/wizard/course_assign_wizard.py:0
+#, python-format
+msgid "Aucun étudiant sélectionné."
+msgstr "Aucun étudiant sélectionné."
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.slide_slide_menu
+msgid "Bibliothèque de Contenus"
+msgstr "Bibliothèque de Contenus"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__class_id_readonly
+msgid "Class Id Readonly"
+msgstr "ID Classe Lecture Seule"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__class_id
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_course_assign_wizard__assignment_type__class
+msgid "Classe"
+msgstr "Classe"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Classe d'étudiants"
+msgstr "Classe d'étudiants"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_yonn_student_class
+msgid "Classe d'étudiants pour Yonn eLearning"
+msgstr "Classe d'étudiants pour Yonn eLearning"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.student_class_action
+#: model:ir.ui.menu,name:formevo.student_class_menu
+msgid "Classes d'étudiants"
+msgstr "Classes d'étudiants"
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.slide_channel_teacher_action
+msgid ""
+"Cliquez sur \"Nouveau\" pour créer un cours et commencer à ajouter du "
+"contenu."
+msgstr ""
+"Cliquez sur \"Nouveau\" pour créer un cours et commencer à ajouter du "
+"contenu."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__completion_percentage
+msgid "Complétion (%)"
+msgstr "Complétion (%)"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Complété"
+msgstr "Complété"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.user_group_wizard_form
+msgid "Configurer"
+msgstr "Configurer"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.user_group_wizard_menu
+msgid "Configurer Utilisateur"
+msgstr "Configurer Utilisateur"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.user_group_wizard_action
+#: model_terms:ir.ui.view,arch_db:formevo.user_group_wizard_form
+msgid "Configurer Utilisateur Yonn"
+msgstr "Configurer Utilisateur Yonn"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_custom
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_tree_teacher
+msgid "Contenus"
+msgstr "Contenus"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__completed_slides
+msgid "Contenus Terminés"
+msgstr "Contenus Terminés"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.slide_slide_action
+msgid "Contenus de cours"
+msgstr "Contenus de cours"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__course_id
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__course_id
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Cours"
+msgstr "Cours"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__assigned_course_ids
+#, python-format
+msgid "Cours assignés"
+msgstr "Cours assignés"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.slide_channel_action
+msgid "Cours eLearning"
+msgstr "Cours eLearning"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_slide_channel
+msgid "Course"
+msgstr "Cours"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__create_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__create_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__create_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__create_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__create_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__create_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: formevo
+#: model:res.groups,comment:formevo.group_yonn_elearning_teacher
+msgid "Création et gestion de cours depuis le back-office."
+msgstr "Création et gestion de cours depuis le back-office."
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.slide_channel_teacher_action
+msgid "Créez votre premier cours !"
+msgstr "Créez votre premier cours !"
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.student_class_action
+msgid "Créez votre première classe d'étudiants."
+msgstr "Créez votre première classe d'étudiants."
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_custom
+msgid "Dashboard de Progression"
+msgstr "Tableau de Bord de Progression"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide_partner__x_completion_date
+msgid "Date de complétion"
+msgstr "Date de complétion"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__last_activity
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Dernière Activité"
+msgstr "Dernière Activité"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide_partner__x_last_activity
+msgid "Dernière activité"
+msgstr "Dernière activité"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__description
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_custom
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Description"
+msgstr "Description"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Description de la classe..."
+msgstr "Description de la classe..."
+
+#. module: formevo
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__yonn_role__director
+msgid "Directeur"
+msgstr "Directeur"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__display_name
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__display_name
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__display_name
+msgid "Display Name"
+msgstr "Nom d'Affichage"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide__x_time_limit
+msgid "Durée suggérée (minutes)"
+msgstr "Durée suggérée (minutes)"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_form
+msgid "Détail de Progression"
+msgstr "Détail de Progression"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__teacher_id
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__yonn_role__teacher
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_search_view
+msgid "Enseignant"
+msgstr "Enseignant"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__teacher_id
+msgid "Enseignant responsable"
+msgstr "Enseignant responsable"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome ex. fa-tasks"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_search_view
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Grouper par"
+msgstr "Grouper par"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__has_message
+msgid "Has Message"
+msgstr "A des Messages"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__id
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__id
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__id
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, les nouveaux messages nécessitent votre attention."
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_has_error
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: formevo
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_course_assign_wizard__assignment_type__individual
+msgid "Individuel"
+msgstr "Individuel"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_form
+msgid "Informations"
+msgstr "Informations"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Inscriptions"
+msgstr "Inscriptions"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid ""
+"Inscriptions et participations créées pour tous les étudiants et cours."
+msgstr ""
+"Inscriptions et participations créées pour tous les étudiants et cours."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_is_follower
+msgid "Is Follower"
+msgstr "Est Abonné"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__write_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__write_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__write_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Dernière Mise à Jour par"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__write_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__write_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__write_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__write_date
+msgid "Last Updated on"
+msgstr "Dernière Mise à Jour le"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Les cours ont été assignés aux étudiants."
+msgstr "Les cours ont été assignés aux étudiants."
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/wizard/course_assign_wizard.py:0
+#, python-format
+msgid "Les étudiants sont assignés au cours."
+msgstr "Les étudiants sont assignés au cours."
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__student_ids
+msgid "Limité au groupe Apprenants"
+msgstr "Limité au groupe Apprenants"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.slide_channel_teacher_action
+#: model:ir.ui.menu,name:formevo.my_courses_menu
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_tree_teacher
+msgid "Mes Cours"
+msgstr "Mes Cours"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur de Livraison de Message"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__assignment_type
+msgid "Mode d'assignation"
+msgstr "Mode d'assignation"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Mon Cours"
+msgstr "Mon Cours"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de Mon Activité"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Métriques de base"
+msgstr "Métriques de base"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la Prochaine Activité"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la Prochaine Activité"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la Prochaine Activité"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__display_name
+msgid "Nom"
+msgstr "Nom"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__name
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Nom de la classe"
+msgstr "Nom de la classe"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Nom du cours"
+msgstr "Nom du cours"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__student_count
+msgid "Nombre d'étudiants"
+msgstr "Nombre d'étudiants"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__course_count
+msgid "Nombre de cours"
+msgstr "Nombre de cours"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'Actions"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec erreur de livraison"
+
+#. module: formevo
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__user_type__portal
+msgid "Portail"
+msgstr "Portail"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Progression"
+msgstr "Progression"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Progression %"
+msgstr "Progression %"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_form
+msgid "Progression Globale"
+msgstr "Progression Globale"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Progression des Cours"
+msgstr "Progression des Cours"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/slide_models_inherit.py:0
+#, python-format
+msgid "Progression des Étudiants pour le cours : %s"
+msgstr "Progression des Étudiants pour le cours : %s"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_yonn_course_progress
+msgid "Rapport de Progression agrégée par Apprenant/Cours"
+msgstr "Rapport de Progression agrégée par Apprenant/Cours"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Rechercher Progression"
+msgstr "Rechercher Progression"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Responsable"
+msgstr "Responsable"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__user_id
+msgid "Responsable du Cours"
+msgstr "Responsable du Cours"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur Responsable"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__yonn_role
+msgid "Rôle Yonn eLearning"
+msgstr "Rôle Yonn eLearning"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur de Livraison SMS"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__assigned_course_ids
+msgid "Seuls les cours de l'enseignant responsable sont sélectionnables."
+msgstr "Seuls les cours de l'enseignant responsable sont sélectionnables."
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_slide_slide_partner
+msgid "Slide / Partner decorated m2m"
+msgstr "Relation décorée Slide / Partenaire"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_slide_slide
+msgid "Slides"
+msgstr "Contenus"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_form
+msgid "Statistiques"
+msgstr "Statistiques"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : La date d'échéance est dépassée\n"
+"Aujourd'hui : L'activité est prévue aujourd'hui\n"
+"Planifié : Activités futures."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__student_ids_readonly
+msgid "Student Ids Readonly"
+msgstr "IDs Étudiants Lecture Seule"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#: code:addons/formevo/wizard/course_assign_wizard.py:0
+#, python-format
+msgid "Succès"
+msgstr "Succès"
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.action_teacher_student_progress
+msgid ""
+"Suivez en temps réel la progression de vos étudiants.\n"
+" <br>\n"
+" ✅ Terminés : 100%\n"
+" <br>\n"
+" 🔶 Avancé : 75–99%\n"
+" <br>\n"
+" 🟨 En cours : 25–74%\n"
+" <br>\n"
+" 🔴 Débutant : 1–24%\n"
+" <br>\n"
+" ⚫ Pas commencé : 0%"
+msgstr ""
+"Suivez en temps réel la progression de vos étudiants.\n"
+" <br>\n"
+" ✅ Terminés : 100%\n"
+" <br>\n"
+" 🔶 Avancé : 75–99%\n"
+" <br>\n"
+" 🟨 En cours : 25–74%\n"
+" <br>\n"
+" 🔴 Débutant : 1–24%\n"
+" <br>\n"
+" ⚫ Pas commencé : 0%"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.menu_slide_slide_partner_tracking
+#: model_terms:ir.ui.view,arch_db:formevo.view_slide_slide_partner_tree_tracking
+msgid "Suivi Détaillé"
+msgstr "Suivi Détaillé"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.action_slide_slide_partner_tracking
+msgid "Suivi Détaillé par Contenu"
+msgstr "Suivi Détaillé par Contenu"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.teacher_student_progress_menu
+msgid "Suivi des Étudiants"
+msgstr "Suivi des Étudiants"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Synchronisation Odoo eLearning"
+msgstr "Synchronisation Odoo eLearning"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Synchroniser étudiants et cours"
+msgstr "Synchroniser étudiants et cours"
+
+#. module: formevo
+#: model:ir.module.category,description:formevo.module_category_yonn_elearning
+msgid "Système de droits pour la plateforme eLearning"
+msgstr "Système de droits pour la plateforme eLearning"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Sélection incomplète."
+msgstr "Sélection incomplète."
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Sélectionnez des étudiants"
+msgstr "Sélectionnez des étudiants"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Sélectionnez les étudiants..."
+msgstr "Sélectionnez les étudiants..."
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Sélectionnez un cours"
+msgstr "Sélectionnez un cours"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/wizard/course_assign_wizard.py:0
+#, python-format
+msgid "Sélectionnez un cours à assigner."
+msgstr "Sélectionnez un cours à assigner."
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Sélectionnez un enseignant"
+msgstr "Sélectionnez un enseignant"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Sélectionnez une classe"
+msgstr "Sélectionnez une classe"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__teacher_id_readonly
+msgid "Teacher Id Readonly"
+msgstr "ID Enseignant Lecture Seule"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__formatted_time_spent
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Temps Passé"
+msgstr "Temps Passé"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_slide_slide_partner_tree_tracking
+msgid "Temps Passé (sec)"
+msgstr "Temps Passé (sec)"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__total_time_spent
+msgid "Temps Total (secondes)"
+msgstr "Temps Total (secondes)"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_slide_slide__x_time_limit
+msgid "Temps estimé pour compléter ce contenu."
+msgstr "Temps estimé pour compléter ce contenu."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide_partner__x_time_spent
+msgid "Temps passé (secondes)"
+msgstr "Temps passé (secondes)"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide__name
+msgid "Title"
+msgstr "Titre"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Total"
+msgstr "Total"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__total_slides
+msgid "Total Contenus"
+msgstr "Total Contenus"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__total_enrollments
+msgid "Total inscriptions"
+msgstr "Total inscriptions"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.dashboard_menu
+msgid "Tous les Cours"
+msgstr "Tous les Cours"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__user_type
+msgid "Type d'utilisateur"
+msgstr "Type d'utilisateur"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité d'exception sur l'enregistrement."
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_res_users
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__user_id
+msgid "Utilisateur"
+msgstr "Utilisateur"
+
+#. module: formevo
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__user_type__internal
+msgid "Utilisateur Interne"
+msgstr "Utilisateur Interne"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_search_view
+msgid "Vides"
+msgstr "Vides"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Voir progression"
+msgstr "Voir progression"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du Site Web"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: formevo
+#: model:ir.module.category,name:formevo.module_category_yonn_elearning
+#: model:ir.ui.menu,name:formevo.yonn_elearning_menu_root
+msgid "Yonn eLearning"
+msgstr "Yonn eLearning"
+
+#. module: formevo
+#: model:res.groups,name:formevo.group_yonn_elearning_student
+msgid "Yonn eLearning: Apprenant"
+msgstr "Yonn eLearning: Apprenant"
+
+#. module: formevo
+#: model:res.groups,name:formevo.group_yonn_elearning_director
+msgid "Yonn eLearning: Directeur"
+msgstr "Yonn eLearning: Directeur"
+
+#. module: formevo
+#: model:res.groups,name:formevo.group_yonn_elearning_teacher
+msgid "Yonn eLearning: Enseignant"
+msgstr "Yonn eLearning: Enseignant"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__student_ids
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__student_ids
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_tree_teacher
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+msgid "Étudiants"
+msgstr "Étudiants"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Étudiants de la classe"
+msgstr "Étudiants de la classe"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__total_enrollments
+msgid "Étudiants × cours"
+msgstr "Étudiants × cours"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "⚫ Pas Commencé"
+msgstr "⚫ Pas Commencé"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "✅ Terminés"
+msgstr "✅ Terminés"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "👤 Apprenant"
+msgstr "👤 Apprenant"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "👥 Participants"
+msgstr "👥 Participants"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "👨‍🏫 Enseignant"
+msgstr "👨‍🏫 Enseignant"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "📊 Statistiques détaillées"
+msgstr "📊 Statistiques détaillées"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.action_teacher_student_progress
+msgid "📊 Suivi des Étudiants"
+msgstr "📊 Suivi des Étudiants"
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.action_teacher_student_progress
+msgid "📊 Tableau de Bord de Progression"
+msgstr "📊 Tableau de Bord de Progression"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "📚 Cours"
+msgstr "📚 Cours"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "📚 Informations générales"
+msgstr "📚 Informations générales"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "📝 Activité"
+msgstr "📝 Activité"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "🔴 Débutant (>0%)"
+msgstr "🔴 Débutant (>0%)"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "🔶 Presque Terminé (>75%)"
+msgstr "🔶 Presque Terminé (>75%)"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "🟨 En Cours (>25%)"
+msgstr "🟨 En Cours (>25%)"

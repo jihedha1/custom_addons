@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ========== VUES D'ABORD ========== -->
+        <!-- Tree view sessions -->
+        <record id="view_attendance_session_tree" model="ir.ui.view">
+            <field name="name">lms_presence.attendance_session.tree</field>
+            <field name="model">lms_presence.attendance_session</field>
+            <field name="arch" type="xml">
+                <tree string="Sessions">
+                    <field name="name"/>
+                    <field name="channel_id"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="location"/>
+                    <field name="teacher_id"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state == 'done'"
+                           decoration-warning="state == 'in_progress'"
+                           decoration-info="state == 'confirmed'"
+                           decoration-muted="state == 'draft'"/>
+                    <field name="total_attendees"/>
+                    <field name="present_count"/>
+                    <field name="attendance_rate"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view sessions -->
+        <record id="view_attendance_session_form" model="ir.ui.view">
+            <field name="name">lms_presence.attendance_session.form</field>
+            <field name="model">lms_presence.attendance_session</field>
+            <field name="arch" type="xml">
+                <form string="Session">
+                    <header>
+                        <button name="action_confirm" type="object" string="Confirmer"
+                                class="btn-primary"
+                                invisible="state != 'draft'"/>
+                        <button name="action_start" type="object" string="Démarrer"
+                                class="btn-primary"
+                                invisible="state != 'confirmed'"/>
+                        <button name="action_finish" type="object" string="Terminer"
+                                class="btn-primary"
+                                invisible="state not in ['in_progress', 'confirmed']"/>
+                        <button name="action_cancel" type="object" string="Annuler"
+                                invisible="state in ['done', 'cancelled']"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,in_progress,done"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_regenerate_attendance" type="object"
+                                    class="oe_stat_button" icon="fa-refresh">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">Regénérer présence</span>
+                                </div>
+                            </button>
+
+                            <button class="oe_stat_button" icon="fa-users">
+                                <field string="Participants" name="total_attendees" widget="statinfo"/>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom de la session..."/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Informations générales">
+                                <field name="channel_id"/>
+                                <field name="training_type"/>
+                                <field name="teacher_id"/>
+                                <field name="assistant_ids" widget="many2many_tags"/>
+                                <field name="location"/>
+                            </group>
+                            <group string="Planning">
+                                <field name="date_start"/>
+                                <field name="date_end"/>
+                                <field name="duration_hours" readonly="1"/>
+                                <field name="auto_generate_attendance"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Participants" name="attendees">
+                                <group>
+                                    <field name="attendee_ids" widget="many2many_tags"
+                                           options="{'no_create': True}"
+                                           domain="[('is_training_participant', '=', True)]"/>
+                                </group>
+
+                                <field name="attendance_line_ids">
+                                    <tree editable="bottom">
+                                        <field name="participant_id" readonly="1"/>
+                                        <field name="state" widget="badge"
+                                               decoration-success="state == 'present'"
+                                               decoration-warning="state == 'late'"
+                                               decoration-danger="state == 'absent'"
+                                               decoration-info="state == 'excused'"/>
+                                        <field name="check_in"/>
+                                        <field name="check_out"/>
+                                        <field name="validated_by_participant" widget="boolean"/>
+                                        <field name="validated_by_teacher" widget="boolean"/>
+                                        <field name="has_disability" invisible="1"/>
+                                        <field name="teacher_notes"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="Statistiques" name="stats">
+                                <group>
+                                    <group string="Présence">
+                                        <field name="total_attendees" readonly="1"/>
+                                        <field name="present_count" readonly="1"/>
+                                        <field name="absent_count" readonly="1"/>
+                                        <field name="late_count" readonly="1"/>
+                                        <field name="attendance_rate" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Documents" name="documents">
+                                <field name="attachment_ids" widget="many2many_binary"/>
+                            </page>
+
+                            <page string="Notes" name="notes">
+                                <field name="notes" nolabel="1" placeholder="Notes sur la session..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view sessions -->
+        <record id="view_attendance_session_search" model="ir.ui.view">
+            <field name="name">lms_presence.attendance_session.search</field>
+            <field name="model">lms_presence.attendance_session</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher sessions">
+                    <field name="name"/>
+                    <field name="channel_id"/>
+                    <field name="teacher_id"/>
+                    <field name="location"/>
+
+                    <filter string="Brouillon" name="draft"
+                            domain="[('state', '=', 'draft')]"/>
+                    <filter string="Confirmées" name="confirmed"
+                            domain="[('state', '=', 'confirmed')]"/>
+                    <filter string="En cours" name="in_progress"
+                            domain="[('state', '=', 'in_progress')]"/>
+                    <filter string="Terminées" name="done"
+                            domain="[('state', '=', 'done')]"/>
+
+                    <separator/>
+                    <filter string="Mes sessions" name="my_sessions"
+                            domain="[('teacher_id', '=', uid)]"/>
+
+                    <group expand="0" string="Grouper par">
+                        <filter string="Formation" name="group_by_channel"
+                                context="{'group_by': 'channel_id'}"/>
+                        <filter string="Enseignant" name="group_by_teacher"
+                                context="{'group_by': 'teacher_id'}"/>
+                        <filter string="État" name="group_by_state"
+                                context="{'group_by': 'state'}"/>
+                        <filter string="Type" name="group_by_type"
+                                context="{'group_by': 'training_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- ========== ACTIONS APRÈS LES VUES ========== -->
+        <record id="action_attendance_session" model="ir.actions.act_window">
+            <field name="name">Sessions de formation</field>
+            <field name="res_model">lms_presence.attendance_session</field>
+            <field name="view_mode">tree,form,calendar,pivot,graph</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Aucune session de formation trouvée
+                </p>
+                <p>
+                    Créez une nouvelle session pour gérer la présence des participants.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_attendance_session_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_attendance_session_tree"/>
+            <field name="act_window_id" ref="action_attendance_session"/>
+        </record>
+
+        <record id="action_attendance_session_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_attendance_session_form"/>
+            <field name="act_window_id" ref="action_attendance_session"/>
+        </record>
+
+        <!-- Actions pour menus -->
+        <record id="action_attendance_session_all" model="ir.actions.act_window">
+            <field name="name">Toutes les sessions</field>
+            <field name="res_model">lms_presence.attendance_session</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_attendance_session_search"/>
+            <field name="domain">[]</field>
+        </record>
+
+        <record id="action_my_sessions" model="ir.actions.act_window">
+            <field name="name">Mes sessions</field>
+            <field name="res_model">lms_presence.attendance_session</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('teacher_id', '=', uid)]</field>
+            <field name="search_view_id" ref="view_attendance_session_search"/>
+        </record>
+    </data>
+</odoo>

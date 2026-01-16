@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- TREE VIEW -->
+        <record id="view_yonn_course_progress_tree" model="ir.ui.view">
+            <field name="name">yonn.course.progress.tree</field>
+            <field name="model">yonn.course.progress</field>
+            <field name="arch" type="xml">
+                <tree string="Progression des Cours"
+                      decoration-success="completion_percentage &gt;= 100"
+                      decoration-info="completion_percentage &gt;= 75 and completion_percentage &lt; 100"
+                      decoration-warning="completion_percentage &gt;= 50 and completion_percentage &lt; 75"
+                      decoration-danger="completion_percentage &gt; 0 and completion_percentage &lt; 50"
+                      decoration-muted="completion_percentage == 0">
+                    <field name="partner_id"/>
+                    <field name="course_id"/>
+                    <field name="completion_percentage" widget="progressbar" string="Progression"/>
+                    <field name="completed_slides" string="Complété"/>
+                    <field name="total_slides" string="Total"/>
+                    <field name="formatted_time_spent"  string="Temps Passé"/>
+                    <field name="last_activity" string="Dernière Activité"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- FORM VIEW -->
+        <record id="view_yonn_course_progress_form" model="ir.ui.view">
+            <field name="name">yonn.course.progress.form</field>
+            <field name="model">yonn.course.progress</field>
+            <field name="arch" type="xml">
+                <form string="Détail de Progression">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="display_name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Informations">
+                                <field name="partner_id" readonly="1"/>
+                                <field name="course_id" readonly="1"/>
+                                <field name="user_id" readonly="1"/>
+                            </group>
+                            <group string="Statistiques">
+                                <field name="completion_percentage" widget="progressbar" string="Progression Globale"
+                                       readonly="1"/>
+                                <field name="completed_slides" readonly="1"/>
+                                <field name="total_slides" readonly="1"/>
+                                <field name="formatted_time_spent" readonly="1"/>
+                                <field name="last_activity" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- SEARCH VIEW -->
+        <record id="view_yonn_course_progress_search" model="ir.ui.view">
+            <field name="name">yonn.course.progress.search</field>
+            <field name="model">yonn.course.progress</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Progression">
+                    <field name="partner_id" string="Apprenant"/>
+                    <field name="course_id" string="Cours"/>
+                    <field name="completion_percentage" string="Progression %"/>
+                    <separator/>
+                    <filter name="completed" string="✅ Terminés" domain="[('completion_percentage','=',100)]"/>
+                    <filter name="almost_completed" string="🔶 Presque Terminé (&gt;75%)"
+                            domain="[('completion_percentage','&gt;=',75),('completion_percentage','&lt;',100)]"/>
+                    <filter name="in_progress" string="🟨 En Cours (&gt;25%)"
+                            domain="[('completion_percentage','&gt;=',25),('completion_percentage','&lt;',75)]"/>
+                    <filter name="just_started" string="🔴 Débutant (&gt;0%)"
+                            domain="[('completion_percentage','&gt;',0),('completion_percentage','&lt;',25)]"/>
+                    <filter name="not_started" string="⚫ Pas Commencé" domain="[('completion_percentage','=',0)]"/>
+                    <separator/>
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_by_course" string="📚 Cours" context="{'group_by':'course_id'}"/>
+                        <filter name="group_by_student" string="👤 Apprenant" context="{'group_by':'partner_id'}"/>
+                        <filter name="group_by_teacher" string="👨‍🏫 Enseignant" context="{'group_by':'user_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <!-- ACTION -->
+        <record id="action_teacher_student_progress" model="ir.actions.act_window">
+            <field name="name">📊 Suivi des Étudiants</field>
+            <field name="res_model">yonn.course.progress</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('user_id','=',uid)]</field>
+            <field name="context">{'search_default_group_by_course':1,'search_default_in_progress':1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">📊 Tableau de Bord de Progression</p>
+                <p>
+                    Suivez en temps réel la progression de vos étudiants.
+                    <br/>
+                    ✅ Terminés : 100%
+                    <br/>
+                    🔶 Avancé : 75–99%
+                    <br/>
+                    🟨 En cours : 25–74%
+                    <br/>
+                    🔴 Débutant : 1–24%
+                    <br/>
+                    ⚫ Pas commencé : 0%
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

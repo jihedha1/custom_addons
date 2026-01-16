@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- 1. VUE DU WIZARD PRINCIPAL (MENU) -->
+    <!-- ================================================================== -->
+    <record id="view_ai_main_wizard_form" model="ir.ui.view">
+        <field name="name">ai.main.wizard.form</field>
+        <field name="model">ai.main.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assistant de Génération par IA">
+                <group>
+                    <field name="channel_id" invisible="1"/>
+                    <field name="provider_config_id" widget="radio" options="{'horizontal': true}"/>
+                    <field name="language"/>
+                </group>
+                <p>
+                    Choisissez une action à effectuer pour le cours <b><field name="channel_id" readonly="1" nolabel="1"/></b>.
+                </p>
+                <footer>
+                    <button name="action_launch_summary_wizard" string="Générer un Résumé" type="object" class="btn-primary"/>
+                    <button name="action_launch_quiz_batch_wizard" string="Générer un Quiz Complet" type="object" class="btn-primary"/>
+                    <button name="action_launch_question_targeted_wizard" string="Générer une Question Ciblée" type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACTION POUR OUVRIR LE WIZARD PRINCIPAL -->
+    <record id="action_launch_ai_main_wizard" model="ir.actions.act_window">
+        <field name="name">Générer par IA</field>
+        <field name="res_model">ai.main.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_channel_id': active_id}</field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- 2. VUE DU WIZARD DE RÉSUMÉ -->
+    <!-- ================================================================== -->
+    <record id="view_ai_summary_wizard_form" model="ir.ui.view">
+        <field name="name">ai.summary.wizard.form</field>
+        <field name="model">ai.summary.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Générer un Résumé">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <strong>📝 Générateur de Résumé</strong>
+                        <p>Créez un résumé concis d'un chapitre pour faciliter la révision.</p>
+                    </div>
+
+                    <field name="channel_id" invisible="1"/>
+                    <field name="provider_config_id" invisible="1"/>
+                    <field name="language" invisible="1"/>
+
+                    <group>
+                        <field name="slide_id" options="{'no_create': True}"/>
+                        <field name="length" string="Longueur Maximum (mots)"/>
+                    </group>
+
+                    <div class="alert alert-success mt-3" role="alert">
+                        <strong>ℹ️ À propos de la longueur</strong>
+                        <p>La longueur est exprimée en nombre de mots approximatif.
+                           Une valeur de 200 mots correspond environ à un paragraphe substantiel.</p>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_generate_summary"
+                            string="📚 Générer le Résumé"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- 3. VUE DU WIZARD DE QUIZ PAR LOT (SIMPLIFIÉ) -->
+    <!-- ================================================================== -->
+    <record id="view_ai_quiz_batch_wizard_form" model="ir.ui.view">
+        <field name="name">ai.quiz.batch.wizard.form</field>
+        <field name="model">ai.quiz.batch.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Générer un Quiz par Lot">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <strong>🎓 Générateur de Quiz Intelligent</strong>
+                        <p>Créez un quiz complet en sélectionnant plusieurs chapitres et en définissant la composition souhaitée.</p>
+                    </div>
+
+                    <field name="channel_id" invisible="1"/>
+                    <field name="provider_config_id" invisible="1"/>
+                    <field name="language" invisible="1"/>
+
+                    <group>
+                        <field name="quiz_title" placeholder="Ex: Examen de Mi-Session - Chapitres 1 à 3"/>
+                    </group>
+
+                    <label for="slide_ids"/>
+                    <field name="slide_ids" widget="many2many_tags" options="{'no_create': True}"/>
+
+                    <label for="question_group_lines" class="mt-2"/>
+                    <field name="question_group_lines">
+                        <tree editable="bottom">
+                            <field name="question_type"/>
+                            <field name="count" sum="Total"/>
+                            <field name="difficulty"/>
+                        </tree>
+                    </field>
+
+                    <!-- Exemple de configuration -->
+                    <div class="alert alert-success mt-3" role="alert">
+                        <strong>💡 Exemple de Configuration</strong>
+                        <ul>
+                            <li>10 QCM faciles pour la révision de base</li>
+                            <li>5 Vrai/Faux moyens pour tester la compréhension</li>
+                            <li>3 Questions Ouvertes difficiles pour l'analyse approfondie</li>
+                        </ul>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_generate_quiz"
+                            string="🚀 Générer le Quiz"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- 4. VUE DU WIZARD DE QUESTION CIBLÉE -->
+    <!-- ================================================================== -->
+    <record id="view_ai_question_targeted_wizard_form" model="ir.ui.view">
+        <field name="name">ai.question.targeted.wizard.form</field>
+        <field name="model">ai.question.targeted.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Générer une Question Ciblée">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <strong>🎯 Générateur de Question Ciblée</strong>
+                        <p>Créez une question précise sur un sujet spécifique du chapitre.</p>
+                    </div>
+
+                    <field name="channel_id" invisible="1"/>
+                    <field name="provider_config_id" invisible="1"/>
+                    <field name="language" invisible="1"/>
+
+                    <group>
+                        <group>
+                            <field name="slide_id" options="{'no_create': True}"/>
+                            <field name="question_type" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="difficulty"/>
+                            <field name="focus_on" placeholder="Ex: Le Cycle de Calvin"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-warning mt-3" role="alert">
+                        <strong>💡 Astuce</strong>
+                        <p>Le champ "Sujet Spécifique" permet de cibler précisément un concept.
+                           Laissez-le vide pour une question générale sur tout le chapitre.</p>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_generate_question"
+                            string="✨ Générer la Question"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

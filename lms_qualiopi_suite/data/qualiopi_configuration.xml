@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Configuration Qualiopi par défaut -->
+        <record id="qualiopi_config_default" model="ir.config_parameter">
+            <field name="key">lms_qualiopi.enabled</field>
+            <field name="value">True</field>
+        </record>
+
+        <record id="qualiopi_config_version" model="ir.config_parameter">
+            <field name="key">lms_qualiopi.version</field>
+            <field name="value">V01</field>
+        </record>
+
+        <record id="qualiopi_config_audit_mode" model="ir.config_parameter">
+            <field name="key">lms_qualiopi.audit_mode</field>
+            <field name="value">True</field>
+        </record>
+
+        <!-- Paramètres de conformité -->
+        <record id="qualiopi_config_kpi_refresh" model="ir.config_parameter">
+            <field name="key">lms_qualiopi.kpi_refresh_days</field>
+            <field name="value">30</field>
+        </record>
+
+        <record id="qualiopi_config_document_retention" model="ir.config_parameter">
+            <field name="key">lms_qualiopi.document_retention_years</field>
+            <field name="value">5</field>
+        </record>
+
+        <!-- Paramètres de notifications -->
+        <record id="qualiopi_config_notify_expiry_days" model="ir.config_parameter">
+            <field name="key">lms_qualiopi.notify_expiry_days</field>
+            <field name="value">30</field>
+        </record>
+
+        <record id="qualiopi_config_auto_archive_months" model="ir.config_parameter">
+            <field name="key">lms_qualiopi.auto_archive_months</field>
+            <field name="value">3</field>
+        </record>
+    </data>
+</odoo>

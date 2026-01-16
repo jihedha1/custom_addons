@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue arbre pour les ressources -->
+        <record id="view_resource_management_tree" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.resource_management.tree</field>
+            <field name="model">lms_resources_trainers.resource_management</field>
+            <field name="arch" type="xml">
+                <tree string="Ressources">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="resource_type_id"/>
+                    <field name="location"/>
+                    <field name="capacity"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state=='available'"
+                           decoration-warning="state=='occupied'"
+                           decoration-danger="state=='out_of_service'"/>
+                    <field name="available_for_booking" widget="boolean"/>
+                    <field name="upcoming_bookings"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue formulaire pour les ressources -->
+        <record id="view_resource_management_form" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.resource_management.form</field>
+            <field name="model">lms_resources_trainers.resource_management</field>
+            <field name="arch" type="xml">
+                <form string="Gestion des Ressources">
+                    <header>
+                        <button name="action_make_available" string="Disponible" type="object" class="oe_highlight"
+                                states="maintenance,out_of_service"/>
+                        <button name="action_put_in_maintenance" string="Maintenance" type="object"
+                                states="available" context="{'default_duration_days': 7}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="available,occupied,maintenance,out_of_service"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom de la ressource"/>
+                            </h1>
+                            <div class="o_float_subtitle">
+                                <span class="text-muted">
+                                    <field name="code"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_bookings"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-calendar">
+                                <div class="o_stat_info">
+                                    <field name="upcoming_bookings" widget="statinfo" string="Réservations"/>
+                                </div>
+                            </button>
+                            <button name="%(action_open_resource_booking_wizard)d"
+                                    type="action"
+                                    class="oe_stat_button"
+                                    icon="fa-book"
+                                    context="{'default_resource_id': active_id}">
+                                <div class="o_stat_info">
+                                    <field name="string">Réserver</field>
+                                </div>
+                            </button>
+                            <button name="action_check_availability_wizard"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-check">
+                                <div class="o_stat_info">
+                                    <field name="string">Vérifier dispo</field>
+                                </div>
+                            </button>
+                        </div>
+                        <group>
+                            <group string="Identification">
+                                <field name="resource_type_id" widget="many2one"/>
+                                <field name="code"/>
+                                <field name="available_for_booking"/>
+                                <field name="state" widget="radio" options="{'horizontal': true}"/>
+                            </group>
+                            <group string="Caractéristiques">
+                                <field name="capacity"/>
+                                <field name="location"/>
+                                <field name="building"/>
+                                <field name="floor"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description" widget="html" colspan="4"/>
+                                <field name="technical_specifications" widget="html" colspan="4"/>
+                            </page>
+                            <page string="Équipements">
+                                <field name="equipment_ids" widget="many2many_tags" colspan="4"/>
+                            </page>
+                            <page string="Photos">
+                                <field name="photos_ids" widget="many2many" colspan="4" mode="kanban">
+                                    <kanban>
+                                        <field name="name"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div class="oe_kanban_global_click">
+                                                    <img t-att-src="kanban_image('ir.attachment', 'datas', record.id.raw_value)"
+                                                         class="img-fluid" alt="Photo ressource"/>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                            <page string="Maintenance">
+                                <group>
+                                    <group>
+                                        <field name="maintenance_schedule"/>
+                                        <field name="last_maintenance_date"/>
+                                        <field name="next_maintenance_date"/>
+                                    </group>
+                                    <group>
+                                        <field name="maintenance_notes" widget="text" nolabel="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Réservations">
+                                <field name="booking_ids" colspan="4" nolabel="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="requester_id"/>
+                                        <field name="start_date"/>
+                                        <field name="end_date"/>
+                                        <field name="state" widget="badge"/>
+                                        <field name="purpose"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue recherche -->
+        <record id="view_resource_management_search" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.resource_management.search</field>
+            <field name="model">lms_resources_trainers.resource_management</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher ressource">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="resource_type_id"/>
+                    <field name="location"/>
+                    <filter name="available" string="Disponibles" domain="[('state','=','available')]"/>
+                    <filter name="bookable" string="Réservables" domain="[('available_for_booking','=',True)]"/>
+                    <filter name="in_maintenance" string="En maintenance" domain="[('state','=','maintenance')]"/>
+                    <separator/>
+                    <filter name="group_by_type" string="Grouper par type" context="{'group_by': 'resource_type_id'}"/>
+                    <filter name="group_by_location" string="Grouper par localisation" context="{'group_by': 'location'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action pour les ressources -->
+        <record id="action_resource_management" model="ir.actions.act_window">
+            <field name="name">Ressources</field>
+            <field name="res_model">lms_resources_trainers.resource_management</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_resource_management_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Gérez ici les salles, équipements et autres ressources pédagogiques.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

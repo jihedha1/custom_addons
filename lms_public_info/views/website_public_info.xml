@@ -1,0 +1,2061 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="formation_public_page" name="Formation - Fiche Publique">
+            <t t-call="website.layout">
+
+                <!-- Hero Section avec image ou dégradé -->
+                <t t-if="channel.image_1920">
+                    <section class="position-relative" style="padding: 80px 0 60px;">
+                        <!-- Image de fond avec overlay -->
+                        <div class="position-absolute top-0 left-0 w-100 h-100"
+                             style="z-index: -1; overflow: hidden;">
+                            <img t-att-src="'/web/image/slide.channel/' + str(channel.id) + '/image_1920'"
+                                 alt=""
+                                 class="w-100 h-100"
+                                 style="object-fit: cover; filter: brightness(0.3);"/>
+                            <div class="position-absolute top-0 left-0 w-100 h-100"
+                                 style="background: linear-gradient(135deg, rgba(9, 23, 30, 0.85) 0%, rgba(27, 62, 65, 0.8) 50%, rgba(43, 101, 89, 0.7) 100%);"></div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-8">
+                                    <!-- Breadcrumb -->
+                                    <nav aria-label="breadcrumb" class="mb-3">
+                                        <ol class="breadcrumb bg-transparent p-0 mb-2"
+                                            style="background: transparent !important;">
+                                            <li class="breadcrumb-item">
+                                                <a href="/formations/catalogue" class="text-white"
+                                                   style="opacity: 0.8;">
+                                                    <i class="fa fa-home mr-1"></i>
+                                                    Catalogue
+                                                </a>
+                                            </li>
+                                            <li class="breadcrumb-item active text-white" aria-current="page"
+                                                style="opacity: 0.9;">
+                                                <t t-esc="channel.name"/>
+                                            </li>
+                                        </ol>
+                                    </nav>
+
+                                    <!-- Titre -->
+                                    <h1 class="display-4 font-weight-bold mb-3"
+                                        style="color: #FFFFFF; text-shadow: 0 2px 4px rgba(0,0,0,0.3); opacity: 0.98;">
+                                        <t t-esc="channel.name"/>
+                                    </h1>
+
+                                    <!-- Badges améliorés -->
+                                    <div class="mb-4">
+                                        <span class="badge badge-pill px-3 py-2 mr-2 mb-2"
+                                              style="background: rgba(122, 247, 167, 0.9); color: #FFFFFF; font-size: 14px; font-weight: 600; border: 1px solid rgba(122, 247, 167, 0.3);">
+                                            <i class="fa fa-graduation-cap mr-1"></i>
+                                            <t t-esc="dict(channel._fields['training_modality'].selection).get(channel.training_modality) or 'Formation'"/>
+                                        </span>
+
+                                        <t t-if="channel.difficulty_level">
+                                            <span class="badge badge-pill px-3 py-2 mr-2 mb-2"
+                                                  style="background: rgba(33, 86, 74, 0.9); color: white; font-size: 14px; font-weight: 600; border: 1px solid rgba(255,255,255,0.2);">
+                                                <i class="fa fa-signal mr-1"></i>
+                                                <t t-esc="dict(channel._fields['difficulty_level'].selection).get(channel.difficulty_level)"/>
+                                            </span>
+                                        </t>
+
+                                        <t t-if="channel.total_duration_hours">
+                                            <span class="badge badge-pill px-3 py-2 mb-2"
+                                                  style="background: rgba(3, 31, 45, 0.9); color: white; font-size: 14px; font-weight: 600; border: 1px solid rgba(255,255,255,0.2);">
+                                                <i class="fa fa-clock-o mr-1"></i>
+                                                <t t-esc="int(channel.total_duration_hours)"/>
+                                                heures
+                                            </span>
+                                        </t>
+                                    </div>
+
+                                    <!-- Description courte avec couleur améliorée -->
+                                    <t t-if="channel.description">
+                                        <p class="lead mb-0"
+                                           style="font-size: 18px; line-height: 1.7; color: #F0F8FF; opacity: 0.95;">
+                                            <t t-esc="channel.description[:200] + '...' if len(str(channel.description)) > 200 else channel.description"/>
+                                        </p>
+                                    </t>
+                                </div>
+
+                                <!-- CTA Principal amélioré -->
+                                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                                    <div class="card border-0 shadow-lg"
+                                         style="border-radius: 20px; overflow: hidden; border: 2px solid rgba(122, 247, 167, 0.3);">
+                                        <div class="card-body p-4"
+                                             style="background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px);">
+                                            <t t-if="channel.price and channel.price > 0">
+                                                <div class="mb-3">
+                                                    <span class="text-muted"
+                                                          style="font-size: 14px; letter-spacing: 1px;">À partir
+                                                        de
+                                                    </span>
+                                                    <h2 class="display-4 font-weight-bold mb-0"
+                                                        style="color: #2B6559; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                                        <t t-esc="int(channel.price)"/>€
+                                                    </h2>
+                                                    <span class="text-muted" style="font-size: 12px;">HT par
+                                                        participant
+                                                    </span>
+                                                </div>
+                                            </t>
+
+                                            <div class="mt-3">
+                                                <t t-if="channel.appointment_available">
+                                                    <a t-attf-href="/formation/rdv/#{channel.id}"
+                                                       class="btn btn-lg btn-block mb-3 shadow"
+                                                       style="background: linear-gradient(135deg, #2B6559, #7AF7A7); color: white; border: none; border-radius: 12px; padding: 16px; font-weight: 700; transition: all 0.3s;">
+                                                        <i class="fa fa-calendar-check-o mr-2"></i>
+                                                        Prendre rendez-vous
+                                                    </a>
+                                                </t>
+
+                                                <a t-attf-href="/formation/rdv/#{channel.id}"
+                                                   class="btn btn-outline-primary btn-block"
+                                                   style="border-radius: 12px; padding: 14px; border: 2px solid #2B6559; color: #2B6559; font-weight: 600;">
+                                                    <i class="fa fa-envelope mr-2"></i>
+                                                    Demander Un RDV
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </t>
+                <t t-else="">
+                    <section
+                            style="padding: 80px 0 60px; background: linear-gradient(135deg, #09171E 0%, #1B3E41 50%, #2B6559 100%);">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-8">
+                                    <!-- Breadcrumb -->
+                                    <nav aria-label="breadcrumb" class="mb-3">
+                                        <ol class="breadcrumb bg-transparent p-0 mb-2"
+                                            style="background: transparent !important;">
+                                            <li class="breadcrumb-item">
+                                                <a href="/formations/catalogue" style="color: #7AF7A7;">
+                                                    <i class="fa fa-home mr-1"></i>
+                                                    Catalogue
+                                                </a>
+                                            </li>
+                                            <li class="breadcrumb-item active text-white" aria-current="page">
+                                                <t t-esc="channel.name"/>
+                                            </li>
+                                        </ol>
+                                    </nav>
+
+                                    <!-- Titre -->
+                                    <h1 class="display-4 font-weight-bold mb-3"
+                                        style="color: #FFFFFF; opacity: 0.98;">
+                                        <t t-esc="channel.name"/>
+                                    </h1>
+
+                                    <!-- Badges avec texte blanc -->
+                                    <div class="mb-4">
+                                        <span class="badge badge-pill px-3 py-2 mr-2"
+                                              style="background: #7AF7A7; color: #FFFFFF; font-size: 14px; font-weight: 600;">
+                                            <i class="fa fa-graduation-cap mr-1"></i>
+                                            <t t-esc="dict(channel._fields['training_modality'].selection).get(channel.training_modality) or 'Formation'"/>
+                                        </span>
+
+                                        <t t-if="channel.difficulty_level">
+                                            <span class="badge badge-pill px-3 py-2 mr-2"
+                                                  style="background: #21564A; color: white; font-size: 14px; font-weight: 600;">
+                                                <i class="fa fa-signal mr-1"></i>
+                                                <t t-esc="dict(channel._fields['difficulty_level'].selection).get(channel.difficulty_level)"/>
+                                            </span>
+                                        </t>
+
+                                        <t t-if="channel.total_duration_hours">
+                                            <span class="badge badge-pill px-3 py-2"
+                                                  style="background: #031F2D; color: white; font-size: 14px; font-weight: 600;">
+                                                <i class="fa fa-clock-o mr-1"></i>
+                                                <t t-esc="int(channel.total_duration_hours)"/>
+                                                heures
+                                            </span>
+                                        </t>
+                                    </div>
+
+                                    <!-- Description courte améliorée -->
+                                    <t t-if="channel.description">
+                                        <p class="lead mb-0"
+                                           style="font-size: 18px; line-height: 1.7; color: #E0F7EA; opacity: 0.9;">
+                                            <t t-esc="channel.description[:200] + '...' if len(str(channel.description)) > 200 else channel.description"/>
+                                        </p>
+                                    </t>
+                                </div>
+
+                                <!-- CTA Principal -->
+                                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                                    <div class="card border-0 shadow-lg"
+                                         style="border-radius: 20px; overflow: hidden;">
+                                        <div class="card-body p-4" style="background: white;">
+                                            <t t-if="channel.price and channel.price > 0">
+                                                <div class="mb-3">
+                                                    <span class="text-muted"
+                                                          style="font-size: 14px; letter-spacing: 1px;">À partir
+                                                        de
+                                                    </span>
+                                                    <h2 class="display-4 font-weight-bold mb-0"
+                                                        style="color: #2B6559;">
+                                                        <t t-esc="int(channel.price)"/>€
+                                                    </h2>
+                                                    <span class="text-muted" style="font-size: 12px;">HT par
+                                                        participant
+                                                    </span>
+                                                </div>
+                                            </t>
+
+                                            <div class="mt-3">
+                                                <t t-if="channel.appointment_available">
+                                                    <a t-attf-href="/formation/rdv/#{channel.id}"
+                                                       class="btn btn-lg btn-block mb-3 shadow"
+                                                       style="background: linear-gradient(135deg, #2B6559, #7AF7A7); color: white; border: none; border-radius: 12px; padding: 16px; font-weight: 700;">
+                                                        <i class="fa fa-calendar-check-o mr-2"></i>
+                                                        Prendre rendez-vous
+                                                    </a>
+                                                </t>
+
+                                                <a t-attf-href="/formation/rdv/#{channel.id}"
+                                                   class="btn btn-outline-secondary btn-block"
+                                                   style="border-radius: 12px; padding: 14px; font-weight: 600;">
+                                                    <i class="fa fa-envelope mr-2"></i>
+                                                    Demander Un RDV
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </t>
+
+                <!-- Navigation interne sticky améliorée -->
+                <nav class="sticky-top"
+                     style="z-index: 100; background: linear-gradient(135deg, #09171E, #1B3E41); box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                    <div class="container">
+                        <div class="d-flex justify-content-center py-2">
+                            <div class="d-flex flex-wrap justify-content-center" style="gap: 8px;">
+                                <a class="btn d-flex align-items-center" href="#objectifs"
+                                   style="border-radius: 25px; padding: 10px 20px; background: rgba(122, 247, 167, 0.1); color: #7AF7A7; border: 1px solid rgba(122, 247, 167, 0.3); font-weight: 500;">
+                                    <i class="fa fa-bullseye mr-2"></i>
+                                    <span>Objectifs</span>
+                                </a>
+                                <a class="btn d-flex align-items-center" href="#public"
+                                   style="border-radius: 25px; padding: 10px 20px; background: rgba(122, 247, 167, 0.1); color: #7AF7A7; border: 1px solid rgba(122, 247, 167, 0.3); font-weight: 500;">
+                                    <i class="fa fa-users mr-2"></i>
+                                    <span>Public cible</span>
+                                </a>
+                                <a class="btn d-flex align-items-center" href="#programme"
+                                   style="border-radius: 25px; padding: 10px 20px; background: rgba(122, 247, 167, 0.1); color: #7AF7A7; border: 1px solid rgba(122, 247, 167, 0.3); font-weight: 500;">
+                                    <i class="fa fa-list-ul mr-2"></i>
+                                    <span>Programme</span>
+                                </a>
+                                <a class="btn d-flex align-items-center" href="#modalites"
+                                   style="border-radius: 25px; padding: 10px 20px; background: rgba(122, 247, 167, 0.1); color: #7AF7A7; border: 1px solid rgba(122, 247, 167, 0.3); font-weight: 500;">
+                                    <i class="fa fa-cogs mr-2"></i>
+                                    <span>Modalités</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Contenu principal -->
+                <div class="container my-5">
+                    <div class="row">
+                        <!-- Colonne principale -->
+                        <div class="col-lg-8">
+
+                            <!-- Objectifs pédagogiques amélioré avec décalage à droite -->
+                            <section id="objectifs" class="mb-5" style="scroll-margin-top: 120px;">
+                                <div class="card border-0 shadow-sm"
+                                     style="border-radius: 20px; overflow: hidden; border-left: 5px solid #2B6559;">
+                                    <div class="card-header border-0 py-4 d-flex align-items-center"
+                                         style="background: linear-gradient(135deg, rgba(43, 101, 89, 0.1), rgba(27, 62, 65, 0.05));">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center mr-4"
+                                             style="width: 50px; height: 50px; background: #2B6559; margin-right: 20px !important;">
+                                            <i class="fa fa-bullseye"
+                                               style="color: white; font-size: 22px;"></i>
+                                        </div>
+                                        <div style="padding-left: 10px;">
+                                            <h3 class="mb-0" style="color: #09171E; font-weight: 700;">Objectifs
+                                                pédagogiques
+                                            </h3>
+                                            <small class="text-muted">Ce que vous allez apprendre et maîtriser
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-4" style="background: #f8f9fa;">
+                                        <t t-if="channel.learning_objectives">
+                                            <div class="learning-objectives" t-raw="channel.learning_objectives"
+                                                 style="font-size: 16px; line-height: 1.8; color: #1B3E41; padding-left: 10px;"></div>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="text-center py-3">
+                                                <i class="fa fa-book mb-3"
+                                                   style="font-size: 48px; color: #ccc;"></i>
+                                                <h5 class="text-muted">Objectifs en cours de définition</h5>
+                                                <p class="text-muted">Les objectifs pédagogiques seront
+                                                    communiqués prochainement.
+                                                </p>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Public cible & Prérequis améliorés avec décalage à droite -->
+                            <section id="public" class="mb-5" style="scroll-margin-top: 120px;">
+                                <div class="row">
+                                    <!-- Public cible -->
+                                    <div class="col-md-6 mb-4 mb-md-0">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-radius: 15px; overflow: hidden; border-top: 4px solid #7AF7A7;">
+                                            <div class="card-header border-0 py-3 d-flex align-items-center"
+                                                 style="background: rgba(122, 247, 167, 0.1);">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center mr-4"
+                                                     style="width: 40px; height: 40px; background: #7AF7A7; margin-right: 20px !important;">
+                                                    <i class="fa fa-users"
+                                                       style="color: #09171E; font-size: 18px;"></i>
+                                                </div>
+                                                <div style="padding-left: 8px;">
+                                                    <h5 class="mb-0" style="color: #09171E; font-weight: 600;">
+                                                        Public cible
+                                                    </h5>
+                                                    <small class="text-muted">À qui s'adresse cette formation
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <div class="d-flex align-items-start">
+                                                    <i class="fa fa-check-circle mr-2 mt-1"
+                                                       style="color: #2B6559; font-size: 18px;"></i>
+                                                    <div style="padding-left: 5px;">
+                                                        <t t-if="channel.target_audience">
+                                                            <div t-raw="channel.target_audience"
+                                                                 style="font-size: 15px; line-height: 1.7; color: #1B3E41;"></div>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p class="mb-0" style="color: #1B3E41;">
+                                                                Cette formation s'adresse à tout public
+                                                                intéressé par le sujet,
+                                                                sans exigence de niveau préalable spécifique.
+                                                            </p>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Prérequis -->
+                                    <div class="col-md-6">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-radius: 15px; overflow: hidden; border-top: 4px solid #2B6559;">
+                                            <div class="card-header border-0 py-3 d-flex align-items-center"
+                                                 style="background: rgba(43, 101, 89, 0.1);">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center mr-4"
+                                                     style="width: 40px; height: 40px; background: #2B6559; margin-right: 20px !important;">
+                                                    <i class="fa fa-check-circle"
+                                                       style="color: white; font-size: 18px;"></i>
+                                                </div>
+                                                <div style="padding-left: 8px;">
+                                                    <h5 class="mb-0" style="color: #09171E; font-weight: 600;">
+                                                        Prérequis
+                                                    </h5>
+                                                    <small class="text-muted">Ce qu'il faut savoir avant de
+                                                        commencer
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <div class="d-flex align-items-start">
+                                                    <i class="fa fa-info-circle mr-2 mt-1"
+                                                       style="color: #2B6559; font-size: 18px;"></i>
+                                                    <div style="padding-left: 5px;">
+                                                        <t t-if="channel.prerequisites">
+                                                            <div t-raw="channel.prerequisites"
+                                                                 style="font-size: 15px; line-height: 1.7; color: #1B3E41;"></div>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <p class="mb-0" style="color: #1B3E41;">
+                                                                Aucun prérequis spécifique n'est nécessaire pour
+                                                                suivre cette formation.
+                                                                Une curiosité et une motivation pour le sujet
+                                                                sont les bienvenues.
+                                                            </p>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Programme amélioré avec bulles numérotées et décalage à droite -->
+                            <section id="programme" class="mb-5" style="scroll-margin-top: 120px;">
+                                <div class="card border-0 shadow-sm"
+                                     style="border-radius: 20px; overflow: hidden;">
+                                    <div class="card-header border-0 py-4 d-flex align-items-center"
+                                         style="background: linear-gradient(135deg, #1B3E41, #274B4C);">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center mr-4"
+                                             style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); margin-right: 20px !important;">
+                                            <i class="fa fa-list-ul"
+                                               style="color: #7AF7A7; font-size: 22px;"></i>
+                                        </div>
+                                        <div style="padding-left: 10px;">
+                                            <h3 class="mb-0 text-white">Programme détaillé</h3>
+                                            <small class="text-white-50">Le parcours complet de la formation
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-4" style="background: #f8f9fa;">
+                                        <t t-if="channel.slide_ids">
+                                            <div class="programme-timeline">
+                                                <t t-foreach="channel.slide_ids" t-as="slide">
+                                                    <div class="timeline-item mb-4"
+                                                         t-att-data-index="slide_index + 1">
+                                                        <div class="timeline-marker">
+                                                            <div class="marker-circle"
+                                                                 style="background: #7AF7A7; color: #09171E; font-weight: 700;">
+                                                                <t t-esc="slide_index + 1"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="timeline-content"
+                                                             style="padding-left: 25px;">
+                                                            <div style="background: white; border-radius: 10px; padding: 20px; border-left: 4px solid #2B6559;">
+                                                                <h6 class="mb-2"
+                                                                    style="color: #1B3E41; font-weight: 700;">
+                                                                    <t t-esc="slide.name"/>
+                                                                </h6>
+                                                                <t t-if="slide.description">
+                                                                    <p class="mb-0 text-muted"
+                                                                       style="line-height: 1.6; font-size: 15px;">
+                                                                        <t t-esc="str(slide.description)[:200]"/>
+                                                                        <t t-if="len(str(slide.description)) > 200">
+                                                                            ...
+                                                                        </t>
+                                                                    </p>
+                                                                </t>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="text-center py-4">
+                                                <i class="fa fa-list-alt mb-3"
+                                                   style="font-size: 48px; color: #ccc;"></i>
+                                                <h5 class="text-muted">Programme en cours de finalisation</h5>
+                                                <p class="text-muted mb-0">Le programme détaillé sera communiqué
+                                                    prochainement.
+                                                </p>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Modalités améliorées avec décalage à droite -->
+                            <section id="modalites" class="mb-5" style="scroll-margin-top: 120px;">
+                                <div class="card border-0 shadow-sm"
+                                     style="border-radius: 20px; overflow: hidden;">
+                                    <div class="card-header border-0 py-4 d-flex align-items-center"
+                                         style="background: linear-gradient(135deg, #031F2D, #09171E);">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center mr-4"
+                                             style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); margin-right: 20px !important;">
+                                            <i class="fa fa-cogs" style="color: #7AF7A7; font-size: 22px;"></i>
+                                        </div>
+                                        <div style="padding-left: 10px;">
+                                            <h3 class="mb-0 text-white">Modalités de formation</h3>
+                                            <small class="text-white-50">Comment se déroule la formation</small>
+                                        </div>
+                                    </div>
+                                    <div class="card-body p-4" style="background: #f8f9fa;">
+                                        <t t-if="channel.modality_details">
+                                            <div class="modality-details" t-raw="channel.modality_details"
+                                                 style="font-size: 16px; line-height: 1.8; color: #1B3E41; padding-left: 10px;"></div>
+                                        </t>
+                                        <t t-elif="channel.description">
+                                            <div class="modality-details" t-raw="channel.description"
+                                                 style="font-size: 16px; line-height: 1.8; color: #1B3E41; padding-left: 10px;"></div>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="text-center py-3">
+                                                <i class="fa fa-info-circle mb-3"
+                                                   style="font-size: 48px; color: #ccc;"></i>
+                                                <h5 class="text-muted">Modalités à définir</h5>
+                                                <p class="text-muted">Les modalités seront précisées lors de
+                                                    votre rendez-vous avec notre équipe pédagogique.
+                                                </p>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </section>
+
+                        </div>
+
+                        <!-- Sidebar améliorée -->
+                        <div class="col-lg-4">
+                            <!-- Informations pratiques statiques (sans sticky) -->
+                            <div class="card border-0 shadow-lg mb-4"
+                                 style="border-radius: 20px; overflow: hidden; border: 1px solid rgba(122, 247, 167, 0.2); background: linear-gradient(135deg, #f8f9fa, #ffffff);">
+                                <div class="card-header border-0 py-4"
+                                     style="background: linear-gradient(135deg, #09171E, #1B3E41);">
+                                    <h5 class="mb-0 text-white d-flex align-items-center">
+                                        <i class="fa fa-info-circle mr-3"
+                                           style="color: #7AF7A7; font-size: 22px;"></i>
+                                        Informations pratiques
+                                    </h5>
+                                </div>
+                                <div class="card-body p-4">
+
+                                    <!-- Durée avec décalage à droite -->
+                                    <t t-if="channel.total_duration_hours">
+                                        <div class="info-item mb-4 pb-3 border-bottom"
+                                             style="border-color: rgba(122, 247, 167, 0.3) !important;">
+                                            <div class="d-flex align-items-center">
+                                                <div style="margin-right: 20px;">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width: 50px; height: 50px; background: rgba(122, 247, 167, 0.15);">
+                                                        <i class="fa fa-hourglass-half"
+                                                           style="color: #2B6559; font-size: 22px;"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="text-muted small text-uppercase mb-1"
+                                                         style="letter-spacing: 1px;">Durée
+                                                    </div>
+                                                    <div class="h4 mb-0"
+                                                         style="color: #2B6559; font-weight: 700;">
+                                                        <t t-esc="int(channel.total_duration_hours)"/>h
+                                                    </div>
+                                                    <t t-if="channel.duration_days">
+                                                        <div class="small text-muted">
+                                                            <i class="fa fa-calendar mr-1"></i>
+                                                            <t t-esc="channel.duration_days"/>
+                                                            jour(s) de formation
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Prix avec décalage à droite -->
+                                    <t t-if="channel.price and channel.price > 0">
+                                        <div class="info-item mb-4 pb-3 border-bottom"
+                                             style="border-color: rgba(122, 247, 167, 0.3) !important;">
+                                            <div class="d-flex align-items-center">
+                                                <div style="margin-right: 20px;">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width: 50px; height: 50px; background: rgba(43, 101, 89, 0.15);">
+                                                        <i class="fa fa-euro"
+                                                           style="color: #2B6559; font-size: 22px;"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="text-muted small text-uppercase mb-1"
+                                                         style="letter-spacing: 1px;">Tarif HT
+                                                    </div>
+                                                    <div class="h3 mb-0"
+                                                         style="color: #2B6559; font-weight: 700;">
+                                                        <t t-esc="int(channel.price)"/>€
+                                                    </div>
+                                                    <div class="small text-muted">
+                                                        <i class="fa fa-user mr-1"></i>
+                                                        Par participant • Inter-entreprise
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Modalité avec décalage à droite -->
+                                    <t t-if="channel.training_modality">
+                                        <div class="info-item mb-4 pb-3 border-bottom"
+                                             style="border-color: rgba(122, 247, 167, 0.3) !important;">
+                                            <div class="d-flex align-items-center">
+                                                <div style="margin-right: 20px;">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width: 50px; height: 50px; background: rgba(39, 75, 76, 0.15);">
+                                                        <i class="fa fa-laptop"
+                                                           style="color: #274B4C; font-size: 22px;"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="text-muted small text-uppercase mb-1"
+                                                         style="letter-spacing: 1px;">Modalité
+                                                    </div>
+                                                    <div class="h5 mb-0"
+                                                         style="color: #1B3E41; font-weight: 600;">
+                                                        <t t-esc="dict(channel._fields['training_modality'].selection).get(channel.training_modality)"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Compétences formateur avec décalage à droite -->
+                                    <t t-if="channel.trainer_competency_ids">
+                                        <div class="info-item mb-4 pb-3 border-bottom"
+                                             style="border-color: rgba(122, 247, 167, 0.3) !important;">
+                                            <div class="d-flex align-items-start">
+                                                <div style="margin-right: 20px;">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width: 50px; height: 50px; background: rgba(122, 247, 167, 0.15);">
+                                                        <i class="fa fa-graduation-cap"
+                                                           style="color: #2B6559; font-size: 20px;"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="text-muted small text-uppercase mb-2"
+                                                         style="letter-spacing: 1px;">Compétences formateur
+                                                    </div>
+                                                    <div>
+                                                        <t t-foreach="channel.trainer_competency_ids"
+                                                           t-as="competency">
+                                                            <span class="badge badge-pill mr-1 mb-1 d-inline-flex align-items-center"
+                                                                  style="background: rgba(122, 247, 167, 0.15); color: #09171E; border: 1px solid rgba(122, 247, 167, 0.3); padding: 6px 12px; font-weight: 500;">
+                                                                <i class="fa fa-check-circle mr-1"
+                                                                   style="font-size: 12px;"></i>
+                                                                <t t-esc="competency.name"/>
+                                                            </span>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Accessibilité avec décalage à droite -->
+                                    <t t-if="channel.accessibility_info">
+                                        <div class="info-item">
+                                            <div class="d-flex align-items-start">
+                                                <div style="margin-right: 20px;">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width: 50px; height: 50px; background: rgba(3, 31, 45, 0.15);">
+                                                        <i class="fa fa-wheelchair"
+                                                           style="color: #031F2D; font-size: 22px;"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="text-muted small text-uppercase mb-2"
+                                                         style="letter-spacing: 1px;">Accessibilité
+                                                    </div>
+                                                    <div class="small" t-raw="channel.accessibility_info"
+                                                         style="color: #1B3E41; line-height: 1.6;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                </div>
+                            </div>
+
+                            <!-- CTA secondaire amélioré -->
+                            <div class="card border-0 shadow-sm"
+                                 style="border-radius: 20px; overflow: hidden; background: linear-gradient(135deg, #09171E, #1B3E41); border: 2px solid rgba(122, 247, 167, 0.5);">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-3">
+                                        <i class="fa fa-question-circle"
+                                           style="font-size: 52px; color: #7AF7A7; opacity: 1;"></i>
+                                    </div>
+                                    <h5 class="mb-2"
+                                        style="font-size: 1.5rem; font-weight: 700; opacity: 1; color :#2B6559;">Une
+                                        question ?
+                                    </h5>
+                                    <p class="mb-4"
+                                       style="font-size: 0.95rem; line-height: 1.5; color :#2B6559;opacity: 0.95;">
+                                        Notre équipe pédagogique est à votre écoute pour vous conseiller.
+                                    </p>
+                                    <a href="/contactus"
+                                       class="btn btn-lg btn-block d-flex align-items-center justify-content-center"
+                                       style="background: #7AF7A7; color: #09171E; border: none; border-radius: 12px; padding: 16px; font-weight: 700; transition: all 0.3s; box-shadow: 0 4px 15px rgba(122, 247, 167, 0.3);">
+                                        <i class="fa fa-envelope mr-2" style="font-size: 1.1rem;"></i>
+                                        Nous contacter
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Styles CSS améliorés -->
+                <style>
+                    /* Styles globaux améliorés */
+                    body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    }
+
+                    /* Navigation améliorée */
+                    .sticky-top nav .btn {
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    }
+
+                    .sticky-top nav .btn:hover {
+                    background: rgba(122, 247, 167, 0.25) !important;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(122, 247, 167, 0.3);
+                    }
+
+                    /* Cartes améliorées */
+                    .card {
+                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    border: none;
+                    }
+
+                    .card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 15px 35px rgba(9, 23, 30, 0.15) !important;
+                    }
+
+                    /* Programme timeline avec bulles numérotées */
+                    .programme-timeline {
+                    position: relative;
+                    padding-left: 60px;
+                    }
+
+                    .programme-timeline::before {
+                    content: '';
+                    position: absolute;
+                    left: 25px;
+                    top: 0;
+                    bottom: 0;
+                    width: 3px;
+                    background: linear-gradient(to bottom, #7AF7A7, #2B6559);
+                    border-radius: 3px;
+                    }
+
+                    .timeline-item {
+                    position: relative;
+                    display: flex;
+                    align-items: flex-start;
+                    margin-bottom: 30px;
+                    }
+
+                    .timeline-marker {
+                    position: absolute;
+                    left: -35px;
+                    top: 0;
+                    z-index: 2;
+                    }
+
+                    .marker-circle {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    font-size: 18px;
+                    background: #7AF7A7;
+                    color: #09171E;
+                    border: 3px solid white;
+                    box-shadow: 0 4px 15px rgba(122, 247, 167, 0.3);
+                    }
+
+                    .timeline-content {
+                    flex: 1;
+                    }
+
+                    /* Badges améliorés */
+                    .badge {
+                    font-weight: 600;
+                    letter-spacing: 0.5px;
+                    transition: all 0.3s ease;
+                    }
+
+                    .badge:hover {
+                    transform: scale(1.05);
+                    }
+
+                    /* Sections avec scroll-margin */
+                    section[id] {
+                    scroll-margin-top: 120px;
+                    }
+
+                    /* Amélioration des icônes dans les cartes */
+                    .info-item {
+                    transition: all 0.3s ease;
+                    }
+
+                    .info-item:hover {
+                    transform: translateX(5px);
+                    }
+
+                    /* Responsive amélioré */
+                    @media (max-width: 991.98px) {
+                    .display-4 {
+                    font-size: 2.2rem !important;
+                    }
+
+                    .card-body {
+                    padding: 1.5rem !important;
+                    }
+
+                    /* Navigation mobile */
+                    .sticky-top nav .d-flex {
+                    overflow-x: auto;
+                    flex-wrap: nowrap;
+                    justify-content: flex-start !important;
+                    padding-bottom: 10px;
+                    }
+
+                    .sticky-top nav .btn span {
+                    font-size: 14px;
+                    }
+
+                    /* Timeline ajustée sur mobile */
+                    .programme-timeline {
+                    padding-left: 50px;
+                    }
+
+                    .programme-timeline::before {
+                    left: 20px;
+                    }
+
+                    .timeline-marker {
+                    left: -30px;
+                    }
+
+                    .marker-circle {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 16px;
+                    }
+                    }
+
+                    @media (max-width: 767.98px) {
+                    .display-4 {
+                    font-size: 1.8rem !important;
+                    }
+
+                    .lead {
+                    font-size: 1.1rem !important;
+                    }
+
+                    .programme-timeline {
+                    padding-left: 40px;
+                    }
+
+                    .programme-timeline::before {
+                    left: 15px;
+                    }
+
+                    .timeline-marker {
+                    left: -25px;
+                    }
+
+                    .marker-circle {
+                    width: 35px;
+                    height: 35px;
+                    font-size: 14px;
+                    }
+                    }
+
+                    /* Animation douce pour le scroll */
+                    html {
+                    scroll-behavior: smooth;
+                    }
+
+                    /* Amélioration des titres */
+                    h1, h2, h3, h4, h5, h6 {
+                    font-weight: 700;
+                    line-height: 1.3;
+                    }
+
+                    /* Amélioration des paragraphes */
+                    p, .lead {
+                    line-height: 1.7;
+                    }
+
+                    /* Effet de surbrillance sur les boutons */
+                    .btn:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+                    }
+
+                    /* Animations subtiles */
+                    @keyframes fadeInUp {
+                    from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                    }
+                    to {
+                    opacity: 1;
+                    transform: translateY(0);
+                    }
+                    }
+
+                    .card, .info-item, .timeline-item {
+                    animation: fadeInUp 0.6s ease-out;
+                    }
+
+                    /* Couleurs cohérentes avec la charte */
+                    .text-primary {
+                    color: #2B6559 !important;
+                    }
+
+                    .bg-primary {
+                    background-color: #2B6559 !important;
+                    }
+
+                    .border-primary {
+                    border-color: #2B6559 !important;
+                    }
+
+                    .text-accent {
+                    color: #7AF7A7 !important;
+                    }
+
+                    .bg-accent {
+                    background-color: #7AF7A7 !important;
+                    }
+                </style>
+
+                <!-- Script pour la navigation active -->
+                <script>
+                    <![CDATA[
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Mise en évidence de la section active
+                        const sections = document.querySelectorAll('section[id]');
+                        const navLinks = document.querySelectorAll('.sticky-top nav .btn');
+
+                        function highlightNavLink() {
+                            let scrollPos = window.scrollY + 100;
+
+                            sections.forEach(section => {
+                                const sectionTop = section.offsetTop;
+                                const sectionHeight = section.clientHeight;
+                                const sectionId = section.getAttribute('id');
+
+                                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                                    navLinks.forEach(link => {
+                                        link.style.background = 'rgba(122, 247, 167, 0.1)';
+                                        link.style.color = '#7AF7A7';
+
+                                        if (link.getAttribute('href') === '#' + sectionId) {
+                                            link.style.background = '#7AF7A7';
+                                            link.style.color = '#09171E';
+                                            link.style.boxShadow = '0 4px 12px rgba(122, 247, 167, 0.3)';
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
+                        // Initial highlight
+                        highlightNavLink();
+
+                        // Update on scroll
+                        window.addEventListener('scroll', highlightNavLink);
+
+                        // Smooth scroll for navigation links
+                        navLinks.forEach(link => {
+                            link.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                const targetId = this.getAttribute('href');
+                                const targetSection = document.querySelector(targetId);
+
+                                if (targetSection) {
+                                    window.scrollTo({
+                                        top: targetSection.offsetTop - 100,
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            });
+                        });
+                    });
+                    ]]>
+                </script>
+
+            </t>
+        </template>
+        <!-- =============================================== -->
+        <!--    TEMPLATE : Catalogue des formations         -->
+        <!-- =============================================== -->
+        <template id="formation_catalogue_page" name="Catalogue Formations">
+            <t t-call="website.layout">
+
+                <!-- Hero Section -->
+                <section
+                        style="background: linear-gradient(135deg, #09171E 0%, #1B3E41 50%, #2B6559 100%); padding: 100px 0 60px;">
+                    <div class="container text-center">
+                        <h1 class="display-3 font-weight-bold text-white mb-3">
+                            Catalogue de formations
+                        </h1>
+                        <p class="lead text-white-50 mb-4" style="font-size: 20px;">
+                            Découvrez nos formations certifiées Qualiopi
+                        </p>
+
+                        <!-- Barre de recherche améliorée -->
+                        <div class="row justify-content-center">
+                            <div class="col-lg-10">
+                                <form action="/formations/catalogue" method="get">
+                                    <div class="input-group shadow-lg"
+                                         style="border-radius: 50px; overflow: hidden; background: white; height: 60px;">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text border-0 bg-transparent d-flex align-items-center justify-content-center"
+                                                  style="padding-left: 25px; padding-right: 15px; height: 100%;">
+                                                <i class="fa fa-search"
+                                                   style="color: #2B6559; font-size: 20px; line-height: 1;"></i>
+                                            </span>
+                                        </div>
+                                        <input type="text" name="search" class="form-control border-0"
+                                               placeholder="Rechercher une formation..."
+                                               style="padding: 0 15px; font-size: 16px; height: 100%; border: none !important; box-shadow: none !important;"
+                                               t-att-value="search or ''"/>
+                                        <div class="input-group-append">
+                                            <button class="btn" type="submit"
+                                                    style="background: #7AF7A7; color: #09171E; padding: 0 40px; font-weight: 600; border: none; font-size: 16px; height: 100%; border-radius: 0 50px 50px 0;">
+                                                Rechercher
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Filtres -->
+                <section class="bg-light py-4">
+                    <div class="container">
+                        <form action="/formations/catalogue" method="get">
+                            <div class="row align-items-center">
+
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    <select name="modality" class="form-control" onchange="this.form.submit()"
+                                            style="border-radius: 10px; padding: 10px;">
+                                        <option value="">Toutes modalités</option>
+                                        <option value="presentiel"
+                                                t-att-selected="'selected' if modality == 'presentiel' else None">
+                                            Présentiel
+                                        </option>
+                                        <option value="distanciel"
+                                                t-att-selected="'selected' if modality == 'distanciel' else None">
+                                            Distanciel
+                                        </option>
+                                        <option value="hybride"
+                                                t-att-selected="'selected' if modality == 'hybride' else None">Mixte
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    <select name="difficulty" class="form-control" onchange="this.form.submit()"
+                                            style="border-radius: 10px; padding: 10px;">
+                                        <option value="">Tous niveaux</option>
+                                        <option value="beginner"
+                                                t-att-selected="'selected' if difficulty == 'beginner' else None">
+                                            Débutant
+                                        </option>
+                                        <option value="intermediate"
+                                                t-att-selected="'selected' if difficulty == 'intermediate' else None">
+                                            Intermédiaire
+                                        </option>
+                                        <option value="advanced"
+                                                t-att-selected="'selected' if difficulty == 'advanced' else None">
+                                            Avancé
+                                        </option>
+                                        <option value="expert"
+                                                t-att-selected="'selected' if difficulty == 'expert' else None">
+                                            Expert
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3 mb-md-0">
+                                    <select name="training_type" class="form-control" onchange="this.form.submit()"
+                                            style="border-radius: 10px; padding: 10px;">
+                                        <option value="">Tous types</option>
+                                        <option value="continuous"
+                                                t-att-selected="'selected' if training_type == 'continuous' else None">
+                                            Formation continue
+                                        </option>
+                                        <option value="initial"
+                                                t-att-selected="'selected' if training_type == 'initial' else None">
+                                            Formation initiale
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <a href="/formations/catalogue" class="btn btn-outline-secondary btn-block"
+                                       style="border-radius: 10px; padding: 10px;">
+                                        <i class="fa fa-times mr-1"></i>
+                                        Réinitialiser
+                                    </a>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Résultats -->
+                <section class="py-5">
+                    <div class="container">
+
+                        <!-- Compteur -->
+                        <div class="mb-4">
+                            <h5 style="color: #1B3E41;">
+                                <t t-if="channels">
+                                    <strong t-esc="len(channels)"/>
+                                    formation(s) trouvée(s)
+                                </t>
+                                <t t-else="">
+                                    Aucune formation trouvée
+                                </t>
+                            </h5>
+                        </div>
+
+                        <!-- Grille -->
+                        <div class="row">
+                            <t t-if="channels">
+                                <t t-foreach="channels" t-as="channel">
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card border-0 shadow-sm h-100"
+                                             style="border-radius: 15px; overflow: hidden; transition: all 0.3s;">
+                                            <div style="height: 180px; position: relative; overflow: hidden;">
+                                                <t t-if="channel.image_1920">
+                                                    <img t-att-src="'/web/image/slide.channel/' + str(channel.id) + '/image_1920'"
+                                                         alt=""
+                                                         class="w-100 h-100"
+                                                         style="object-fit: cover;"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <!-- Dégradé par défaut si pas d'image -->
+                                                    <div class="w-100 h-100"
+                                                         style="background: linear-gradient(135deg, #1B3E41, #2B6559);"></div>
+                                                </t>
+
+                                                <!-- Badges superposés -->
+                                                <div style="position: absolute; top: 15px; left: 15px;">
+                                                    <span class="badge px-3 py-2"
+                                                          style="background: #7AF7A7; color: #09171E; font-weight: 600; border-radius: 20px;">
+                                                        <t t-esc="dict(channel._fields['training_modality'].selection).get(channel.training_modality) or 'Formation'"/>
+                                                    </span>
+                                                </div>
+                                                <t t-if="channel.difficulty_level">
+                                                    <div style="position: absolute; bottom: 15px; right: 15px;">
+                                                        <span class="badge px-2 py-1"
+                                                              style="background: rgba(255,255,255,0.2); color: white; font-size: 11px; border-radius: 10px;">
+                                                            <t t-esc="dict(channel._fields['difficulty_level'].selection).get(channel.difficulty_level)"/>
+                                                        </span>
+                                                    </div>
+                                                </t>
+                                            </div>
+
+                                            <div class="card-body p-4">
+                                                <h5 class="card-title mb-3"
+                                                    style="color: #1B3E41; font-weight: 600; line-height: 1.4;">
+                                                    <a t-attf-href="/formation-details/#{channel.id}"
+                                                       style="color: inherit; text-decoration: none;">
+                                                        <t t-esc="channel.name"/>
+                                                    </a>
+                                                </h5>
+
+                                                <t t-if="channel.description">
+                                                    <p class="card-text text-white small mb-3">
+                                                        <t t-esc="str(channel.description)[:120] + '...' if len(str(channel.description)) > 120 else channel.description"/>
+                                                    </p>
+                                                </t>
+
+                                                <div class="mb-3">
+                                                    <t t-if="channel.total_duration_hours">
+                                                        <div class="d-flex align-items-center mb-2">
+                                                            <i class="fa fa-clock-o mr-2" style="color: #2B6559;"></i>
+                                                            <span class="small">
+                                                                <strong>
+                                                                    <t t-esc="int(channel.total_duration_hours)"/>
+                                                                    heures
+                                                                </strong>
+                                                            </span>
+                                                        </div>
+                                                    </t>
+                                                    <t t-if="channel.price and channel.price > 0">
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="fa fa-euro mr-2" style="color: #2B6559;"></i>
+                                                            <span class="small">
+                                                                <strong><t t-esc="int(channel.price)"/>€
+                                                                </strong>
+                                                                HT
+                                                            </span>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </div>
+
+                                            <!-- Footer -->
+                                            <!-- Footer -->
+                                            <div class="card-footer bg-transparent border-0 pt-0 pb-4 px-4">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <a t-att-href="'/formation-details/' + str(channel.id)"
+                                                           class="btn btn-outline-primary btn-sm btn-block"
+                                                           style="border-radius: 8px; font-weight: 600; border-color: #2B6559; color: #2B6559;">
+                                                            <i class="fa fa-info-circle mr-1"></i>
+                                                            Détails
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <a t-att-href="'/formation/rdv/' + str(channel.id)"
+                                                           class="btn btn-sm btn-block shadow-sm"
+                                                           style="background: linear-gradient(135deg, #2B6559, #7AF7A7); color: white; border: none; border-radius: 8px; font-weight: 600; transition: all 0.3s;">
+                                                            <i class="fa fa-calendar-check-o mr-1"></i>
+                                                            Prendre RDV
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <div class="col-12">
+                                    <div class="text-center py-5">
+                                        <i class="fa fa-search"
+                                           style="font-size: 64px; color: #ccc; margin-bottom: 20px;"></i>
+                                        <h4 style="color: #1B3E41;">Aucune formation trouvée</h4>
+                                        <p class="text-muted mb-4">Essayez de modifier vos critères de recherche</p>
+                                        <a href="/formations/catalogue" class="btn btn-primary"
+                                           style="border-radius: 10px; padding: 12px 30px; background: #2B6559; border: none;">
+                                            Voir toutes les formations
+                                        </a>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Certification Qualiopi -->
+                        <div class="row mt-5">
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm"
+                                     style="border-radius: 15px; background: linear-gradient(135deg, #09171E, #1B3E41);">
+                                    <div class="card-body p-5 text-center">
+                                        <i class="fa fa-certificate mb-3" style="font-size: 48px; color: #7AF7A7;"></i>
+                                        <h4 class=" mb-3" style="color: #09171E">Certification Qualiopi</h4>
+                                        <p class=" mb-0" style="max-width: 600px; margin: 0 auto;color: #09171E">
+                                            Toutes nos formations sont conformes au référentiel national Qualiopi,
+                                            garantissant la qualité de nos prestations et ouvrant droit à financement.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Styles -->
+                <style>
+                    .card:hover {
+                    transform: translateY(-10px);
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+                    }
+                    @media (max-width: 768px) {
+                    .display-3 { font-size: 2.5rem; }
+                    }
+                </style>
+
+            </t>
+        </template>
+
+        <!-- =============================================== -->
+        <!--    TEMPLATE : Page Rendez-vous                 -->
+        <!-- =============================================== -->
+        <template id="formation_appointment_page" name="Prise de Rendez-vous">
+            <t t-call="website.layout">
+
+                <!-- Hero Section -->
+                <section style="background: linear-gradient(135deg, #09171E 0%, #1B3E41 100%); padding: 60px 0;">
+                    <div class="container text-center">
+                        <h1 class="display-4 font-weight-bold text-white mb-3">
+                            Prendre rendez-vous
+                        </h1>
+                        <p class="lead text-white-50 mb-0">
+                            Échangeons sur votre projet de formation
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Formulaire -->
+                <section class="py-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2">
+
+                                <!-- Formation concernée -->
+                                <div class="card border-0 shadow-sm mb-4"
+                                     style="border-radius: 15px; background: linear-gradient(135deg, #2B6559, #7AF7A7);">
+                                    <div class="card-body p-4 " style="color :#2B6559">
+                                        <h5 class="mb-1">Formation concernée</h5>
+                                        <h3 class="mb-0 font-weight-bold">
+                                            <t t-esc="channel.name"/>
+                                        </h3>
+                                    </div>
+                                </div>
+
+                                <!-- Formulaire principal -->
+                                <div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                                    <div class="card-body p-5">
+
+                                        <form action="/formation/rdv/submit" method="POST" id="appointmentForm">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <input type="hidden" name="channel_id" t-att-value="channel.id"/>
+                                            <!-- Vos informations -->
+                                            <div class="mb-5">
+                                                <h5 class="mb-4" style="color: #1B3E41;">
+                                                    <i class="fa fa-user mr-2"></i>
+                                                    Vos informations
+                                                </h5>
+
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="font-weight-600 mb-2">Nom complet *</label>
+                                                        <input type="text" name="name" class="form-control"
+                                                               required="required"
+                                                               placeholder="Jean Dupont"
+                                                               style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 20px;"/>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="font-weight-600 mb-2">Email *</label>
+                                                        <input type="email" name="email" class="form-control"
+                                                               required="required"
+                                                               placeholder="jean.dupont@example.com"
+                                                               style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 20px;"/>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="font-weight-600 mb-2">Téléphone *</label>
+                                                        <input type="tel" name="phone" class="form-control"
+                                                               required="required"
+                                                               placeholder="06 12 34 56 78"
+                                                               pattern="[0-9\s]+"
+                                                               title="Veuillez entrer uniquement des chiffres et espaces"
+                                                               style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 20px;"/>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="font-weight-600 mb-2">Société</label>
+                                                        <input type="text" name="company" class="form-control"
+                                                               placeholder="Nom de votre entreprise"
+                                                               style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 20px;"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Type de rendez-vous -->
+                                            <div class="mb-5">
+                                                <h5 class="mb-4" style="color: #1B3E41;">
+                                                    <i class="fa fa-calendar mr-2"></i>
+                                                    Objet du rendez-vous
+                                                </h5>
+
+                                                <div class="row">
+                                                    <div class="col-md-4 mb-3">
+                                                        <input type="radio" name="appointment_type" id="type_info"
+                                                               value="information" class="d-none" checked="checked"/>
+                                                        <label for="type_info"
+                                                               class="card border-0 shadow-sm h-100 text-center p-3 appointment-card"
+                                                               style="cursor: pointer; border-radius: 12px; transition: all 0.3s;">
+                                                            <i class="fa fa-info-circle mb-2"
+                                                               style="font-size: 36px; color: #2B6559;"></i>
+                                                            <h6 class="mb-0">Information</h6>
+                                                            <small class="text-muted">sur la formation</small>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <input type="radio" name="appointment_type"
+                                                               id="type_orientation" value="orientation"
+                                                               class="d-none"/>
+                                                        <label for="type_orientation"
+                                                               class="card border-0 shadow-sm h-100 text-center p-3 appointment-card"
+                                                               style="cursor: pointer; border-radius: 12px; transition: all 0.3s;">
+                                                            <i class="fa fa-compass mb-2"
+                                                               style="font-size: 36px; color: #2B6559;"></i>
+                                                            <h6 class="mb-0">Orientation</h6>
+                                                            <small class="text-muted">et conseil</small>
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <input type="radio" name="appointment_type" id="type_assessment"
+                                                               value="assessment" class="d-none"/>
+                                                        <label for="type_assessment"
+                                                               class="card border-0 shadow-sm h-100 text-center p-3 appointment-card"
+                                                               style="cursor: pointer; border-radius: 12px; transition: all 0.3s;">
+                                                            <i class="fa fa-check-circle mb-2"
+                                                               style="font-size: 36px; color: #2B6559;"></i>
+                                                            <h6 class="mb-0">Évaluation</h6>
+                                                            <small class="text-muted">de niveau</small>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Disponibilités -->
+                                            <div class="mb-5">
+                                                <h5 class="mb-4" style="color: #1B3E41;">
+                                                    <i class="fa fa-clock-o mr-2"></i>
+                                                    Vos disponibilités
+                                                </h5>
+
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="font-weight-600 mb-2">Date souhaitée *</label>
+                                                        <input type="date" name="preferred_date" class="form-control"
+                                                               required="required"
+                                                               style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 20px;"/>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="font-weight-600 mb-2">Créneau préféré *</label>
+                                                        <select name="preferred_time" class="form-control"
+                                                                required="required"
+                                                                style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 20px;">
+                                                            <option value="morning">Matin (9h-12h)</option>
+                                                            <option value="afternoon">Après-midi (14h-18h)</option>
+                                                            <option value="evening">Soir (18h-20h)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Message -->
+                                            <div class="mb-5">
+                                                <h5 class="mb-4" style="color: #1B3E41;">
+                                                    <i class="fa fa-comment mr-2"></i>
+                                                    Informations complémentaires
+                                                </h5>
+
+                                                <textarea name="notes" class="form-control" rows="4"
+                                                          placeholder="Décrivez votre projet, vos objectifs ou posez vos questions..."
+                                                          style="border: 2px solid #e0e0e0; border-radius: 10px; padding: 12px 20px;"></textarea>
+                                            </div>
+
+                                            <!-- Message de confirmation (caché) -->
+                                            <div id="confirmationMessage" class="alert alert-success"
+                                                 style="display: none; border-radius: 10px;">
+                                                <h5 class="alert-heading"><i class="fa fa-check-circle mr-2"></i>Demande
+                                                    envoyée !
+                                                </h5>
+                                                <p id="confirmationText" class="mb-0"></p>
+                                            </div>
+
+                                            <!-- Boutons -->
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-lg px-5 py-3 shadow"
+                                                        style="background: linear-gradient(135deg, #2B6559, #7AF7A7); color: white; border: none; border-radius: 12px; font-weight: 600; transition: all 0.3s;">
+                                                    <i class="fa fa-paper-plane mr-2"></i>
+                                                    Envoyer ma demande
+                                                </button>
+                                                <a t-attf-href="/formation-details/#{channel.id}"
+                                                   class="btn btn-outline-secondary btn-lg px-5 py-3 ml-3"
+                                                   style="border-radius: 12px;">
+                                                    <i class="fa fa-arrow-left mr-2"></i>
+                                                    Retour
+                                                </a>
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <!-- Rassurance -->
+                                <div class="row mt-4">
+                                    <div class="col-md-4 text-center mb-3">
+                                        <i class="fa fa-lock mb-2" style="font-size: 32px; color: #2B6559;"></i>
+                                        <p class="mb-0 small text-muted">Données sécurisées</p>
+                                    </div>
+                                    <div class="col-md-4 text-center mb-3">
+                                        <i class="fa fa-clock-o mb-2" style="font-size: 32px; color: #2B6559;"></i>
+                                        <p class="mb-0 small text-muted">Réponse sous 24h</p>
+                                    </div>
+                                    <div class="col-md-4 text-center mb-3">
+                                        <i class="fa fa-phone mb-2" style="font-size: 32px; color: #2B6559;"></i>
+                                        <p class="mb-0 small text-muted">Sans engagement</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- JavaScript -->
+                <script>
+                    // Validation et feedback simple
+                    document.addEventListener('DOMContentLoaded', function() {
+                    var form = document.getElementById('appointmentForm');
+                    var submitBtn = form.querySelector('button[type="submit"]');
+
+                    form.addEventListener('submit', function(e) {
+                    if (!form.checkValidity()) {
+                    e.preventDefault();
+                    form.reportValidity();
+                    return;
+                    }
+
+                    // Désactiver le bouton et montrer un indicateur de chargement
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>Traitement en cours...';
+
+                    // Le formulaire sera soumis normalement via HTTP POST
+                    });
+
+                    // Date minimale = aujourd'hui
+                    var dateInput = document.querySelector('input[name="preferred_date"]');
+                    if (dateInput) {
+                    dateInput.min = new Date().toISOString().split('T')[0];
+                    }
+
+                    // Style des cartes radio
+                    document.querySelectorAll('input[name="appointment_type"]').forEach(function(radio) {
+                    radio.addEventListener('change', function() {
+                    document.querySelectorAll('.appointment-card').forEach(function(card) {
+                    card.style.background = 'white';
+                    card.style.color = 'inherit';
+                    });
+                    if (this.checked) {
+                    var label = document.querySelector('label[for="' + this.id + '"]');
+                    label.style.background = 'linear-gradient(135deg, #2B6559, #7AF7A7)';
+                    label.style.color = 'white';
+                    }
+                    });
+                    });
+
+                    // Activer le style initial
+                    var checkedRadio = document.querySelector('input[name="appointment_type"]:checked');
+                    if (checkedRadio) {
+                    var label = document.querySelector('label[for="' + checkedRadio.id + '"]');
+                    label.style.background = 'linear-gradient(135deg, #2B6559, #7AF7A7)';
+                    label.style.color = 'white';
+                    }
+                    });
+                </script>
+                <!-- Styles -->
+                <style>
+                    .form-control:focus {
+                    border-color: #2B6559;
+                    box-shadow: 0 0 0 0.2rem rgba(43, 101, 89, 0.25);
+                    }
+                    .appointment-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+                    }
+                    @media (max-width: 768px) {
+                    .display-4 { font-size: 2rem; }
+                    }
+                </style>
+
+            </t>
+        </template>
+        <!-- =============================================== -->
+        <!-- TEMPLATE : Rendez-vous non disponibles         -->
+        <!-- =============================================== -->
+        <template id="formation_appointment_unavailable" name="Rendez-vous non disponibles">
+            <t t-call="website.layout">
+
+                <!-- Hero Section -->
+                <section style="background: linear-gradient(135deg, #09171E 0%, #1B3E41 100%); padding: 60px 0;">
+                    <div class="container text-center">
+                        <h1 class="display-4 font-weight-bold text-white mb-3">
+                            Rendez-vous
+                        </h1>
+                        <p class="lead text-white-50 mb-0">
+                            Information sur la prise de rendez-vous
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Message principal -->
+                <section class="py-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8 offset-lg-2">
+
+                                <!-- Formation concernée -->
+                                <div class="card border-0 shadow-sm mb-4"
+                                     style="border-radius: 20px; background: linear-gradient(135deg, #2B6559, #7AF7A7); border: 2px solid rgba(122, 247, 167, 0.3);">
+                                    <div class="card-body p-4 " style="color: #1B3E41">
+                                        <div class="d-flex align-items-center">
+                                            <div class="mr-4">
+                                                <i class="fa fa-graduation-cap"
+                                                   style="font-size: 48px; opacity: 0.9;"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-1" style="font-weight: 600;">Formation concernée</h5>
+                                                <h3 class="mb-0 font-weight-bold"
+                                                    style="text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                                                    <t t-esc="channel.name"/>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Message d'information -->
+                                <div class="card border-0 shadow-lg"
+                                     style="border-radius: 20px; overflow: hidden; border-top: 4px solid #2B6559;">
+                                    <div class="card-header border-0 py-4"
+                                         style="background: linear-gradient(135deg, rgba(9, 23, 30, 0.05), rgba(27, 62, 65, 0.1));">
+                                        <div class="text-center">
+                                            <i class="fa fa-calendar-times-o mb-3"
+                                               style="font-size: 72px; color: #2B6559; opacity: 0.8;"></i>
+                                            <h3 style="color: #1B3E41; font-weight: 700;">Rendez-vous temporairement
+                                                indisponibles
+                                            </h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-body p-5">
+                                        <!-- Message principal -->
+                                        <div class="text-center mb-5">
+                                            <p class="lead mb-4"
+                                               style="font-size: 18px; line-height: 1.7; color: #1B3E41;">
+                                                Les rendez-vous pour cette formation ne sont pas disponibles pour le
+                                                moment.
+                                                <br/>
+                                                Notre équipe pédagogique travaille à mettre en place de nouvelles
+                                                disponibilités.
+                                            </p>
+                                        </div>
+
+                                        <!-- Pourquoi les RDV ne sont pas disponibles -->
+                                        <div class="bg-light rounded-lg p-4 mb-5"
+                                             style="border-left: 4px solid #7AF7A7;">
+                                            <h5 class="mb-3" style="color: #2B6559;">
+                                                <i class="fa fa-info-circle mr-2"></i>
+                                                Pourquoi les rendez-vous ne sont-ils pas disponibles ?
+                                            </h5>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <div class="d-flex">
+                                                        <i class="fa fa-check text-success mr-3 mt-1"></i>
+                                                        <div>
+                                                            <h6 style="color: #1B3E41;">Planning chargé</h6>
+                                                            <p class="text-muted small mb-0">Toutes les disponibilités
+                                                                sont actuellement complètes.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <div class="d-flex">
+                                                        <i class="fa fa-refresh text-info mr-3 mt-1"></i>
+                                                        <div>
+                                                            <h6 style="color: #1B3E41;">Réorganisation</h6>
+                                                            <p class="text-muted small mb-0">Nous optimisons notre
+                                                                planning pour vous offrir plus de créneaux.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Alternatives -->
+                                        <div class="mb-5">
+                                            <h5 class="mb-4 text-center" style="color: #1B3E41; font-weight: 600;">
+                                                <i class="fa fa-lightbulb-o mr-2"></i>
+                                                Comment obtenir plus d'informations ?
+                                            </h5>
+
+                                            <div class="row">
+                                                <!-- Alternative 1 -->
+                                                <div class="col-md-4 mb-4">
+                                                    <div class="card border-0 shadow-sm h-100 text-center p-4"
+                                                         style="border-radius: 15px; background: rgba(122, 247, 167, 0.1); border: 1px solid rgba(122, 247, 167, 0.3);">
+                                                        <div class="mb-3">
+                                                            <i class="fa fa-envelope"
+                                                               style="font-size: 42px; color: #2B6559;"></i>
+                                                        </div>
+                                                        <h6 style="color: #1B3E41; font-weight: 600;">Contactez-nous
+                                                        </h6>
+                                                        <p class="text-muted small mb-3">
+                                                            Envoyez-nous un email avec vos questions spécifiques.
+                                                        </p>
+                                                        <a href="/contactus" class="btn btn-sm btn-block"
+                                                           style="background: #2B6559; color: white; border: none; border-radius: 8px; padding: 8px;">
+                                                            <i class="fa fa-send mr-1"></i>
+                                                            Envoyer un message
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Alternative 2 -->
+                                                <div class="col-md-4 mb-4">
+                                                    <div class="card border-0 shadow-sm h-100 text-center p-4"
+                                                         style="border-radius: 15px; background: rgba(43, 101, 89, 0.1); border: 1px solid rgba(43, 101, 89, 0.3);">
+                                                        <div class="mb-3">
+                                                            <i class="fa fa-phone"
+                                                               style="font-size: 42px; color: #2B6559;"></i>
+                                                        </div>
+                                                        <h6 style="color: #1B3E41; font-weight: 600;">Appelez-nous</h6>
+                                                        <p class="text-muted small mb-3">
+                                                            Contactez notre équipe directement par téléphone.
+                                                        </p>
+                                                        <a href="tel:+33123456789" class="btn btn-sm btn-block"
+                                                           style="background: #7AF7A7; color: #09171E; border: none; border-radius: 8px; padding: 8px; font-weight: 600;">
+                                                            <i class="fa fa-phone mr-1"></i>
+                                                            Appeler maintenant
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Alternative 3 -->
+                                                <div class="col-md-4 mb-4">
+                                                    <div class="card border-0 shadow-sm h-100 text-center p-4"
+                                                         style="border-radius: 15px; background: rgba(3, 31, 45, 0.1); border: 1px solid rgba(3, 31, 45, 0.3);">
+                                                        <div class="mb-3">
+                                                            <i class="fa fa-bell"
+                                                               style="font-size: 42px; color: #2B6559;"></i>
+                                                        </div>
+                                                        <h6 style="color: #1B3E41; font-weight: 600;">Soyez notifié</h6>
+                                                        <p class="text-muted small mb-3">
+                                                            Nous vous préviendrons quand les rendez-vous seront à
+                                                            nouveau disponibles.
+                                                        </p>
+                                                        <button class="btn btn-sm btn-block btn-outline-primary request-notification-btn"
+                                                                style="border-color: #2B6559; color: #2B6559; border-radius: 8px; padding: 8px;">
+                                                            <i class="fa fa-bell mr-1"></i>
+                                                            Être notifié
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Action principale -->
+                                        <div class="text-center">
+                                            <div class="mb-4">
+                                                <p class="text-muted mb-2">
+                                                    <i class="fa fa-clock-o mr-1"></i>
+                                                    Les rendez-vous devraient être à nouveau disponibles sous 7 jours.
+                                                </p>
+                                                <p class="text-muted mb-0">
+                                                    <i class="fa fa-calendar-check-o mr-1"></i>
+                                                    Nous vous conseillons de revenir consulter cette page prochainement.
+                                                </p>
+                                            </div>
+
+                                            <div class="d-flex flex-wrap justify-content-center" style="gap: 15px;">
+                                                <a t-att-href="'/formation-details/' + str(channel.id)"
+                                                   class="btn btn-lg px-5 py-3 shadow"
+                                                   style="background: linear-gradient(135deg, #2B6559, #7AF7A7); color: white; border: none; border-radius: 12px; font-weight: 600; min-width: 200px;">
+                                                    <i class="fa fa-arrow-left mr-2"></i>
+                                                    Retour à la formation
+                                                </a>
+
+                                                <a href="/formations/catalogue"
+                                                   class="btn btn-outline-secondary btn-lg px-5 py-3"
+                                                   style="border-radius: 12px; border-color: #2B6559; color: #2B6559; min-width: 200px;">
+                                                    <i class="fa fa-list mr-2"></i>
+                                                    Voir le catalogue
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Informations complémentaires -->
+                                <div class="row mt-4">
+                                    <div class="col-md-4 text-center mb-3">
+                                        <div class="p-3">
+                                            <i class="fa fa-clock-o mb-2" style="font-size: 32px; color: #2B6559;"></i>
+                                            <h6 class="mb-2" style="color: #1B3E41;">Horaires d'ouverture</h6>
+                                            <p class="mb-0 small text-muted">
+                                                Lundi - Vendredi
+                                                <br/>
+                                                9h00 - 18h00
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-center mb-3">
+                                        <div class="p-3">
+                                            <i class="fa fa-envelope mb-2" style="font-size: 32px; color: #2B6559;"></i>
+                                            <h6 class="mb-2" style="color: #1B3E41;">Email rapide</h6>
+                                            <p class="mb-0 small text-muted">
+                                                <a href="mailto:contact@votreentreprise.com" style="color: #2B6559;">
+                                                    contact@votreentreprise.com
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-center mb-3">
+                                        <div class="p-3">
+                                            <i class="fa fa-phone mb-2" style="font-size: 32px; color: #2B6559;"></i>
+                                            <h6 class="mb-2" style="color: #1B3E41;">Téléphone</h6>
+                                            <p class="mb-0 small text-muted">
+                                                <a href="tel:+33123456789" style="color: #2B6559;">
+                                                    +33 1 23 45 67 89
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- JavaScript pour la demande de notification -->
+                <script>
+                    function requestNotification() {
+                    // Demander l'email pour la notification
+                    const email = prompt('Pour être notifié quand les rendez-vous seront disponibles, veuillez entrer
+                    votre email :');
+
+                    if (email) {
+                    // Validation basique de l'email
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                    alert('Veuillez entrer un email valide.');
+                    return;
+                    }
+
+                    // Utiliser une route générique sans ID spécifique
+                    fetch('/formation/notification', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                    email: email,
+                    action: 'notify_when_available'
+                    })
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                    if (result.success) {
+                    alert('Merci ! Nous vous enverrons un email quand les rendez-vous seront à nouveau disponibles.');
+                    } else {
+                    alert('Une erreur est survenue. Veuillez réessayer plus tard.');
+                    }
+                    })
+                    .catch(error => {
+                    console.error('Error:', error);
+                    alert('Une erreur est survenue. Veuillez réessayer plus tard.');
+                    });
+                    }
+                    }
+
+                    // Animation pour les cartes
+                    document.addEventListener('DOMContentLoaded', function() {
+                    const cards = document.querySelectorAll('.card');
+                    cards.forEach((card, index) => {
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    card.classList.add('animate__animated', 'animate__fadeInUp');
+                    });
+
+                    // Gestionnaire pour le bouton de notification
+                    const notificationBtn = document.querySelector('.request-notification-btn');
+                    if (notificationBtn) {
+                    notificationBtn.addEventListener('click', requestNotification);
+                    }
+                    });
+                </script>
+
+                <!-- Styles supplémentaires -->
+                <style>
+                    /* Animations */
+                    .card {
+                    animation-duration: 0.6s;
+                    animation-fill-mode: both;
+                    }
+
+                    /* Effet de survol sur les alternatives */
+                    .card:hover {
+                    transform: translateY(-5px);
+                    transition: all 0.3s ease;
+                    box-shadow: 0 10px 30px rgba(43, 101, 89, 0.15) !important;
+                    }
+
+                    /* Boutons améliorés */
+                    .btn {
+                    transition: all 0.3s ease;
+                    }
+
+                    .btn:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 5px 15px rgba(43, 101, 89, 0.3);
+                    }
+
+                    /* Icônes */
+                    i[class^="fa-"] {
+                    transition: all 0.3s ease;
+                    }
+
+                    .card:hover i[class^="fa-"] {
+                    transform: scale(1.1);
+                    }
+
+                    /* Responsive */
+                    @media (max-width: 768px) {
+                    .display-4 {
+                    font-size: 2rem !important;
+                    }
+
+                    .lead {
+                    font-size: 1.1rem !important;
+                    }
+
+                    .btn-lg {
+                    padding: 12px 24px !important;
+                    font-size: 16px !important;
+                    }
+
+                    .card-body {
+                    padding: 1.5rem !important;
+                    }
+                    }
+
+                    @media (max-width: 576px) {
+                    .btn-lg {
+                    width: 100%;
+                    margin-bottom: 10px;
+                    }
+
+                    .d-flex.flex-wrap {
+                    flex-direction: column;
+                    }
+                    }
+                </style>
+
+            </t>
+        </template>
+        <!-- =============================================== -->
+        <!-- TEMPLATE : Confirmation RDV                    -->
+        <!-- =============================================== -->
+        <template id="formation_appointment_confirmation" name="Confirmation Rendez-vous">
+            <t t-call="website.layout">
+                <div class="container py-5 text-center">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+                                <div class="card-body p-5">
+                                    <div class="mb-4">
+                                        <i class="fa fa-check-circle" style="font-size: 80px; color: #2B6559;"></i>
+                                    </div>
+
+                                    <h1 class="mb-3" style="color: #2B6559;">✅ Demande envoyée !</h1>
+
+                                    <p class="lead mb-4">
+                                        Merci
+                                        <strong t-esc="name"/>
+                                        ! Votre demande de rendez-vous a été enregistrée avec succès.
+                                    </p>
+
+                                    <div class="alert alert-info"
+                                         style="background: #f8f9fa; border-left: 4px solid #2B6559;">
+                                        <h5 class="alert-heading">📋 Récapitulatif</h5>
+                                        <p class="mb-1">
+                                            <strong>Référence :</strong>
+                                            #
+                                            <t t-esc="lead.id"/>
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Formation :</strong>
+                                            <t t-if="channel">
+                                                <t t-esc="channel.name"/>
+                                            </t>
+                                            <t t-else="">
+                                                Formation générale
+                                            </t>
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Email :</strong>
+                                            <t t-esc="email"/>
+                                        </p>
+                                        <t t-if="preferred_date">
+                                            <p class="mb-1">
+                                                <strong>Date souhaitée :</strong>
+                                                <t t-esc="preferred_date"/>
+                                            </p>
+                                        </t>
+                                    </div>
+
+                                    <p class="mb-4">
+                                        Un conseiller formation vous contactera dans les 48 heures ouvrables
+                                        à l'adresse
+                                        <strong t-esc="email"/>
+                                        pour convenir d'un créneau précis.
+                                    </p>
+
+                                    <div class="mt-4">
+                                        <a href="/formations/catalogue" class="btn btn-lg px-4"
+                                           style="background: #2B6559; color: white;">
+                                            <i class="fa fa-book mr-2"></i>
+                                            Voir d'autres formations
+                                        </a>
+
+                                        <a t-attf-href="/formation-details/#{channel.id}"
+                                           class="btn btn-outline-secondary btn-lg px-4 ml-2">
+                                            <i class="fa fa-arrow-left mr-2"></i>
+                                            Retour à la formation
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- =============================================== -->
+        <!-- TEMPLATE : Erreur RDV                          -->
+        <!-- =============================================== -->
+        <template id="formation_appointment_error" name="Erreur Rendez-vous">
+            <t t-call="website.layout">
+                <div class="container py-5 text-center">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card border-0 shadow-lg"
+                                 style="border-radius: 20px; border-left: 4px solid #dc3545;">
+                                <div class="card-body p-5">
+                                    <div class="mb-4">
+                                        <i class="fa fa-exclamation-triangle"
+                                           style="font-size: 80px; color: #dc3545;"></i>
+                                    </div>
+
+                                    <h1 class="mb-3" style="color: #dc3545;">❌ Une erreur est survenue</h1>
+
+                                    <p class="lead mb-4" t-esc="error"/>
+
+                                    <div class="mt-4">
+                                        <a href="javascript:history.back()" class="btn btn-lg px-4"
+                                           style="background: #2B6559; color: white;">
+                                            <i class="fa fa-arrow-left mr-2"></i>
+                                            Retour au formulaire
+                                        </a>
+
+                                        <a href="/contactus" class="btn btn-outline-secondary btn-lg px-4 ml-2">
+                                            <i class="fa fa-phone mr-2"></i>
+                                            Nous contacter
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

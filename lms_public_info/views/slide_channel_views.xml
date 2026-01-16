@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_slide_channel_form_qualiopi" model="ir.ui.view">
+            <field name="name">slide.channel.form.qualiopi</field>
+            <field name="model">slide.channel</field>
+            <field name="inherit_id" ref="formevo.slide_channel_form_custom"/>
+            <field name="arch" type="xml">
+
+                <!-- Remplacer la page vide -->
+                <xpath expr="//page[@name='qualiopi_info']" position="replace">
+                    <page string="Informations Complémentaires" name="qualiopi_info">
+                        <field name="publication_ready" invisible="1"/>
+                        <group>
+                            <group string="Objectifs &amp; Public">
+                                <!-- CORRECTION : Utiliser pedagogical_objectives au lieu de learning_objectives -->
+                                <field name="pedagogical_objectives"/>
+                                <field name="target_audience"/>
+                                <field name="prerequisites"/>
+                            </group>
+
+                            <group string="Durée &amp; Tarif">
+                                <field name="total_duration_hours" string="Durée (heures)"/>
+                                <field name="duration_days" string="Durée (jours)"/>
+                                <field name="price" string="Prix public (€ HT)"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="Modalités">
+                                <field name="training_modality" widget="radio"/>
+                                <field name="training_level" string="Niveau"/>
+                            </group>
+
+                            <group string="Accessibilité">
+                                <field name="accessibility_info"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="Certification">
+                                <field name="delivers_certificate" string="Délivre une attestation"/>
+                                <field name="certificate_name"
+                                       string="Nom de l'attestation"
+                                       invisible="not delivers_certificate"/>
+                            </group>
+
+                            <group string="Formateur">
+                                <field name="trainer_partner_id"
+                                       widget="many2one"
+                                       options="{'no_create': True}"
+                                       string="Formateur assigné"/>
+
+                                <field name="trainer_competency_ids"
+                                       widget="many2many_tags"
+                                       string="Compétences requises"
+                                       options="{'no_create': False}"/>
+                            </group>
+                        </group>
+
+                        <!-- Section validation Qualiopi -->
+                        <group>
+                            <group string="Validation Qualiopi">
+                                <field name="price_details" string="Détails tarifaires"/>
+                                <field name="difficulty_level" string="Niveau de difficulté"/>
+                                <field name="training_type" string="Type de formation"/>
+                                <field name="appointment_available" string="Rendez-vous disponible"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+
+                <!-- Validation de publication -->
+                <xpath expr="//field[@name='website_published']" position="before">
+                    <div class="oe_chatter" invisible="publication_ready">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa fa-exclamation-triangle" title="Attention"/>
+                            <strong> Publication bloquée : </strong>
+                            <field name="missing_fields" widget="html" nolabel="1"/>
+                        </div>
+                    </div>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

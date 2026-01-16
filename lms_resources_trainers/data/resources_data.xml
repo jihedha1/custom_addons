@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Types de ressources -->
+        <record id="resource_type_classroom" model="lms_resources_trainers.resource_type">
+            <field name="name">Salle de classe</field>
+            <field name="code">CLASSROOM</field>
+        </record>
+
+        <record id="resource_type_computer_room" model="lms_resources_trainers.resource_type">
+            <field name="name">Salle informatique</field>
+            <field name="code">COMPUTER_ROOM</field>
+        </record>
+
+        <record id="resource_type_projector" model="lms_resources_trainers.resource_type">
+            <field name="name">Vidéoprojecteur</field>
+            <field name="code">PROJECTOR</field>
+        </record>
+
+        <record id="resource_type_computer" model="lms_resources_trainers.resource_type">
+            <field name="name">Ordinateur</field>
+            <field name="code">COMPUTER</field>
+        </record>
+
+        <record id="resource_type_other" model="lms_resources_trainers.resource_type">
+            <field name="name">Autre équipement</field>
+            <field name="code">OTHER</field>
+        </record>
+
+        <!-- Types de documents formateurs -->
+        <record id="trainer_doc_cv" model="lms_resources_trainers.trainer_document_type">
+            <field name="name">Curriculum Vitae</field>
+            <field name="is_mandatory">True</field>
+        </record>
+
+        <record id="trainer_doc_diploma" model="lms_resources_trainers.trainer_document_type">
+            <field name="name">Diplôme</field>
+            <field name="is_mandatory">True</field>
+        </record>
+
+        <record id="trainer_doc_certification" model="lms_resources_trainers.trainer_document_type">
+            <field name="name">Certification</field>
+        </record>
+
+        <record id="trainer_doc_authorization" model="lms_resources_trainers.trainer_document_type">
+            <field name="name">Habilitation</field>
+            <field name="has_expiry_date">True</field>
+        </record>
+
+        <record id="trainer_doc_id_card" model="lms_resources_trainers.trainer_document_type">
+            <field name="name">Carte d'identité</field>
+            <field name="is_mandatory">True</field>
+        </record>
+    </data>
+</odoo>

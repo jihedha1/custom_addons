@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- =============================================== -->
+    <!-- RAPPORT PDF : Indicateurs Qualiopi             -->
+    <!-- =============================================== -->
+
+    <!-- Définition du rapport - VERSION CORRIGÉE -->
+    <record id="report_kpi_snapshot" model="ir.actions.report">
+        <field name="name">Rapport Indicateurs Qualiopi</field>
+        <field name="model">public.kpi.snapshot</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">lms_public_kpi.kpi_pdf_report</field>
+        <field name="print_report_name">'Indicateurs_Qualiopi_%s' % (object.name.replace(' ', '_'))</field>
+        <field name="binding_model_id" ref="model_public_kpi_snapshot"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Template du rapport PDF - VERSION CORRIGÉE -->
+    <template id="kpi_pdf_report">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+
+                <t t-set="snapshot" t-value="False" />
+
+                <!-- Méthode 1 : Variable 'docs' (liste) -->
+                <t t-if="docs and len(docs) > 0">
+                    <t t-set="snapshot" t-value="docs[0]" />
+                </t>
+
+                <!-- Méthode 2 : Variable 'doc' (single) -->
+                <t t-elif="doc and doc.id">
+                    <t t-set="snapshot" t-value="doc" />
+                </t>
+
+                <!-- Méthode 3 : Variable 'object' -->
+                <t t-elif="object and object.id">
+                    <t t-set="snapshot" t-value="object" />
+                </t>
+
+                <!-- Méthode 4 : Via docids -->
+                <t t-elif="docids and len(docids) > 0">
+                    <t t-set="snapshot" t-value="env['public.kpi.snapshot'].browse(docids[0])" />
+                </t>
+
+                <!-- Méthode 5 : Via context -->
+                <t t-elif="context and context.get('active_ids') and len(context.get('active_ids', [])) > 0">
+                    <t t-set="snapshot" t-value="env['public.kpi.snapshot'].browse(context['active_ids'][0])" />
+                </t>
+
+                <!-- Si on a trouvé un snapshot -->
+                <t t-if="snapshot and snapshot.exists()">
+                    <div class="page" style="font-family: 'Segoe UI', Arial, sans-serif;">
+
+                        <!-- =============================================== -->
+                        <!-- EN-TÊTE AVEC LOGO ET INFORMATIONS              -->
+                        <!-- =============================================== -->
+                        <div style="text-align: center; margin-bottom: 25px; padding-top: 15px;">
+                            <!-- Logo (à personnaliser) -->
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: inline-block; padding: 8px 20px; background: #1B3E41; color: white; border-radius: 4px; font-weight: bold;">
+                                    QUALIOPI CERTIFIÉ
+                                </div>
+                            </div>
+
+                            <h1 style="color: #1B3E41; font-size: 24px; margin: 0; font-weight: 600;">
+                                Indicateurs de Performance Qualité
+                            </h1>
+                            <h2 style="color: #2B6559; font-size: 18px; margin: 8px 0 20px 0; font-weight: 500;">
+                                <t t-esc="snapshot.name"/>
+                            </h2>
+
+                            <!-- Badge d'état -->
+                            <div style="display: inline-block; margin-bottom: 15px;">
+                                <span t-if="snapshot.state == 'published'"
+                                      style="background: #4CAF50; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold;">
+                                    ✓ PUBLIÉ
+                                </span>
+                                <span t-elif="snapshot.state == 'review'"
+                                      style="background: #FF9800; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold;">
+                                    📋 EN RÉVISION
+                                </span>
+                                <span t-else=""
+                                      style="background: #9E9E9E; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold;">
+                                    BROUILLON
+                                </span>
+                            </div>
+
+                            <!-- Informations période -->
+                            <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin: 0 auto 15px auto; max-width: 500px; border-left: 4px solid #2B6559;">
+                                <table style="width: 100%; font-size: 12px;">
+                                    <tr>
+                                        <td style="width: 33%; text-align: center; padding: 5px;">
+                                            <div style="font-weight: bold; color: #1B3E41;">📅 Période</div>
+                                            <div style="color: #666;">
+                                                <t t-esc="snapshot.period_start.strftime('%d/%m/%Y') if snapshot.period_start else ''"/>
+                                                au
+                                                <t t-esc="snapshot.period_end.strftime('%d/%m/%Y') if snapshot.period_end else ''"/>
+                                            </div>
+                                        </td>
+                                        <td style="width: 33%; text-align: center; padding: 5px; border-left: 1px solid #ddd;">
+                                            <div style="font-weight: bold; color: #1B3E41;">📊 Type</div>
+                                            <div style="color: #666;">
+                                                <t t-esc="snapshot.period_type_label or snapshot.period_type"/>
+                                            </div>
+                                        </td>
+                                        <td style="width: 33%; text-align: center; padding: 5px; border-left: 1px solid #ddd;">
+                                            <div style="font-weight: bold; color: #1B3E41;">📅 Publié le</div>
+                                            <div style="color: #666;">
+                                                <t t-if="snapshot.publication_date">
+                                                    <t t-esc="snapshot.publication_date.strftime('%d/%m/%Y')"/>
+                                                </t>
+                                                <t t-else="">Non publié</t>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- =============================================== -->
+                        <!-- MÉTRIQUES PRINCIPALES AVEC INDICATEURS VISUELS  -->
+                        <!-- =============================================== -->
+                        <div style="margin-bottom: 30px;">
+                            <h3 style="color: #1B3E41; font-size: 16px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #7AF7A7;">
+                                📈 Synthèse des performances
+                            </h3>
+
+                            <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden;">
+                                <tr>
+                                    <!-- Indicateurs -->
+                                    <td style="text-align: center; padding: 15px; border-right: 1px solid #e0e0e0;">
+                                        <div style="font-size: 28px; font-weight: bold; color: #2B6559; margin-bottom: 5px;">
+                                            <t t-esc="snapshot.kpi_count"/>
+                                        </div>
+                                        <div style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            <span style="background: #e3f2fd; padding: 2px 8px; border-radius: 10px;">📊 Indicateurs</span>
+                                        </div>
+                                        <div style="font-size: 10px; color: #888; margin-top: 3px;">
+                                            <t t-esc="snapshot.published_kpi_count"/> publiés
+                                        </div>
+                                    </td>
+
+                                    <!-- Taux de complétion -->
+                                    <td style="text-align: center; padding: 15px; border-right: 1px solid #e0e0e0;">
+                                        <div style="font-size: 28px; font-weight: bold; color: #2B6559; margin-bottom: 5px;">
+                                            <t t-esc="'{:.1f}'.format(snapshot.completion_rate)"/>%
+                                        </div>
+                                        <div style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            <span style="background: #e8f5e9; padding: 2px 8px; border-radius: 10px;">✅ Complétion</span>
+                                        </div>
+                                        <!-- Jauge de progression -->
+                                        <div style="margin-top: 8px; height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden;">
+                                            <div>
+                                                <t t-if="snapshot.completion_rate &gt;= 80">
+                                                    <t t-attf-style="width: {{snapshot.completion_rate}}%; height: 100%; background: #4CAF50;"></t>
+                                                </t>
+                                                <t t-elif="snapshot.completion_rate &gt;= 50">
+                                                    <t t-attf-style="width: {{snapshot.completion_rate}}%; height: 100%; background: #FF9800;"></t>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-attf-style="width: {{snapshot.completion_rate}}%; height: 100%; background: #F44336;"></t>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <!-- Moyenne -->
+                                    <td style="text-align: center; padding: 15px; border-right: 1px solid #e0e0e0;">
+                                        <div style="font-size: 28px; font-weight: bold; color: #2B6559; margin-bottom: 5px;">
+                                            <t t-esc="'{:.1f}'.format(snapshot.average_kpi_value)"/>%
+                                        </div>
+                                        <div style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            <span style="background: #fff3e0; padding: 2px 8px; border-radius: 10px;">📈 Moyenne</span>
+                                        </div>
+                                        <div style="font-size: 10px; color: #888; margin-top: 3px;">
+                                            Sur tous les indicateurs
+                                        </div>
+                                    </td>
+
+                                    <!-- Évolution globale -->
+                                    <td style="text-align: center; padding: 15px;">
+                                        <div style="font-size: 28px; font-weight: bold; margin-bottom: 5px;">
+                                            <t t-if="snapshot.global_evolution_rate &gt; 0">
+                                                <span style="color: #4CAF50;">
+                                                    +<t t-esc="'{:.1f}'.format(snapshot.global_evolution_rate)"/>%
+                                                </span>
+                                            </t>
+                                            <t t-elif="snapshot.global_evolution_rate &lt; 0">
+                                                <span style="color: #F44336;">
+                                                    <t t-esc="'{:.1f}'.format(snapshot.global_evolution_rate)"/>%
+                                                </span>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: #9E9E9E;">
+                                                    <t t-esc="'{:.1f}'.format(snapshot.global_evolution_rate)"/>%
+                                                </span>
+                                            </t>
+                                        </div>
+                                        <div style="font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            <span style="background: #f3e5f5; padding: 2px 8px; border-radius: 10px;">🔄 Évolution</span>
+                                        </div>
+                                        <div style="font-size: 10px; color: #888; margin-top: 3px;">
+                                            vs période précédente
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- =============================================== -->
+                        <!-- INDICATEURS DÉTAILLÉS - VERSION CORRIGÉE       -->
+                        <!-- =============================================== -->
+                        <div style="margin-bottom: 30px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h3 style="color: #1B3E41; font-size: 16px; margin: 0; padding-bottom: 8px; border-bottom: 2px solid #7AF7A7;">
+                                    📋 Indicateurs publiés
+                                    <t t-if="snapshot.published_kpi_count &gt; 0">
+                                        <span style="font-size: 12px; color: #666; margin-left: 8px;">
+                                            (<t t-esc="snapshot.published_kpi_count"/> indicateurs)
+                                        </span>
+                                    </t>
+                                </h3>
+                                <div style="font-size: 11px; color: #666; background: #f5f5f5; padding: 4px 10px; border-radius: 4px;">
+                                    Trié par catégorie
+                                </div>
+                            </div>
+
+                            <t t-if="snapshot.kpi_version_ids and len(snapshot.kpi_version_ids.filtered(lambda k: k.state == 'published')) &gt; 0">
+                                <!-- CORRECTION: Récupérer les KPI triés -->
+                                <t t-set="kpis_sorted" t-value="snapshot.kpi_version_ids.filtered(lambda k: k.state == 'published').sorted(lambda k: (k.category_id.sequence if k.category_id else 0, k.sequence))" />
+
+                                <!-- Group par catégorie -->
+                                <t t-set="previous_category" t-value="False" />
+                                <t t-foreach="kpis_sorted" t-as="kpi">
+                                    <!-- Nouvelle section catégorie -->
+                                    <t t-if="kpi.category_id and (not previous_category or previous_category != kpi.category_id)">
+                                        <div style="background: #1B3E41; color: white; padding: 10px 15px; margin-top: 15px; margin-bottom: 10px; border-radius: 4px; font-weight: bold;">
+                                            🏷️ <t t-esc="kpi.category_id.name"/>
+                                            <t t-if="kpi.category_id.code">
+                                                <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 10px; font-size: 10px; margin-left: 10px;">
+                                                    <t t-esc="kpi.category_id.code"/>
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </t>
+                                    <t t-set="previous_category" t-value="kpi.category_id"/>
+
+                                    <!-- Carte indicateur -->
+                                    <div style="background: white; border: 1px solid #e0e0e0; border-radius: 6px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                            <!-- Info gauche -->
+                                            <div style="flex: 1;">
+                                                <div style="font-weight: bold; color: #2B6559; margin-bottom: 5px;">
+                                                    <t t-esc="kpi.name"/>
+                                                    <t t-if="kpi.sequence">
+                                                        <span style="font-size: 10px; color: #888; margin-left: 8px; background: #f5f5f5; padding: 1px 6px; border-radius: 10px;">
+                                                            #<t t-esc="kpi.sequence"/>
+                                                        </span>
+                                                    </t>
+                                                </div>
+                                                <t t-if="kpi.description">
+                                                    <div style="font-size: 10px; color: #666; margin-bottom: 8px; line-height: 1.4;">
+                                                        <t t-esc="kpi.description"/>
+                                                    </div>
+                                                </t>
+                                                <div style="font-size: 10px; color: #888;">
+                                                    Méthode: <t t-esc="kpi.calculation_method"/>
+                                                    <t t-if="kpi.last_calculation_date">
+                                                        • Dernier calcul: <t t-esc="kpi.last_calculation_date.strftime('%d/%m/%Y')"/>
+                                                    </t>
+                                                </div>
+                                            </div>
+
+                                            <!-- Valeurs droite -->
+                                            <div style="text-align: right; min-width: 150px;">
+                                                <!-- Valeur actuelle -->
+                                                <div style="margin-bottom: 8px;">
+                                                    <div style="font-size: 24px; font-weight: bold; color: #2B6559;">
+                                                        <t t-esc="'{:,.1f}'.format(kpi.value)"/>
+                                                        <span style="font-size: 14px; color: #666;">
+                                                            <t t-esc="kpi.unit"/>
+                                                        </span>
+                                                    </div>
+                                                    <div style="font-size: 9px; color: #888; text-transform: uppercase;">
+                                                        Valeur actuelle
+                                                    </div>
+                                                </div>
+
+                                                <!-- Évolution -->
+                                                <div t-if="kpi.evolution_rate != 0 and kpi.previous_value">
+                                                    <div style="font-size: 14px; font-weight: bold;">
+                                                        <t t-if="kpi.evolution_direction == 'up'">
+                                                            <span style="color: #4CAF50;">
+                                                                ↗ +<t t-esc="'{:.1f}'.format(kpi.evolution_rate)"/>%
+                                                            </span>
+                                                        </t>
+                                                        <t t-elif="kpi.evolution_direction == 'down'">
+                                                            <span style="color: #F44336;">
+                                                                ↘ <t t-esc="'{:.1f}'.format(kpi.evolution_rate)"/>%
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span style="color: #9E9E9E;">
+                                                                → <t t-esc="'{:.1f}'.format(kpi.evolution_rate)"/>%
+                                                            </span>
+                                                        </t>
+                                                    </div>
+                                                    <div style="font-size: 9px; color: #888;">
+                                                        vs <t t-esc="'{:,.1f}'.format(kpi.previous_value)"/>
+                                                        <t t-esc="kpi.unit"/>
+                                                    </div>
+                                                </div>
+                                                <div t-else="">
+                                                    <div style="font-size: 11px; color: #9E9E9E; font-style: italic;">
+                                                        Pas de comparaison
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- CORRECTION: Supprimer la section target_value ou la rendre optionnelle -->
+                                        <!--
+                                        <t t-if="hasattr(kpi, 'target_value') and kpi.target_value and kpi.value">
+                                            <div style="margin-top: 10px;">
+                                                <div style="display: flex; justify-content: space-between; font-size: 9px; color: #666; margin-bottom: 3px;">
+                                                    <span>Progression vers l'objectif</span>
+                                                    <span>
+                                                        <t t-esc="'{:.1f}'.format((kpi.value / kpi.target_value * 100) if kpi.target_value else 0)"/>%
+                                                    </span>
+                                                </div>
+                                                <div style="height: 6px; background: #e0e0e0; border-radius: 3px; overflow: hidden; position: relative;">
+                                                    <div>
+                                                        <t t-if="kpi.target_value">
+                                                            <t t-set="progress_width" t-value="min(100, (kpi.value / kpi.target_value * 100) if kpi.target_value else 0)" />
+                                                            <t t-if="kpi.value &gt;= kpi.target_value">
+                                                                <t t-attf-style="width: {{progress_width}}%; height: 100%; background: #4CAF50;"></t>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <t t-attf-style="width: {{progress_width}}%; height: 100%; background: #FF9800;"></t>
+                                                            </t>
+                                                        </t>
+                                                    </div>
+                                                    <div style="position: absolute; left: 80%; top: 0; height: 100%; width: 2px; background: #1B3E41;"></div>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; font-size: 8px; color: #888; margin-top: 2px;">
+                                                    <span>0</span>
+                                                    <span>Objectif: <t t-esc="kpi.target_value"/> <t t-esc="kpi.unit"/></span>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        -->
+                                    </div>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <div style="text-align: center; padding: 40px; background: #f9f9f9; border-radius: 6px;">
+                                    <div style="font-size: 48px; color: #e0e0e0; margin-bottom: 15px;">📊</div>
+                                    <p style="color: #666; font-size: 14px; margin-bottom: 5px;">
+                                        Aucun indicateur publié dans ce snapshot
+                                    </p>
+                                    <p style="color: #888; font-size: 12px;">
+                                        Publiez des indicateurs pour les voir apparaître ici
+                                    </p>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- =============================================== -->
+                        <!-- ÉVOLUTION HISTORIQUE (si disponible)           -->
+                        <!-- =============================================== -->
+                        <t t-if="snapshot.previous_snapshot_id">
+                            <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                                <h3 style="color: #1B3E41; font-size: 16px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #7AF7A7;">
+                                    📊 Évolution vs période précédente
+                                </h3>
+
+                                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #2B6559;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                        <div>
+                                            <div style="font-weight: bold; color: #1B3E41; margin-bottom: 5px;">
+                                                Comparaison avec:
+                                            </div>
+                                            <div style="color: #666; font-size: 12px;">
+                                                <t t-esc="snapshot.previous_snapshot_id.name"/>
+                                            </div>
+                                            <div style="color: #888; font-size: 11px;">
+                                                (<t t-esc="snapshot.previous_snapshot_id.period_start.strftime('%d/%m/%Y') if snapshot.previous_snapshot_id.period_start else ''"/>
+                                                au <t t-esc="snapshot.previous_snapshot_id.period_end.strftime('%d/%m/%Y') if snapshot.previous_snapshot_id.period_end else ''"/>)
+                                            </div>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="font-weight: bold; color: #1B3E41; margin-bottom: 5px;">
+                                                Évolution globale:
+                                            </div>
+                                            <div style="font-size: 20px; font-weight: bold;">
+                                                <t t-if="snapshot.global_evolution_rate &gt; 0">
+                                                    <span style="color: #4CAF50;">+<t t-esc="'{:.1f}'.format(snapshot.global_evolution_rate)"/>%</span>
+                                                </t>
+                                                <t t-elif="snapshot.global_evolution_rate &lt; 0">
+                                                    <span style="color: #F44336;"><t t-esc="'{:.1f}'.format(snapshot.global_evolution_rate)"/>%</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #9E9E9E;"><t t-esc="'{:.1f}'.format(snapshot.global_evolution_rate)"/>%</span>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Indicateurs avec plus forte progression -->
+                                    <t t-set="top_evolutions" t-value="snapshot.kpi_version_ids.filtered(lambda k: k.evolution_rate != 0).sorted(lambda k: abs(k.evolution_rate), reverse=True)[:3]" />
+                                    <t t-if="top_evolutions and len(top_evolutions) &gt; 0">
+                                        <div style="font-weight: bold; color: #1B3E41; margin-bottom: 10px; font-size: 12px;">
+                                            Meilleures évolutions:
+                                        </div>
+                                        <div style="display: flex; gap: 10px;">
+                                            <t t-foreach="top_evolutions" t-as="kpi">
+                                                <div style="flex: 1; background: white; padding: 10px; border-radius: 4px; border: 1px solid #e0e0e0;">
+                                                    <div style="font-size: 11px; color: #666; margin-bottom: 5px;">
+                                                        <t t-esc="kpi.name[:25]"/>
+                                                        <t t-if="len(kpi.name) &gt; 25">...</t>
+                                                    </div>
+                                                    <div t-if="kpi.evolution_direction == 'up'"
+                                                         style="color: #4CAF50; font-weight: bold; font-size: 14px;">
+                                                        ↗ +<t t-esc="'{:.1f}'.format(kpi.evolution_rate)"/>%
+                                                    </div>
+                                                    <div t-elif="kpi.evolution_direction == 'down'"
+                                                         style="color: #F44336; font-weight: bold; font-size: 14px;">
+                                                        ↘ <t t-esc="'{:.1f}'.format(kpi.evolution_rate)"/>%
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- =============================================== -->
+                        <!-- INFORMATIONS DE CERTIFICATION QUALIOPI         -->
+                        <!-- =============================================== -->
+                        <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                            <h3 style="color: #1B3E41; font-size: 16px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #7AF7A7;">
+                                🏆 Informations de certification Qualiopi
+                            </h3>
+
+                            <div style="background: linear-gradient(to right, #f8f9fa, #ffffff); padding: 20px; border-radius: 8px; border: 2px solid #e0e0e0;">
+                                <table style="width: 100%; font-size: 11px;">
+                                    <tr>
+                                        <td style="width: 50%; vertical-align: top; padding-right: 15px;">
+                                            <div style="margin-bottom: 12px;">
+                                                <div style="font-weight: bold; color: #1B3E41; margin-bottom: 3px; font-size: 12px;">
+                                                    📋 Statut certification
+                                                </div>
+                                                <div style="display: inline-block; background: #4CAF50; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold;">
+                                                    ✅ CERTIFIÉ QUALIOPI
+                                                </div>
+                                            </div>
+
+                                            <div style="margin-bottom: 12px;">
+                                                <div style="font-weight: bold; color: #1B3E41; margin-bottom: 3px; font-size: 12px;">
+                                                    🏢 Organisme certificateur
+                                                </div>
+                                                <div style="color: #666;">
+                                                    Bureau Veritas Certification
+                                                </div>
+                                            </div>
+
+                                            <div style="margin-bottom: 12px;">
+                                                <div style="font-weight: bold; color: #1B3E41; margin-bottom: 3px; font-size: 12px;">
+                                                    🔄 Prochain audit
+                                                </div>
+                                                <div style="color: #666;">
+                                                    15 juin 2026
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td style="width: 50%; vertical-align: top; padding-left: 15px; border-left: 1px solid #e0e0e0;">
+                                            <div style="margin-bottom: 12px;">
+                                                <div style="font-weight: bold; color: #1B3E41; margin-bottom: 3px; font-size: 12px;">
+                                                    📅 Certifié jusqu'au
+                                                </div>
+                                                <div style="color: #666;">
+                                                    31 décembre 2026
+                                                </div>
+                                            </div>
+
+                                            <div style="margin-bottom: 12px;">
+                                                <div style="font-weight: bold; color: #1B3E41; margin-bottom: 3px; font-size: 12px;">
+                                                    📊 Dernière revue
+                                                </div>
+                                                <div style="color: #666;">
+                                                    15 décembre 2025
+                                                </div>
+                                            </div>
+
+                                            <div style="margin-bottom: 12px;">
+                                                <div style="font-weight: bold; color: #1B3E41; margin-bottom: 3px; font-size: 12px;">
+                                                    🔗 Référentiel
+                                                </div>
+                                                <div style="color: #666;">
+                                                    Qualiopi - V4 (2024)
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- QR Code (si disponible) -->
+                                <t t-if="snapshot.qr_code">
+                                    <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e0e0e0;">
+                                        <div style="display: inline-block; background: white; padding: 10px; border-radius: 4px; border: 1px solid #e0e0e0;">
+                                            <div style="font-size: 10px; color: #666; margin-bottom: 5px;">
+                                                Scanner pour vérification en ligne
+                                            </div>
+                                            <t t-if="isinstance(snapshot.qr_code, bytes)">
+                                                <img t-att-src="'data:image/png;base64,' + snapshot.qr_code.decode('utf-8')"
+                                                     style="width: 80px; height: 80px;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <img t-att-src="'data:image/png;base64,' + snapshot.qr_code"
+                                                     style="width: 80px; height: 80px;"/>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- =============================================== -->
+                        <!-- NOTES ET MÉTHODOLOGIE                          -->
+                        <!-- =============================================== -->
+                        <t t-if="snapshot.public_notes or snapshot.methodology">
+                            <div style="margin-bottom: 30px;">
+                                <h3 style="color: #1B3E41; font-size: 16px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #7AF7A7;">
+                                    📝 Informations complémentaires
+                                </h3>
+
+                                <t t-if="snapshot.public_notes">
+                                    <div style="background: #fff8e1; padding: 15px; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid #FF9800;">
+                                        <div style="font-weight: bold; color: #1B3E41; margin-bottom: 8px; font-size: 12px;">
+                                            📌 Notes publiques
+                                        </div>
+                                        <div style="font-size: 11px; color: #666; line-height: 1.5;">
+                                            <t t-raw="snapshot.public_notes"/>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <t t-if="snapshot.methodology">
+                                    <div style="background: #e8f5e9; padding: 15px; border-radius: 6px; border-left: 4px solid #4CAF50;">
+                                        <div style="font-weight: bold; color: #1B3E41; margin-bottom: 8px; font-size: 12px;">
+                                            🔬 Méthodologie de calcul
+                                        </div>
+                                        <div style="font-size: 11px; color: #666; line-height: 1.5;">
+                                            <t t-raw="snapshot.methodology"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+
+                        <!-- =============================================== -->
+                        <!-- PIED DE PAGE DÉTAILLÉ                          -->
+                        <!-- =============================================== -->
+                        <div style="margin-top: 40px; padding-top: 15px; border-top: 2px solid #e0e0e0;
+                                    font-size: 9px; color: #666; text-align: center;">
+                            <table style="width: 100%; margin-bottom: 10px;">
+                                <tr>
+                                    <td style="width: 33%; text-align: left; vertical-align: top;">
+                                        <div style="font-weight: bold; margin-bottom: 3px;">Document généré le</div>
+                                        <div>
+                                            <t t-set="now" t-value="datetime.datetime.now()" />
+                                            <t t-esc="now.strftime('%d/%m/%Y à %H:%M')"/>
+                                        </div>
+                                    </td>
+                                    <td style="width: 33%; text-align: center; vertical-align: top;">
+                                        <div style="font-weight: bold; margin-bottom: 3px;">Traçabilité</div>
+                                        <div>
+                                            ID: <t t-esc="snapshot.id"/> •
+                                            Ref: KPI-<t t-esc="snapshot.id"/>-<t t-esc="snapshot.period_end.strftime('%Y%m') if snapshot.period_end else ''"/>
+                                        </div>
+                                    </td>
+                                    <td style="width: 33%; text-align: right; vertical-align: top;">
+                                        <div style="font-weight: bold; margin-bottom: 3px;">Validation</div>
+                                        <div>
+                                            Validé par: <t t-esc="snapshot.validator_id.name or 'Non validé'"/>
+                                            <t t-if="snapshot.validator_id and snapshot.validator_id.email">
+                                                <br/><t t-esc="snapshot.validator_id.email"/>
+                                            </t>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;">
+                                <p style="margin: 0 0 5px 0; font-style: italic;">
+                                    Ce document est conforme au référentiel Qualiopi - Document à caractère informatif
+                                </p>
+                                <t t-if="snapshot.public_url">
+                                    <p style="margin: 0; font-size: 8px;">
+                                        🔗 Version en ligne: <t t-esc="snapshot.public_url"/>
+                                    </p>
+                                </t>
+                                <p style="margin: 5px 0 0 0; font-size: 8px; color: #888;">
+                                    © <t t-esc="datetime.datetime.now().year"/> - Tous droits réservés - Document généré automatiquement
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- =============================================== -->
+                <!-- PAGE D'ERREUR (si aucun snapshot)              -->
+                <!-- =============================================== -->
+                <t t-else="">
+                    <div style="text-align: center; padding: 80px 20px; font-family: Arial, sans-serif;">
+                        <div style="font-size: 72px; color: #e0e0e0; margin-bottom: 20px;">📊</div>
+                        <h1 style="color: #F44336; font-size: 24px; margin-bottom: 15px;">
+                            Erreur : Aucun snapshot sélectionné
+                        </h1>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 25px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                            Impossible de générer le rapport car aucun snapshot valide n'a été trouvé.
+                        </p>
+
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; max-width: 500px; margin: 0 auto; text-align: left;">
+                            <h3 style="color: #1B3E41; font-size: 14px; margin-bottom: 10px;">🔄 Solutions possibles :</h3>
+                            <ul style="color: #666; font-size: 12px; padding-left: 20px; margin-bottom: 20px;">
+                                <li>Vérifiez que le snapshot existe et est publié</li>
+                                <li>Utilisez l'URL directe : <code>/report/pdf/lms_public_kpi.kpi_pdf_report/[ID]</code></li>
+                                <li>Générez le rapport depuis l'interface Odoo (bouton "Imprimer")</li>
+                                <li>Contactez l'administrateur si le problème persiste</li>
+                            </ul>
+
+                            <h3 style="color: #1B3E41; font-size: 14px; margin-bottom: 10px;">🔍 Variables disponibles :</h3>
+                            <div style="font-size: 10px; font-family: monospace; background: #2B6559; color: white; padding: 10px; border-radius: 4px; overflow-x: auto;">
+                                object: <t t-esc="object and object.id or 'None'"/><br/>
+                                docids: <t t-esc="docids"/><br/>
+                                context: <t t-esc="context"/><br/>
+                                options: <t t-esc="options"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

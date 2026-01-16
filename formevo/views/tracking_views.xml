@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Action pour le suivi détaillé -->
+    <record id="action_slide_slide_partner_tracking" model="ir.actions.act_window">
+        <field name="name">Suivi Détaillé par Contenu</field>
+        <field name="res_model">slide.slide.partner</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Vue Liste pour le suivi -->
+    <record id="view_slide_slide_partner_tree_tracking" model="ir.ui.view">
+        <field name="name">slide.slide.partner.tree.tracking</field>
+        <field name="model">slide.slide.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Suivi Détaillé">
+                <field name="partner_id"/>
+                <field name="channel_id"/>
+                <field name="slide_id"/>
+                <field name="completed"/>
+                <field name="x_time_spent" string="Temps Passé (sec)"/>
+                <field name="x_last_activity"/>
+                <field name="x_completion_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Menu pour accéder à cette vue -->
+</odoo>

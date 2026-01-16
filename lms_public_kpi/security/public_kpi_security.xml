@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Groupes de sécurité -->
+        <record id="group_kpi_editor" model="res.groups">
+            <field name="name">Éditeur KPI</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_kpi_manager" model="res.groups">
+            <field name="name">Manager KPI</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="implied_ids" eval="[(4, ref('group_kpi_editor'))]"/>
+        </record>
+
+        <!-- Règles d'accès -->
+        <record id="public_kpi_snapshot_rule" model="ir.rule">
+            <field name="name">Éditeurs KPI: leurs snapshots</field>
+            <field name="model_id" ref="model_public_kpi_snapshot"/>
+            <field name="groups" eval="[(4, ref('group_kpi_editor'))]"/>
+            <field name="domain_force">
+                ['|', ('create_uid', '=', user.id), ('state', '!=', 'draft')]
+            </field>
+        </record>
+
+        <record id="public_kpi_version_rule" model="ir.rule">
+            <field name="name">Éditeurs KPI: leurs versions</field>
+            <field name="model_id" ref="model_public_kpi_version"/>
+            <field name="groups" eval="[(4, ref('group_kpi_editor'))]"/>
+            <field name="domain_force">
+                ['|', ('snapshot_id.create_uid', '=', user.id), ('snapshot_id.state', '!=', 'draft')]
+            </field>
+        </record>
+
+    </data>
+</odoo>

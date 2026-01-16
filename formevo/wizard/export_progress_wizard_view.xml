@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <record id="view_export_progress_wizard" model="ir.ui.view">
+            <field name="name">formevo.export.progress.wizard.form</field>
+            <field name="model">formevo.export.progress.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Export Progress">
+                    <group>
+                        <field name="course_id"/>
+                        <field name="file_data" widget="binary" filename="file_name" readonly="1"/>
+                        <field name="file_name" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button string="Export" type="object" name="export_progress" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_export_progress_wizard" model="ir.actions.act_window">
+            <field name="name">Export Progress</field>
+            <field name="res_model">formevo.export.progress.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_export_progress_wizard"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

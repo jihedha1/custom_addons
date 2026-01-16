@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Données de démonstration pour les objectifs SMART -->
+        <record id="demo_smart_objective_1" model="lms_objectives.smart_objective">
+            <field name="name">Acquérir les bases de la programmation Python</field>
+            <field name="course_id" ref="slide.slide_channel_demo_0"/>
+            <field name="specific">Apprendre à écrire des fonctions en Python</field>
+            <field name="measurable">Réussir 80% des exercices du module</field>
+            <field name="achievable">Exercices pratiques adaptés aux débutants</field>
+            <field name="relevant">Nécessaire pour la suite du parcours développeur</field>
+            <field name="time_bound">À terminer dans les 2 semaines</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="demo_smart_objective_2" model="lms_objectives.smart_objective">
+            <field name="name">Maîtriser les concepts Odoo v17</field>
+            <field name="course_id" ref="slide.slide_channel_demo_1"/>
+            <field name="specific">Comprendre l'architecture technique d'Odoo</field>
+            <field name="measurable">Développer un module fonctionnel</field>
+            <field name="achievable">Avec les tutoriels pas à pas fournis</field>
+            <field name="relevant">Essentiel pour les développeurs Odoo</field>
+            <field name="time_bound">Durée totale: 40 heures</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="demo_smart_objective_3" model="lms_objectives.smart_objective">
+            <field name="name">Gestion de projet agile</field>
+            <field name="course_id" ref="slide.slide_channel_demo_2"/>
+            <field name="specific">Appliquer les méthodologies Scrum</field>
+            <field name="measurable">Produire un backlog complet</field>
+            <field name="achievable">Ateliers pratiques en groupe</field>
+            <field name="relevant">Pour managers et chefs de projet</field>
+            <field name="time_bound">Certification en 5 jours</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <!-- Questionnaire de positionnement de démonstration -->
+        <record id="demo_placement_survey" model="survey.survey">
+            <field name="title">Test de positionnement - Développement Python</field>
+            <field name="access_mode">public</field>
+            <field name="scoring_type">scoring_without_answers</field>
+            <field name="users_can_go_back">True</field>
+            <field name="questions_layout">page_per_question</field>
+            <field name="state">open</field>
+            <field name="certificate">False</field>
+        </record>
+
+        <!-- Plans individualisés de démonstration -->
+        <record id="demo_individual_plan_1" model="lms_objectives.individual_plan">
+            <field name="partner_id" ref="base.partner_demo"/>
+            <field name="course_id" ref="slide.slide_channel_demo_0"/>
+            <field name="plan_type">initial</field>
+            <field name="state">signed</field>
+            <field name="start_date">2025-01-15</field>
+            <field name="end_date">2025-03-15</field>
+            <field name="notes">&lt;p&gt;Plan de formation adapté aux compétences initiales de l'apprenant.&lt;/p&gt;</field>
+        </record>
+    </data>
+</odoo>

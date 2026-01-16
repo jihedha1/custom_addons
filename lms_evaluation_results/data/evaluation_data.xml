@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ========================================== -->
+        <!-- SÉQUENCES                                  -->
+        <!-- ========================================== -->
+        <record id="seq_cold_assessment" model="ir.sequence">
+            <field name="name">Évaluation à froid</field>
+            <field name="code">lms_evaluation_results.cold_assessment</field>
+            <field name="prefix">EVAL-FROID-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- ========================================== -->
+        <!-- QUESTIONNAIRES ÉVALUATION À FROID          -->
+        <!-- ========================================== -->
+
+        <!-- Questionnaire J+30 -->
+        <record id="survey_template_cold_30_days" model="survey.survey">
+            <field name="title">Évaluation à froid J+30</field>
+            <field name="description">
+                <![CDATA[
+                <p>Cette évaluation vise à mesurer l'impact de la formation
+                sur votre pratique professionnelle après 1 mois.</p>
+                <p>Vos réponses nous aideront à améliorer nos formations.</p>
+                ]]>
+            </field>
+            <field name="questions_layout">one_page</field>
+            <field name="scoring_type">scoring_without_answers</field>
+            <field name="questions_selection">all</field>
+            <field name="access_mode">public</field>
+            <field name="is_time_limited" eval="False"/>
+            <field name="is_published" eval="True"/>
+        </record>
+
+        <!-- Questions J+30 -->
+        <record id="question_cold_30_satisfaction" model="survey.question">
+            <field name="title">Satisfaction globale</field>
+            <field name="survey_id" ref="survey_template_cold_30_days"/>
+            <field name="sequence">10</field>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory" eval="True"/>
+            <field name="description">Quel est votre niveau de satisfaction global 1 mois après la formation ?</field>
+        </record>
+
+        <record id="answer_cold_30_sat_5" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_satisfaction"/>
+            <field name="value">Très satisfait</field>
+            <field name="answer_score">100</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="answer_cold_30_sat_4" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_satisfaction"/>
+            <field name="value">Satisfait</field>
+            <field name="answer_score">75</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="answer_cold_30_sat_3" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_satisfaction"/>
+            <field name="value">Neutre</field>
+            <field name="answer_score">50</field>
+            <field name="sequence">3</field>
+        </record>
+        <record id="answer_cold_30_sat_2" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_satisfaction"/>
+            <field name="value">Peu satisfait</field>
+            <field name="answer_score">25</field>
+            <field name="sequence">4</field>
+        </record>
+        <record id="answer_cold_30_sat_1" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_satisfaction"/>
+            <field name="value">Pas du tout satisfait</field>
+            <field name="answer_score">0</field>
+            <field name="sequence">5</field>
+        </record>
+
+        <record id="question_cold_30_applied" model="survey.question">
+            <field name="title">Compétences appliquées</field>
+            <field name="survey_id" ref="survey_template_cold_30_days"/>
+            <field name="sequence">20</field>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory" eval="True"/>
+            <field name="description">Avez-vous pu appliquer les compétences acquises dans votre travail ?</field>
+        </record>
+
+        <record id="answer_cold_30_applied_yes" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_applied"/>
+            <field name="value">Oui, régulièrement</field>
+            <field name="answer_score">100</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="answer_cold_30_applied_sometimes" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_applied"/>
+            <field name="value">Oui, occasionnellement</field>
+            <field name="answer_score">50</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="answer_cold_30_applied_no" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_applied"/>
+            <field name="value">Pas encore</field>
+            <field name="answer_score">0</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="question_cold_30_impact" model="survey.question">
+            <field name="title">Impact professionnel</field>
+            <field name="survey_id" ref="survey_template_cold_30_days"/>
+            <field name="sequence">30</field>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory" eval="True"/>
+            <field name="description">Quel est l'impact de la formation sur votre pratique professionnelle ?</field>
+        </record>
+
+        <record id="answer_cold_30_impact_vh" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_impact"/>
+            <field name="value">Très élevé</field>
+            <field name="answer_score">100</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="answer_cold_30_impact_h" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_impact"/>
+            <field name="value">Élevé</field>
+            <field name="answer_score">75</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="answer_cold_30_impact_m" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_impact"/>
+            <field name="value">Moyen</field>
+            <field name="answer_score">50</field>
+            <field name="sequence">3</field>
+        </record>
+        <record id="answer_cold_30_impact_l" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_impact"/>
+            <field name="value">Faible</field>
+            <field name="answer_score">25</field>
+            <field name="sequence">4</field>
+        </record>
+        <record id="answer_cold_30_impact_n" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_impact"/>
+            <field name="value">Aucun</field>
+            <field name="answer_score">0</field>
+            <field name="sequence">5</field>
+        </record>
+
+        <record id="question_cold_30_career" model="survey.question">
+            <field name="title">Progression de carrière</field>
+            <field name="survey_id" ref="survey_template_cold_30_days"/>
+            <field name="sequence">40</field>
+            <field name="question_type">simple_choice</field>
+            <field name="description">Cette formation a-t-elle contribué à une évolution professionnelle ?</field>
+        </record>
+
+        <record id="answer_cold_30_career_yes" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_career"/>
+            <field name="value">Oui</field>
+            <field name="answer_score">100</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="answer_cold_30_career_no" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_30_career"/>
+            <field name="value">Pas encore</field>
+            <field name="answer_score">0</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="question_cold_30_feedback" model="survey.question">
+            <field name="title">Commentaires libres</field>
+            <field name="survey_id" ref="survey_template_cold_30_days"/>
+            <field name="sequence">50</field>
+            <field name="question_type">text_box</field>
+            <field name="description">Avez-vous des suggestions pour améliorer la formation ?</field>
+        </record>
+
+        <!-- Questionnaire J+90 -->
+        <record id="survey_template_cold_90_days" model="survey.survey">
+            <field name="title">Évaluation à froid J+90</field>
+            <field name="description">
+                <![CDATA[
+                <p>Cette évaluation vise à mesurer l'impact de la formation
+                sur votre pratique professionnelle après 3 mois.</p>
+                <p>Vos réponses nous aideront à améliorer nos formations.</p>
+                ]]>
+            </field>
+            <field name="questions_layout">one_page</field>
+            <field name="scoring_type">scoring_without_answers</field>
+            <field name="questions_selection">all</field>
+            <field name="access_mode">public</field>
+            <field name="is_time_limited" eval="False"/>
+            <field name="is_published" eval="True"/>
+        </record>
+
+        <!-- Questions J+90 (similaires à J+30) -->
+        <record id="question_cold_90_satisfaction" model="survey.question">
+            <field name="title">Satisfaction globale</field>
+            <field name="survey_id" ref="survey_template_cold_90_days"/>
+            <field name="sequence">10</field>
+            <field name="question_type">simple_choice</field>
+            <field name="constr_mandatory" eval="True"/>
+            <field name="description">Quel est votre niveau de satisfaction global 3 mois après la formation ?</field>
+        </record>
+
+        <record id="answer_cold_90_sat_5" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_90_satisfaction"/>
+            <field name="value">Très satisfait</field>
+            <field name="answer_score">100</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="answer_cold_90_sat_4" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_90_satisfaction"/>
+            <field name="value">Satisfait</field>
+            <field name="answer_score">75</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="answer_cold_90_sat_3" model="survey.question.answer">
+            <field name="question_id" ref="question_cold_90_satisfaction"/>
+            <field name="value">Neutre</field>
+            <field name="answer_score">50</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="question_cold_90_longterm_impact" model="survey.question">
+            <field name="title">Impact à long terme</field>
+            <field name="survey_id" ref="survey_template_cold_90_days"/>
+            <field name="sequence">20</field>
+            <field name="question_type">text_box</field>
+            <field name="description">Décrivez les impacts concrets de la formation sur votre activité professionnelle après 3 mois.</field>
+        </record>
+
+        <!-- ========================================== -->
+        <!-- TEMPLATES EMAIL                            -->
+        <!-- ========================================== -->
+
+        <!-- Email invitation évaluation à froid -->
+        <record id="mail_template_cold_assessment" model="mail.template">
+            <field name="name">Invitation Évaluation à froid</field>
+            <field name="model_id" ref="model_lms_evaluation_results_cold_assessment"/>
+            <field name="subject">{{ object.channel_id.name }} - Votre avis nous intéresse !</field>
+            <field name="email_from">{{ (object.channel_id.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="body_html" type="html">
+                <![CDATA[
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <div style="background: linear-gradient(135deg, #2B6559, #7AF7A7); padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0;">Votre avis compte !</h1>
+                    </div>
+
+                    <div style="padding: 30px; background: #f8f9fa;">
+                        <p>Bonjour <strong>${object.partner_id.name}</strong>,</p>
+
+                        <p>Il y a ${30 if object.assessment_type == '30_days' else 90} jours, vous avez terminé la formation :</p>
+                        <p style="text-align: center; font-size: 18px; color: #2B6559;">
+                            <strong>${object.channel_id.name}</strong>
+                        </p>
+
+                        <p>Pour améliorer constamment nos formations, nous aimerions connaître votre retour d'expérience.</p>
+
+                        <p><strong>Objectif de cette évaluation :</strong></p>
+                        <ul>
+                            <li>Mesurer l'impact concret sur votre pratique professionnelle</li>
+                            <li>Identifier les points d'amélioration</li>
+                            <li>Adapter nos contenus à vos besoins réels</li>
+                        </ul>
+
+                        <div style="text-align: center; margin: 30px 0;">
+                            <a href="${object.user_input_id.get_start_url()}"
+                               style="background: linear-gradient(135deg, #2B6559, #7AF7A7);
+                                      color: white;
+                                      padding: 15px 40px;
+                                      text-decoration: none;
+                                      border-radius: 25px;
+                                      display: inline-block;
+                                      font-weight: bold;">
+                                Donner mon avis (5 min)
+                            </a>
+                        </div>
+
+                        <p style="font-size: 12px; color: #666;">
+                            <strong>Date limite :</strong> ${format_date(object.deadline_date)}<br/>
+                            <strong>Temps estimé :</strong> 5 minutes
+                        </p>
+
+                        <p>Merci pour votre participation !</p>
+
+                        <p>
+                            Cordialement,<br/>
+                            <strong>L'équipe pédagogique</strong>
+                        </p>
+                    </div>
+
+                    <div style="background: #09171E; padding: 20px; text-align: center; color: white; font-size: 12px;">
+                        <p>Formation certifiée Qualiopi</p>
+                        <p>Vos réponses sont confidentielles et servent uniquement à améliorer nos formations.</p>
+                    </div>
+                </div>
+                ]]>
+            </field>
+        </record>
+
+        <!-- Email rappel -->
+        <record id="mail_template_cold_reminder" model="mail.template">
+            <field name="name">Rappel Évaluation à froid</field>
+            <field name="model_id" ref="model_lms_evaluation_results_cold_assessment"/>
+            <field name="subject">Rappel : Votre avis sur {{ object.channel_id.name }}</field>
+            <field name="email_from">{{ (object.channel_id.user_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="body_html" type="html">
+                <![CDATA[
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <div style="background: #2B6559; padding: 20px; text-align: center;">
+                        <h2 style="color: white; margin: 0;">Rappel : Votre avis nous manque !</h2>
+                    </div>
+
+                    <div style="padding: 30px; background: #f8f9fa;">
+                        <p>Bonjour <strong>${object.partner_id.name}</strong>,</p>
+
+                        <p>Nous n'avons pas encore reçu votre évaluation concernant la formation :</p>
+                        <p style="text-align: center; font-size: 18px; color: #2B6559;">
+                            <strong>${object.channel_id.name}</strong>
+                        </p>
+
+                        <p>Votre retour est précieux pour nous aider à améliorer nos formations.</p>
+
+                        <div style="text-align: center; margin: 30px 0;">
+                            <a href="${object.user_input_id.get_start_url()}"
+                               style="background: #7AF7A7;
+                                      color: #09171E;
+                                      padding: 15px 40px;
+                                      text-decoration: none;
+                                      border-radius: 25px;
+                                      display: inline-block;
+                                      font-weight: bold;">
+                                Répondre maintenant
+                            </a>
+                        </div>
+
+                        <p style="font-size: 12px; color: #666;">
+                            <strong>Date limite :</strong> ${format_date(object.deadline_date)}<br/>
+                            Ceci est le rappel ${object.reminder_count}/${object.max_reminders}
+                        </p>
+
+                        <p>Merci !</p>
+                    </div>
+                </div>
+                ]]>
+            </field>
+        </record>
+
+    </data>
+</odoo>

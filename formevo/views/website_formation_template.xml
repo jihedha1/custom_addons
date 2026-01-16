@@ -1,0 +1,160 @@
+<!-- views/website_formation_template.xml -->
+<odoo>
+    <template id="formation_fiche_publique" name="Fiche Formation Publique">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+
+                <!-- Hero Section -->
+                <section class="bg-primary text-white py-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <h1 class="display-4" t-field="course.name"/>
+                                <p class="lead" t-field="course.description"/>
+                            </div>
+                            <div class="col-lg-4 text-center">
+                                <div class="card bg-light text-dark p-4">
+                                    <h3 class="text-primary">
+                                        <t t-esc="course.price"/> €
+                                    </h3>
+                                    <p class="mb-2">HT - Inter-entreprise</p>
+                                    <a t-attf-href="/formation/{{course.id}}/contact"
+                                       class="btn btn-warning btn-lg mb-2">
+                                        📧 Demander des infos
+                                    </a>
+                                    <a href="/appointment" class="btn btn-outline-primary">
+                                        📅 Prendre RDV
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Informations détaillées -->
+                <section class="py-5">
+                    <div class="container">
+                        <div class="row">
+
+                            <!-- Colonne principale -->
+                            <div class="col-lg-8">
+
+                                <!-- Objectifs -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <h3>🎯 Objectifs Pédagogiques</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <t t-raw="course.pedagogical_objectives"/>
+                                    </div>
+                                </div>
+
+                                <!-- Public cible -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-info text-white">
+                                        <h3>👥 Public Cible</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <p t-field="course.target_audience"/>
+                                    </div>
+                                </div>
+
+                                <!-- Prérequis -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-warning">
+                                        <h3>📚 Prérequis</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <p t-field="course.prerequisites"/>
+                                    </div>
+                                </div>
+
+                                <!-- Programme (slides existants) -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-success text-white">
+                                        <h3>📖 Programme</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-group">
+                                            <t t-foreach="course.slide_ids" t-as="slide">
+                                                <li class="list-group-item">
+                                                    <i class="fa fa-check-circle text-success"/>
+                                                    <t t-esc="slide.name"/>
+                                                </li>
+                                            </t>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Sidebar -->
+                            <div class="col-lg-4">
+
+                                <!-- Infos pratiques -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-secondary text-white">
+                                        <h4>ℹ️ Informations Pratiques</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">
+                                                <strong>⏱️ Durée :</strong>
+                                                <t t-esc="course.duration_hours"/> heures
+                                                (<t t-esc="course.duration_days"/> jours)
+                                            </li>
+                                            <li class="mb-2">
+                                                <strong>📍 Modalité :</strong>
+                                                <t t-esc="dict(course._fields['training_modality'].selection).get(course.training_modality)"/>
+                                            </li>
+                                            <li class="mb-2">
+                                                <strong>📊 Niveau :</strong>
+                                                <t t-esc="dict(course._fields['training_level'].selection).get(course.training_level)"/>
+                                            </li>
+                                            <li class="mb-2" t-if="course.delivers_certificate">
+                                                <strong>🎓 Certification :</strong>
+                                                <t t-esc="course.certificate_name"/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Compétences formateur -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-primary text-white">
+                                        <h4>👨‍🏫 Expertise Formateur</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p t-field="course.trainer_competencies"/>
+                                    </div>
+                                </div>
+
+                                <!-- Accessibilité -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-info text-white">
+                                        <h4>♿ Accessibilité</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <p t-field="course.accessibility_info"/>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </t>
+    </template>
+
+    <!-- Controller route -->
+    <record id="formation_fiche_publique_route" model="website.page">
+        <field name="name">Fiche Formation</field>
+        <field name="url">/formation/&lt;model("slide.channel"):course&gt;</field>
+        <field name="view_id" ref="formation_fiche_publique"/>
+        <field name="website_published">True</field>
+    </record>
+
+</odoo>

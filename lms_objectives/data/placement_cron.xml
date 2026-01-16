@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- CRON : Assignation automatique des questionnaires -->
+        <record id="cron_auto_assign_placement" model="ir.cron">
+            <field name="name">Assignation auto questionnaires positionnement</field>
+            <field name="model_id" ref="model_formation_placement_assessment"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_auto_assign_placement()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+        <!-- CRON : Rappels questionnaires en retard -->
+        <record id="cron_remind_placement" model="ir.cron">
+            <field name="name">Rappels questionnaires positionnement</field>
+            <field name="model_id" ref="model_formation_placement_assessment"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_remind_placement()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+    </data>
+</odoo>

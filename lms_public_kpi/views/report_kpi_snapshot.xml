@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Template rapport PDF -->
+        <template id="report_kpi_snapshot_document">
+            <t t-call="web.external_layout">
+                <t t-set="o" t-value="doc"/>
+                <div class="page">
+                    <!-- En-tête -->
+                    <div class="text-center mb-4">
+                        <h1>Indicateurs de Performance</h1>
+                        <h3 class="text-muted">
+                            <t t-esc="o.name"/>
+                        </h3>
+                        <p class="lead">
+                            Période du
+                            <strong t-field="o.period_start"/>
+                            au
+                            <strong t-field="o.period_end"/>
+                        </p>
+                        <p class="text-muted">
+                            Publié le <t t-field="o.publication_date"/>
+                        </p>
+                    </div>
+
+                    <!-- Notes publiques -->
+                    <t t-if="o.public_notes">
+                        <div class="alert alert-info mb-4">
+                            <t t-raw="o.public_notes"/>
+                        </div>
+                    </t>
+
+                    <!-- Tableau des indicateurs -->
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Catégorie</th>
+                                <th>Indicateur</th>
+                                <th class="text-right">Valeur</th>
+                                <th class="text-right">Évolution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.kpi_version_ids.filtered(lambda k: k.state == 'published').sorted('sequence')" t-as="kpi">
+                                <tr>
+                                    <td>
+                                        <span class="badge badge-secondary">
+                                            <t t-esc="kpi.category_id.name"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <strong t-esc="kpi.name"/>
+                                        <t t-if="kpi.description">
+                                            <br/>
+                                            <small class="text-muted" t-esc="kpi.description"/>
+                                        </t>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <t t-esc="'{:,.1f}'.format(kpi.value)"/>
+                                            <t t-esc="kpi.unit"/>
+                                        </strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-if="kpi.evolution_rate != 0">
+                                            <span t-attf-class="badge badge-{{
+                                                'success' if kpi.evolution_direction == 'up'
+                                                else 'danger' if kpi.evolution_direction == 'down'
+                                                else 'secondary'
+                                            }}">
+                                                <t t-if="kpi.evolution_direction == 'up'">↑</t>
+                                                <t t-elif="kpi.evolution_direction == 'down'">↓</t>
+                                                <t t-else="">→</t>
+                                                <t t-esc="'{:,.1f}'.format(abs(kpi.evolution_rate))"/>%
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-muted">-</span>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Mentions légales -->
+                    <div class="mt-5 pt-3 border-top">
+                        <h5>Méthodologie et conformité</h5>
+                        <p class="text-muted small">
+                            Ces indicateurs sont calculés et publiés conformément au référentiel
+                            national Qualiopi. Les données sont collectées selon des procédures
+                            garantissant leur fiabilité et leur traçabilité.
+                        </p>
+                        <p class="text-muted small">
+                            <strong>Périodicité :</strong> <t t-esc="o.period_type"/><br/>
+                            <strong>Source :</strong> <t t-esc="dict(o._fields['data_source'].selection).get(o.data_source)"/>
+                        </p>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Définition du rapport -->
+        <record id="report_kpi_snapshot" model="ir.actions.report">
+            <field name="name">Rapport KPI</field>
+            <field name="model">public.kpi.snapshot</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lms_public_kpi.report_kpi_snapshot_document</field>
+            <field name="report_file">lms_public_kpi.report_kpi_snapshot_document</field>
+            <field name="print_report_name">'KPI_' + object.name</field>
+            <field name="binding_model_id" ref="model_public_kpi_snapshot"/>
+            <field name="binding_type">report</field>
+        </record>
+
+    </data>
+</odoo>

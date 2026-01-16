@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- VUE FORMULAIRE QUESTION COMPLÈTE (AVEC SYSTÈME DE CORRECTION) -->
+    <!-- ================================================================== -->
+    <record id="view_slide_question_form_complete" model="ir.ui.view">
+        <field name="name">slide.question.form.complete</field>
+        <field name="model">slide.question</field>
+        <field name="arch" type="xml">
+            <form string="Question">
+                <sheet>
+                    <!-- ========================================== -->
+                    <!-- ALERTES EN HAUT DU FORMULAIRE -->
+                    <!-- ========================================== -->
+
+                    <!-- Alerte si pas encore sauvegardée -->
+                    <div class="alert alert-warning" role="alert" invisible="id != False">
+                        <strong>
+                            <i class="fa fa-warning me-2" title="Attention" role="img" aria-label="Attention"></i>
+                            Attention
+                        </strong>
+                        <p class="mb-1">Enregistrez d'abord cette question avant d'ajouter des réponses.</p>
+                        <p class="mb-0 small">Cliquez sur "Enregistrer" pour pouvoir ensuite ajouter des réponses.</p>
+                    </div>
+
+                    <!-- Alerte si erreur de correction -->
+                    <div class="alert alert-danger" role="alert" invisible="ai_last_correction_error == False">
+                        <strong><i class="fa fa-exclamation-triangle me-2" title="Erreur" role="img"
+                                   aria-label="Erreur"></i>Problème de Correction IA
+                        </strong>
+                        <p class="mb-1">
+                            <field name="ai_last_correction_error" readonly="1" nolabel="1"/>
+                        </p>
+                        <p class="mb-0 small">Tentatives :
+                            <field name="ai_correction_attempts" readonly="1" nolabel="1"/>
+                        </p>
+                    </div>
+
+                    <!-- Info si générée par IA -->
+                    <div class="alert alert-info" role="alert" invisible="x_ai_generated == False">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fa fa-robot me-2" title="IA" role="img" aria-label="IA"></i>
+                                <strong>Question générée par IA</strong>
+                            </div>
+                            <div>
+                                <span class="badge bg-info" invisible="x_ai_difficulty_calculated == False">
+                                    Difficulté :
+                                    <field name="x_ai_difficulty_calculated" readonly="1" nolabel="1"/>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- TITRE DE LA QUESTION -->
+                    <!-- ========================================== -->
+                    <div class="oe_title">
+                        <label for="question" string="Question"/>
+                        <h1>
+                            <field name="question" placeholder="Ex: Quelle est la capitale de la France ?"/>
+                        </h1>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- CONFIGURATION DE BASE -->
+                    <!-- ========================================== -->
+                    <group>
+                        <group string="Configuration de Base">
+                            <field name="slide_id" options="{'no_create': True}"/>
+                            <field name="x_question_type"
+                                   widget="radio"
+                                   options="{'horizontal': true}"
+                                   readonly="id != False"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Métadonnées IA" invisible="x_ai_generated == False">
+                            <field name="x_ai_generated" readonly="1" widget="boolean"/>
+                            <field name="x_ai_difficulty_calculated" readonly="1"/>
+                            <field name="x_ai_source_reference" readonly="1"/>
+                            <field name="x_ai_source_slide_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- ========================================== -->
+                    <!-- MODE DE CORRECTION -->
+                    <!-- ========================================== -->
+                    <separator string="Mode de Correction"/>
+
+                    <group>
+                        <group>
+                            <field name="correction_mode" widget="radio" required="1"/>
+                        </group>
+                        <group>
+                            <!-- Badge avec compteur de réponses en attente -->
+                            <div class="o_row" invisible="correction_mode != 'manual'">
+                                <label for="pending_answers_count" string="Réponses en attente"/>
+                                <field name="pending_answers_count" class="oe_inline"/>
+                                <button name="action_view_pending_answers"
+                                        type="object"
+                                        string="📥 Voir"
+                                        class="btn-link"
+                                        invisible="pending_answers_count == 0"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <!-- Explications des modes -->
+                    <div class="alert alert-info" role="alert"
+                         invisible="correction_mode != 'manual'">
+                        <strong>
+                            <i class="fa fa-user-check me-2" title="Manuel" role="img" aria-label="Mode manuel"></i>
+                            Mode Manuel Activé
+                        </strong>
+                        <ul class="mb-0 mt-2 small">
+                            <li>
+                                <strong>QCM/Vrai-Faux :</strong>
+                                Correction automatique + validation enseignant avant affichage
+                            </li>
+                            <li>
+                                <strong>Question Ouverte :</strong>
+                                Analyse GPT (si activée) + validation enseignant avant affichage
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-success" role="alert"
+                         invisible="correction_mode != 'automatic'">
+                        <strong><i class="fa fa-bolt me-2" title="Automatique" role="img"
+                                   aria-label="Mode automatique"></i>Mode Automatique Activé
+                        </strong>
+                        <ul class="mb-0 mt-2 small">
+                            <li>
+                                <strong>QCM/Vrai-Faux :</strong>
+                                Résultat immédiat à l'étudiant
+                            </li>
+                            <li>
+                                <strong>Question Ouverte :</strong>
+                                Score basé sur les mots-clés (sans GPT)
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- ========================================== -->
+                    <!-- ONGLETS -->
+                    <!-- ========================================== -->
+                    <notebook>
+
+                        <!-- ========================================== -->
+                        <!-- ONGLET 1 : RÉPONSES (QCM / VRAI-FAUX) -->
+                        <!-- ========================================== -->
+                        <page string="Réponses" name="answers" invisible="x_question_type == 'text_box'">
+
+                            <!-- Message pour nouvelle question -->
+                            <div class="alert alert-warning" role="alert"
+                                 invisible="id != False">
+                                <strong><i class="fa fa-warning me-2" title="Attention" role="img"
+                                           aria-label="Attention"></i>Question non enregistrée
+                                </strong>
+                                <p class="mb-0">Enregistrez d'abord la question pour pouvoir ajouter des réponses.</p>
+                            </div>
+
+                            <!-- Info pour questions existantes -->
+                            <div class="alert alert-info" role="alert"
+                                 invisible="id == False">
+                                <strong>
+                                    <i class="fa fa-info-circle me-2" title="Info" role="img" aria-label="Info"></i>
+                                    Gestion des réponses
+                                </strong>
+                                <p class="mb-1">Pour les questions QCM et Vrai/Faux, vous devez avoir :</p>
+                                <ul class="mb-0">
+                                    <li>Au moins
+                                        <strong>une réponse correcte</strong>
+                                    </li>
+                                    <li>Au moins
+                                        <strong>une réponse incorrecte</strong>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Liste des réponses - VISIBLE seulement si question sauvegardée -->
+                            <field name="answer_ids"
+                                   nolabel="1"
+                                   invisible="id == False">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="text_value" string="Réponse" required="1"/>
+                                    <field name="is_correct" widget="boolean_toggle"/>
+                                    <field name="comment" string="Explication"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <!-- ========================================== -->
+                        <!-- ONGLET 2 : SCORING MOTS-CLÉS (MODE AUTOMATIQUE) -->
+                        <!-- ========================================== -->
+                        <page string="⚙️ Scoring Mots-clés"
+                              name="keyword_scoring"
+                              invisible="x_question_type != 'text_box' or correction_mode != 'automatic'">
+
+                            <div class="alert alert-warning mb-3" role="alert">
+                                <strong><i class="fa fa-line-chart me-2" title="Scoring" role="img"
+                                           aria-label="Scoring"></i>Configuration du Scoring Automatique
+                                </strong>
+                                <p class="mb-2 mt-2">
+                                    Définissez les mots-clés et leur score. Le score final sera calculé
+                                    automatiquement en fonction de leur présence dans la réponse.
+                                </p>
+                                <div class="text-muted small">
+                                    <strong>Formule :</strong>
+                                    Score Final = (Σ Scores Trouvés / Σ Scores Max) × 100
+                                </div>
+                            </div>
+
+                            <field name="keyword_scoring">
+                                <tree editable="bottom"
+                                      decoration-success="score_value &gt; 15"
+                                      decoration-danger="score_value &lt; 0">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="keyword" placeholder="Ex: photosynthèse" required="1"/>
+                                    <field name="score_value"
+                                           string="Score"
+                                           widget="integer"
+                                           required="1"/>
+                                    <field name="keyword_type"
+                                           widget="badge"
+                                           optional="show"
+                                           decoration-success="keyword_type == 'required'"
+                                           decoration-info="keyword_type == 'bonus'"
+                                           decoration-danger="keyword_type == 'forbidden'"/>
+                                    <field name="description" placeholder="Note optionnelle"/>
+                                    <button name="action_duplicate"
+                                            type="object"
+                                            icon="fa-files-o"
+                                            title="Dupliquer ce mot-clé"/>
+                                    <button name="action_invert_score"
+                                            type="object"
+                                            icon="fa-exchange"
+                                            title="Inverser le score (positif ↔ négatif)"/>
+                                </tree>
+                            </field>
+
+                            <div class="mt-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-1">
+                                            <strong><i class="fa fa-lightbulb-o me-1" title="Conseil" role="img"
+                                                       aria-label="Conseil"></i>Conseils de Configuration :
+                                            </strong>
+                                        </p>
+                                        <ul class="text-muted small mb-0">
+                                            <li>
+                                                <strong>Score positif (+10, +20) :</strong>
+                                                Mots-clés attendus → Bonus
+                                            </li>
+                                            <li>
+                                                <strong>Score négatif (-10, -20) :</strong>
+                                                Mots-clés interdits → Pénalité
+                                            </li>
+                                            <li>
+                                                <strong>Score élevé (&gt;15) :</strong>
+                                                Concepts essentiels
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="text-muted mb-1">
+                                            <strong><i class="fa fa-graduation-cap me-1" title="Exemple" role="img"
+                                                       aria-label="Exemple"></i>Exemples Pédagogiques :
+                                            </strong>
+                                        </p>
+                                        <ul class="text-muted small mb-0">
+                                            <li>"chlorophylle" : +20 (concept fondamental)</li>
+                                            <li>"glucose" : +15 (résultat attendu)</li>
+                                            <li>"dioxyde de carbone" : +10 (élément important)</li>
+                                            <li>"respiration" : -20 (confusion courante)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </page>
+
+                        <!-- ========================================== -->
+                        <!-- ONGLET 3 : CORRECTION IA (MODE MANUEL) -->
+                        <!-- ========================================== -->
+                        <page string="🤖 Correction IA"
+                              name="ai_correction"
+                              invisible="x_question_type != 'text_box' or correction_mode != 'manual'">
+
+                            <div class="alert alert-info" role="alert">
+                                <strong><i class="fa fa-robot me-2"></i>Configuration de la Correction par IA
+                                </strong>
+                                <p class="mb-0">
+                                    En mode manuel, l'IA peut pré-analyser les réponses avant validation enseignant.
+                                    Les mots-clés aident l'IA à mieux évaluer les réponses.
+                                </p>
+                            </div>
+
+                            <group>
+                                <field name="is_ai_corrected"
+                                       widget="boolean_toggle"
+                                       string="Activer l'analyse GPT"/>
+                            </group>
+
+                            <group string="Mots-clés pour la Correction"
+                                   invisible="is_ai_corrected == False">
+                                <group>
+                                    <label for="ai_include_keywords"/>
+                                    <field name="ai_include_keywords"
+                                           nolabel="1"
+                                           widget="text"
+                                           placeholder="Ex: photosynthèse, chlorophylle, glucose&#10;(un mot-clé par ligne ou séparés par des virgules)"/>
+                                </group>
+                                <group>
+                                    <label for="ai_exclude_keywords"/>
+                                    <field name="ai_exclude_keywords"
+                                           nolabel="1"
+                                           widget="text"
+                                           placeholder="Ex: respiration, fermentation&#10;(mots qui indiquent une mauvaise compréhension)"/>
+                                </group>
+                            </group>
+
+                            <group string="Mots-clés Suggérés par l'IA"
+                                   invisible="ai_suggested_keywords == False">
+                                <field name="ai_suggested_keywords"
+                                       widget="text"
+                                       readonly="1"
+                                       nolabel="1"/>
+                            </group>
+
+                            <div class="alert alert-warning" role="alert"
+                                 invisible="is_ai_corrected == True">
+                                <i class="fa fa-info-circle me-2" title="Info" role="img" aria-label="Info"></i>
+                                <strong>Correction manuelle pure</strong>
+                                <p class="mb-0">
+                                    L'analyse GPT est désactivée. Les réponses seront corrigées
+                                    entièrement manuellement par un enseignant.
+                                </p>
+                            </div>
+                        </page>
+
+                        <!-- ========================================== -->
+                        <!-- ONGLET 4 : RÉPONSES EN ATTENTE (MODE MANUEL) -->
+                        <!-- ========================================== -->
+                        <page string="📥 Réponses en Attente"
+                              name="pending_answers"
+                              invisible="correction_mode != 'manual'">
+
+                            <div class="alert alert-info mb-3" role="alert">
+                                <i class="fa fa-clock-o me-2" title="En attente" role="img" aria-label="En attente"></i>
+                                <strong>Réponses en attente de validation pour cette question</strong>
+                                <span class="badge bg-primary ms-2">
+                                    <field name="pending_answers_count" readonly="1"/>
+                                </span>
+                            </div>
+
+                            <field name="pending_answers">
+                                <tree decoration-info="state == 'pending'"
+                                      decoration-success="state == 'validated'"
+                                      decoration-danger="state == 'rejected'"
+                                      decoration-muted="state == 'corrected'"
+                                      decoration-warning="is_overdue == True">
+
+                                    <field name="create_date" string="Date" widget="datetime"/>
+                                    <field name="user_id" string="Étudiant" widget="many2one_avatar_user"/>
+                                    <field name="text_answer" string="Extrait Réponse"
+                                           optional="show"
+                                           widget="text"/>
+                                    <field name="answer_id" string="Choix" optional="hide"/>
+                                    <field name="score" string="Score Suggéré"
+                                           widget="progressbar"
+                                           decoration-success="score &gt;= 80"
+                                           decoration-warning="score &gt;= 50 and score &lt; 80"
+                                           decoration-danger="score &lt; 50"/>
+                                    <field name="is_overdue" invisible="1"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'pending'"
+                                           decoration-success="state == 'validated'"
+                                           decoration-danger="state == 'rejected'"
+                                           decoration-muted="state == 'corrected'"/>
+                                    <field name="validated_by" optional="hide"/>
+
+                                    <!-- Actions rapides -->
+                                    <button name="action_validate"
+                                            string="✓"
+                                            type="object"
+                                            class="btn-success btn-sm"
+                                            title="Valider la suggestion"
+                                            invisible="state != 'pending'"/>
+                                    <button name="action_correct_manually"
+                                            string="✏️"
+                                            type="object"
+                                            class="btn-warning btn-sm"
+                                            title="Corriger manuellement"
+                                            invisible="state != 'pending'"/>
+                                    <button name="action_reject"
+                                            string="✕"
+                                            type="object"
+                                            class="btn-danger btn-sm"
+                                            title="Rejeter"
+                                            invisible="state != 'pending'"
+                                            confirm="Êtes-vous sûr de vouloir rejeter cette réponse ?"/>
+                                </tree>
+                            </field>
+
+                            <div class="alert alert-light mt-3" role="alert"
+                                 invisible="pending_answers_count &gt; 0">
+                                <i class="fa fa-check-circle text-success me-2" title="OK" role="img"
+                                   aria-label="OK"></i>
+                                <strong>Aucune réponse en attente</strong>
+                                - Toutes les réponses ont été traitées.
+                            </div>
+
+                            <!-- Actions rapides en masse -->
+                            <div class="mt-3" invisible="pending_answers_count == 0">
+                                <button name="action_validate_all_pending"
+                                        type="object"
+                                        string="✓ Valider Toutes les Suggestions"
+                                        class="btn-success"
+                                        confirm="Valider toutes les suggestions automatiques pour cette question ?"/>
+                            </div>
+
+                        </page>
+
+                        <!-- ========================================== -->
+                        <!-- ONGLET 5 : STATISTIQUES -->
+                        <!-- ========================================== -->
+                        <page string="📊 Statistiques &amp; Métadonnées" name="statistics">
+
+                            <group>
+                                <group string="Performance de la Correction">
+                                    <field name="ai_correction_attempts" readonly="1"/>
+                                    <field name="ai_last_correction_error"
+                                           readonly="1"
+                                           invisible="ai_last_correction_error == False"/>
+                                </group>
+                                <group string="Informations Source" invisible="x_ai_generated != True">
+                                    <field name="x_ai_source_reference" readonly="1"/>
+                                    <field name="x_ai_source_slide_id" readonly="1"/>
+                                </group>
+                            </group>
+
+                        </page>
+                        <!-- ========================================== -->
+                        <!-- ONGLET : INDICE (HINT) -->
+                        <!-- ========================================== -->
+                        <page string="💡 Indice" name="hint">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fa fa-lightbulb-o me-2"></i>
+                                Cet indice sera affiché à l’étudiant quand il clique sur “Afficher un indice”.
+                            </div>
+
+                            <group>
+                                <field name="x_hint" widget="html"
+                                       placeholder="Ex: Pensez à la définition vue dans le chapitre 1..."
+                                />
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- VUE LISTE AVEC DÉCORATIONS -->
+    <!-- ================================================================== -->
+    <record id="view_slide_question_tree_complete" model="ir.ui.view">
+        <field name="name">slide.question.tree.complete</field>
+        <field name="model">slide.question</field>
+        <field name="arch" type="xml">
+            <tree string="Questions"
+                  decoration-primary="x_ai_generated == True"
+                  decoration-danger="ai_last_correction_error != False"
+                  decoration-success="x_question_type == 'text_box' and is_ai_corrected == True"
+                  decoration-warning="correction_mode == 'manual' and pending_answers_count &gt; 0"
+                  decoration-info="correction_mode == 'automatic'">
+
+                <field name="sequence" widget="handle"/>
+                <field name="question"/>
+                <field name="slide_id"/>
+                <field name="x_question_type" string="Type"/>
+                <field name="correction_mode" optional="show"/>
+                <field name="pending_answers_count" optional="show"
+                       string="En attente"
+                       decoration-warning="pending_answers_count &gt; 0"/>
+                <field name="x_ai_generated" string="IA" widget="boolean"/>
+                <field name="is_ai_corrected" string="Auto-correction" invisible="1"/>
+                <field name="ai_last_correction_error" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- RECHERCHE ET FILTRES ÉTENDUS -->
+    <!-- ================================================================== -->
+    <record id="view_slide_question_search_extended" model="ir.ui.view">
+        <field name="name">slide.question.search.extended</field>
+        <field name="model">slide.question</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="question"/>
+                <field name="slide_id"/>
+                <field name="x_question_type"/>
+
+                <!-- Filtres rapides -->
+                <filter name="filter_manual"
+                        string="Mode Manuel"
+                        domain="[('correction_mode', '=', 'manual')]"/>
+                <filter name="filter_automatic"
+                        string="Mode Automatique"
+                        domain="[('correction_mode', '=', 'automatic')]"/>
+
+                <separator/>
+
+                <filter name="filter_pending"
+                        string="Avec Réponses en Attente"
+                        domain="[('pending_answers_count', '&gt;', 0)]"/>
+                <filter name="filter_text_box"
+                        string="Questions Ouvertes"
+                        domain="[('x_question_type', '=', 'text_box')]"/>
+                <filter name="filter_ai_generated"
+                        string="Générées par IA"
+                        domain="[('x_ai_generated', '=', True)]"/>
+                <filter name="filter_ai_corrected"
+                        string="Avec Correction IA"
+                        domain="[('is_ai_corrected', '=', True)]"/>
+
+                <separator/>
+
+                <filter name="filter_errors"
+                        string="Avec Erreurs de Correction"
+                        domain="[('ai_last_correction_error', '!=', False)]"/>
+
+                <separator/>
+
+                <!-- Grouper par -->
+                <group expand="0" string="Grouper par">
+                    <filter name="group_correction_mode"
+                            string="Mode de Correction"
+                            context="{'group_by': 'correction_mode'}"/>
+                    <filter name="group_question_type"
+                            string="Type de Question"
+                            context="{'group_by': 'x_question_type'}"/>
+                    <filter name="group_slide"
+                            string="Chapitre"
+                            context="{'group_by': 'slide_id'}"/>
+                    <filter name="group_ai_generated"
+                            string="Générée par IA"
+                            context="{'group_by': 'x_ai_generated'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- ACTION -->
+    <!-- ================================================================== -->
+    <record id="action_slide_question_all" model="ir.actions.act_window">
+        <field name="name">Toutes les Questions</field>
+        <field name="res_model">slide.question</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('view_slide_question_tree_complete')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('view_slide_question_form_complete')})]"/>
+        <field name="context">{}</field>  <!-- Pas de domaine ici -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre première question !
+            </p>
+            <p>
+                Utilisez l'assistant IA pour générer automatiquement des questions
+                ou créez-les manuellement.
+            </p>
+        </field>
+    </record>
+    <!-- ================================================================== -->
+    <!-- MENU -->
+    <!-- ================================================================== -->
+
+</odoo>

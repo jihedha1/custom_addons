@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vue tableau de bord résultats -->
+        <record id="view_results_dashboard_form" model="ir.ui.view">
+            <field name="name">lms_evaluation_results.results_dashboard.form</field>
+            <field name="model">lms_evaluation_results.results_dashboard</field>
+            <field name="arch" type="xml">
+                <form string="Tableau de bord des résultats">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="action"
+                                    name="%(lms_evaluation_results.action_export_results_wizard)d"
+                                    class="oe_stat_button"
+                                    icon="fa-download">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">Exporter</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <h1>Tableau de bord des résultats</h1>
+                            <h2>Indicateurs Qualiopi - Évaluations et satisfaction</h2>
+                        </div>
+
+                        <!-- Filtres -->
+                        <group>
+                            <group>
+                                <field name="period"/>
+                                <field name="date_start" attrs="{'invisible': [('period', '!=', 'custom')]}"/>
+                                <field name="date_end" attrs="{'invisible': [('period', '!=', 'custom')]}"/>
+                            </group>
+                            <group>
+                                <field name="channel_ids" widget="many2many_tags"/>
+                                <field name="trainer_id"/>
+                            </group>
+                        </group>
+
+                        <!-- Métriques principales -->
+                        <group string="Indicateurs principaux">
+                            <group>
+                                <field name="total_participants" readonly="1"/>
+                                <field name="total_completions" readonly="1"/>
+                                <field name="completion_rate" readonly="1" widget="percentage"/>
+                            </group>
+                            <group>
+                                <field name="success_rate" readonly="1" widget="percentage"/>
+                                <field name="satisfaction_rate" readonly="1" widget="percentage"/>
+                                <field name="dropout_rate" readonly="1" widget="percentage"/>
+                            </group>
+                        </group>
+
+                        <!-- Métriques évaluations -->
+                        <group string="Évaluations à froid">
+                            <group>
+                                <field name="cold_assessments_sent" readonly="1"/>
+                                <field name="cold_assessments_completed" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="cold_assessment_rate" readonly="1" widget="percentage"/>
+                                <field name="professional_impact_rate" readonly="1" widget="percentage"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Graphiques" name="charts">
+                                <group>
+                                    <field name="chart_completion_trend" invisible="1"/>
+                                    <field name="chart_satisfaction_trend" invisible="1"/>
+                                    <field name="chart_success_by_channel" invisible="1"/>
+                                    <field name="chart_assessment_response_rates" invisible="1"/>
+                                </group>
+                            </page>
+
+                            <page string="Top Performers" name="performers">
+                                <group>
+                                    <field name="top_channels" invisible="1"/>
+                                    <field name="bottom_channels" invisible="1"/>
+                                    <field name="top_trainers" invisible="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" groups="base.group_user"/>
+                            <field name="message_ids"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour le tableau de bord -->
+        <record id="action_results_dashboard" model="ir.actions.act_window">
+            <field name="name">Tableau de bord résultats</field>
+            <field name="res_model">lms_evaluation_results.results_dashboard</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Tableau de bord des indicateurs Qualiopi
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

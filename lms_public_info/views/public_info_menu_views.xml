@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- DÉFINIR LES ACTIONS EN PREMIER -->
+
+        <!-- Action pour les compétences -->
+        <record id="action_trainer_competency" model="ir.actions.act_window">
+            <field name="name">Compétences Formateur</field>
+            <field name="res_model">lms_public_info.trainer_competency</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_trainer_competency_search"/>
+            <field name="context">{'default_active': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créez votre première compétence formateur
+                </p>
+            </field>
+        </record>
+
+        <!-- Action pour les formateurs -->
+        <record id="action_trainers" model="ir.actions.act_window">
+            <field name="name">Formateurs</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="domain">[('is_trainer', '=', True)]</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="context">{'default_is_trainer': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Gérez vos formateurs
+                </p>
+            </field>
+        </record>
+
+        <!-- PUIS DÉFINIR LES MENUS -->
+
+        <!-- Menu principal -->
+        <menuitem id="menu_public_info_main" name="Formations"
+                   sequence="10"/>
+
+        <!-- Sous-menu Compétences -->
+        <menuitem id="menu_trainer_competencies" name="Compétences Formateur"
+                  parent="menu_public_info_main" sequence="10"/>
+
+        <menuitem id="menu_trainer_competency_all" name="Toutes les compétences"
+                  parent="menu_trainer_competencies" action="action_trainer_competency" sequence="10"/>
+
+        <!-- Sous-menu Formateurs -->
+        <menuitem id="menu_trainers" name="Formateurs"
+                  parent="menu_public_info_main" sequence="20"/>
+
+        <menuitem id="menu_trainer_all" name="Tous les formateurs"
+                  parent="menu_trainers" action="action_trainers" sequence="10"/>
+
+    </data>
+</odoo>

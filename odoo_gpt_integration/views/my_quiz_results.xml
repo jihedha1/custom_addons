@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- TEMPLATE : MES RÉSULTATS (Page étudiant) -->
+    <!-- ================================================================== -->
+    <template id="my_quiz_results_page" name="Mes Résultats">
+        <t t-call="website.layout">
+            <t t-set="title">Mes Résultats de Quiz</t>
+
+            <div class="container mt-4">
+                <!-- En-tête avec statistiques -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1 class="mb-3">
+                            <i class="fa fa-chart-bar me-2"></i>
+                            Mes Résultats de Quiz
+                        </h1>
+
+                        <div class="row">
+                            <!-- Carte : Total réponses -->
+                            <div class="col-md-3 mb-3">
+                                <div class="card border-primary">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Total Réponses</h5>
+                                        <h2 class="text-primary">
+                                            <t t-esc="len(pending_answers)"/>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Carte : En attente -->
+                            <div class="col-md-3 mb-3">
+                                <div class="card border-warning">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">En Attente</h5>
+                                        <h2 class="text-warning">
+                                            <t t-esc="len([a for a in pending_answers if a.state == 'pending'])"/>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Carte : Corrigées -->
+                            <div class="col-md-3 mb-3">
+                                <div class="card border-success">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Corrigées</h5>
+                                        <h2 class="text-success">
+                                            <t t-esc="len([a for a in pending_answers if a.state in ['validated', 'corrected']])"/>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Carte : Score Moyen -->
+                            <div class="col-md-3 mb-3">
+                                <div class="card border-info">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Score Moyen</h5>
+                                        <h2 class="text-info">
+                                            <t t-set="corrected_with_score"
+                                               t-value="[a.final_score for a in pending_answers
+                             if a.state in ['validated', 'corrected']
+                             and a.final_score is not False
+                             and a.final_score is not None]"/>
+                                            <t t-if="corrected_with_score">
+                                                <t t-esc="round(sum(corrected_with_score) / len(corrected_with_score), 1)"/>
+                                            </t>
+                                            <t t-else="">0</t>
+                                            <small>/100</small>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tableau des résultats -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-list me-2"></i>
+                                    Historique de mes réponses
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Cours</th>
+                                                <th>Question</th>
+                                                <th>Type</th>
+                                                <th>Statut</th>
+                                                <th>Score</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="pending_answers" t-as="answer">
+                                                <tr>
+                                                    <!-- Date -->
+                                                    <td>
+                                                        <small>
+                                                            <t t-esc="answer.create_date.strftime('%d/%m/%Y') if answer.create_date else ''"/>
+                                                            <br/>
+                                                            <span class="text-muted">
+                                                                <t t-esc="answer.create_date.strftime('%H:%M') if answer.create_date else ''"/>
+                                                            </span>
+                                                        </small>
+                                                    </td>
+
+                                                    <!-- Cours -->
+                                                    <td>
+                                                        <strong>
+                                                            <t t-esc="answer.channel_id.name if answer.channel_id else ''"/>
+                                                        </strong>
+                                                        <br/>
+                                                        <small class="text-muted">
+                                                            <t t-esc="answer.slide_id.name if answer.slide_id else ''"/>
+                                                        </small>
+                                                    </td>
+
+                                                    <!-- Question -->
+                                                    <td>
+                                                        <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">
+                                                            <t t-esc="answer.question_id.question[:50] if answer.question_id and answer.question_id.question else ''"/>
+                                                            <t t-if="answer.question_id and answer.question_id.question and len(answer.question_id.question) > 50">
+                                                                ...
+                                                            </t>
+                                                        </div>
+                                                    </td>
+
+                                                    <!-- Type -->
+                                                    <td>
+                                                        <t t-set="question_type"
+                                                           t-value="answer.question_id.x_question_type if answer.question_id else ''"/>
+                                                        <t t-set="badge_class"
+                                                           t-value="'bg-primary' if question_type == 'simple_choice' else 'bg-info' if question_type == 'true_false' else 'bg-warning' if question_type == 'text_box' else 'bg-secondary'"/>
+                                                        <t t-set="type_label"
+                                                           t-value="'QCM' if question_type == 'simple_choice' else 'Vrai/Faux' if question_type == 'true_false' else 'Ouverte' if question_type == 'text_box' else 'Autre'"/>
+
+                                                        <!-- CORRECTION 1: Type -->
+                                                        <span t-att-class="'badge ' + badge_class">
+                                                            <t t-esc="type_label"/>
+                                                        </span>
+                                                    </td>
+
+                                                    <!-- Statut -->
+                                                    <td>
+                                                        <t t-set="state_badge_class">
+                                                            <t t-if="answer.state == 'pending'">bg-warning</t>
+                                                            <t t-elif="answer.state == 'validated'">bg-success</t>
+                                                            <t t-elif="answer.state == 'corrected'">bg-info</t>
+                                                            <t t-elif="answer.state == 'rejected'">bg-danger</t>
+                                                            <t t-else="">bg-secondary</t>
+                                                        </t>
+                                                        <t t-set="state_label">
+                                                            <t t-if="answer.state == 'pending'">⏳ En Attente</t>
+                                                            <t t-elif="answer.state == 'validated'">✅ Validé</t>
+                                                            <t t-elif="answer.state == 'corrected'">✏️ Corrigé</t>
+                                                            <t t-elif="answer.state == 'rejected'">❌ Rejeté</t>
+                                                            <t t-else="">
+                                                                <t t-esc="answer.state"/>
+                                                            </t>
+                                                        </t>
+
+                                                        <!-- CORRECTION 2: Statut -->
+                                                        <span t-att-class="'badge ' + state_badge_class">
+                                                            <t t-esc="state_label"/>
+                                                        </span>
+                                                    </td>
+
+                                                    <!-- Score -->
+                                                    <td>
+                                                        <t t-if="answer.final_score is not False and answer.state in ['validated', 'corrected']">
+                                                            <t t-set="score_class">
+                                                                <t t-if="answer.final_score >= 80">bg-success</t>
+                                                                <t t-elif="answer.final_score >= 50">bg-warning</t>
+                                                                <t t-else="">bg-danger</t>
+                                                            </t>
+                                                            <!-- CORRECTION 3: Score -->
+                                                            <span t-att-class="'badge ' + score_class"
+                                                                  style="font-size: 1.1em;">
+                                                                <t t-esc="answer.final_score"/>/100
+                                                            </span>
+                                                        </t>
+                                                        <t t-elif="answer.score is not False and answer.state == 'pending'">
+                                                            <small class="text-muted">
+                                                                <t t-esc="answer.score"/>/100 (suggéré)
+                                                            </small>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">-</span>
+                                                        </t>
+                                                    </td>
+
+                                                    <!-- Actions -->
+                                                    <td>
+                                                        <a t-att-href="'/slides/result/%s/details' % answer.id"
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            <i class="fa fa-eye me-1"></i>
+                                                            Détails
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </t>
+
+                                            <!-- Message si vide -->
+                                            <t t-if="not pending_answers">
+                                                <tr>
+                                                    <td colspan="7" class="text-center py-5 text-muted">
+                                                        <i class="fa fa-inbox fa-3x mb-3"></i>
+                                                        <h5>Aucune réponse enregistrée</h5>
+                                                        <p>Participez à des quiz pour voir vos résultats ici.</p>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    <!-- ================================================================== -->
+    <!-- TEMPLATE : DÉTAILS DE LA RÉPONSE -->
+    <!-- ================================================================== -->
+    <template id="answer_details_page" name="Détails de la Réponse">
+        <t t-call="website.layout">
+            <t t-set="title">Détails de la Réponse</t>
+
+            <div class="container mt-4">
+                <!-- Bouton retour -->
+                <div class="mb-3">
+                    <a href="/slides/my_results" class="btn btn-outline-secondary">
+                        <i class="fa fa-arrow-left me-2"></i>
+                        Retour à mes résultats
+                    </a>
+                </div>
+
+                <!-- Carte principale -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">
+                                <i class="fa fa-question-circle me-2"></i>
+                                Détails de la réponse
+                            </h4>
+
+                            <!-- Badge statut -->
+                            <t t-set="state_badge_class">
+                                <t t-if="answer.state == 'pending'">bg-warning</t>
+                                <t t-elif="answer.state == 'validated'">bg-success</t>
+                                <t t-elif="answer.state == 'corrected'">bg-info</t>
+                                <t t-elif="answer.state == 'rejected'">bg-danger</t>
+                                <t t-else="">bg-secondary</t>
+                            </t>
+                            <t t-set="state_label">
+                                <t t-if="answer.state == 'pending'">⏳ En Attente de Correction</t>
+                                <t t-elif="answer.state == 'validated'">✅ Réponse Validée</t>
+                                <t t-elif="answer.state == 'corrected'">✏️ Corrigée par l'enseignant</t>
+                                <t t-elif="answer.state == 'rejected'">❌ Réponse Rejetée</t>
+                                <t t-else="">
+                                    <t t-esc="answer.state"/>
+                                </t>
+                            </t>
+
+                            <!-- CORRECTION 1: Badge statut -->
+                            <span t-att-class="'badge p-2 ' + state_badge_class" style="font-size: 1.1em;">
+                                <t t-esc="state_label"/>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Informations générales -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>Informations</h5>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th width="40%">Cours :</th>
+                                        <td>
+                                            <t t-esc="channel.name if channel else ''"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Chapitre :</th>
+                                        <td>
+                                            <t t-esc="answer.slide_id.name if answer.slide_id else ''"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Type de question :</th>
+                                        <td>
+                                            <t t-set="qtype" t-value="question.x_question_type if question else ''"/>
+                                            <t t-set="type_badge_class">
+                                                <t t-if="qtype == 'simple_choice'">bg-primary</t>
+                                                <t t-elif="qtype == 'true_false'">bg-info</t>
+                                                <t t-elif="qtype == 'text_box'">bg-warning</t>
+                                                <t t-else="">bg-secondary</t>
+                                            </t>
+                                            <t t-set="type_label">
+                                                <t t-if="qtype == 'simple_choice'">Question à Choix Multiple</t>
+                                                <t t-elif="qtype == 'true_false'">Vrai ou Faux</t>
+                                                <t t-elif="qtype == 'text_box'">Question Ouverte</t>
+                                                <t t-else="">Autre</t>
+                                            </t>
+
+                                            <!-- CORRECTION 2: Badge type de question -->
+                                            <span t-att-class="'badge ' + type_badge_class">
+                                                <t t-esc="type_label"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Mode de correction :</th>
+                                        <td>
+                                            <t t-set="correction_mode"
+                                               t-value="question.correction_mode if question else ''"/>
+                                            <t t-if="correction_mode == 'automatic'">⚡ Correction Automatique</t>
+                                            <t t-elif="correction_mode == 'manual'">👨‍🏫 Correction Manuelle</t>
+                                            <t t-else="">Automatique</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date de soumission :</th>
+                                        <td>
+                                            <t t-esc="answer.create_date.strftime('%d/%m/%Y à %H:%M') if answer.create_date else ''"/>
+                                        </td>
+                                    </tr>
+                                    <t t-if="answer.validated_date">
+                                        <tr>
+                                            <th>Date de correction :</th>
+                                            <td>
+                                                <t t-esc="answer.validated_date.strftime('%d/%m/%Y à %H:%M') if answer.validated_date else ''"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+
+                            <!-- Score -->
+                            <div class="col-md-6">
+                                <div class="text-center">
+                                    <h5>Score Final</h5>
+
+                                    <t t-if="answer.final_score is not False and answer.state in ['validated', 'corrected']">
+                                        <t t-set="score_class">
+                                            <t t-if="answer.final_score >= 80">text-success</t>
+                                            <t t-elif="answer.final_score >= 50">text-warning</t>
+                                            <t t-else="">text-danger</t>
+                                        </t>
+                                        <t t-set="progress_class">
+                                            <t t-if="answer.final_score >= 80">bg-success</t>
+                                            <t t-elif="answer.final_score >= 50">bg-warning</t>
+                                            <t t-else="">bg-danger</t>
+                                        </t>
+
+                                        <!-- CORRECTION 3: Score display -->
+                                        <div t-att-class="'display-4 ' + score_class">
+                                            <t t-esc="answer.final_score"/>
+                                            <small class="text-muted" style="font-size: 0.5em;">/100</small>
+                                        </div>
+
+                                        <!-- Barre de progression -->
+                                        <div class="progress mt-3" style="height: 20px;">
+                                            <!-- CORRECTION 4: Progress bar -->
+                                            <div t-att-class="'progress-bar ' + progress_class"
+                                                 t-att-style="'width: ' + str(answer.final_score or 0) + '%;'"
+                                                 role="progressbar">
+                                                <t t-esc="answer.final_score"/>%
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <t t-elif="answer.score is not False and answer.state == 'pending'">
+                                        <div class="alert alert-warning">
+                                            <h5>Score suggéré par l'IA :</h5>
+                                            <div class="display-4 text-warning">
+                                                <t t-esc="answer.score"/>
+                                                <small class="text-muted" style="font-size: 0.5em;">/100</small>
+                                            </div>
+                                            <p class="mb-0 mt-2">
+                                                <small>
+                                                    <i class="fa fa-info-circle me-1"></i>
+                                                    Score en attente de validation par l'enseignant
+                                                </small>
+                                            </p>
+                                        </div>
+                                    </t>
+
+                                    <t t-else="">
+                                        <div class="alert alert-secondary">
+                                            <p class="mb-0">Score non disponible</p>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr/>
+
+                        <!-- Question -->
+                        <div class="mb-4">
+                            <h5>
+                                <i class="fa fa-question me-2"></i>
+                                Question
+                            </h5>
+                            <div class="alert alert-light border">
+                                <p class="mb-0" style="font-size: 1.1em;">
+                                    <t t-esc="question.question if question else ''"/>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Réponse de l'étudiant -->
+                        <div class="mb-4">
+                            <h5>
+                                <i class="fa fa-reply me-2"></i>
+                                Votre réponse
+                            </h5>
+                            <t t-set="alert_class">
+                                <t t-if="answer.state == 'pending'">alert-primary</t>
+                                <t t-elif="answer.state == 'validated'">alert-success</t>
+                                <t t-elif="answer.state == 'corrected'">alert-info</t>
+                                <t t-elif="answer.state == 'rejected'">alert-danger</t>
+                                <t t-else="">alert-light</t>
+                            </t>
+
+                            <!-- CORRECTION 5: Alert class -->
+                            <div t-att-class="'alert border ' + alert_class">
+                                <t t-if="answer.text_answer">
+                                    <p class="mb-0" style="font-size: 1.1em; white-space: pre-wrap;">
+                                        <t t-esc="answer.text_answer"/>
+                                    </p>
+                                </t>
+                                <t t-elif="answer.answer_id">
+                                    <p class="mb-0" style="font-size: 1.1em;">
+                                        <t t-esc="answer.answer_id.text_value if answer.answer_id.text_value else ''"/>
+                                        <t t-if="answer.answer_id.is_correct and answer.state in ['validated', 'corrected']">
+                                            <!-- CORRECTION 6: Badge correct -->
+                                            <span class="badge bg-success ms-2">Correct</span>
+                                        </t>
+                                        <t t-elif="not answer.answer_id.is_correct and answer.state in ['validated', 'corrected']">
+                                            <!-- CORRECTION 7: Badge incorrect -->
+                                            <span class="badge bg-danger ms-2">Incorrect</span>
+                                        </t>
+                                    </p>
+                                </t>
+                                <t t-else="">
+                                    <p class="text-muted mb-0">Aucune réponse fournie</p>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Feedback -->
+                        <t t-if="answer.final_feedback or answer.feedback">
+                            <div class="mb-4">
+                                <h5>
+                                    <i class="fa fa-comment me-2"></i>
+                                    Feedback
+                                </h5>
+                                <div class="border rounded p-3">
+                                    <t t-if="answer.final_feedback">
+                                        <div t-raw="answer.final_feedback"/>
+                                    </t>
+                                    <t t-elif="answer.feedback">
+                                        <div t-raw="answer.feedback"/>
+                                        <hr/>
+                                        <small class="text-muted">
+                                            <i class="fa fa-info-circle me-1"></i>
+                                            Feedback généré automatiquement par l'IA - en attente de validation
+                                        </small>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Commentaire enseignant -->
+                        <t t-if="answer.teacher_comment and answer.state in ['corrected', 'rejected']">
+                            <div class="mb-4">
+                                <h5>
+                                    <i class="fa fa-user-tie me-2"></i>
+                                    Commentaire de l'enseignant
+                                </h5>
+                                <div class="alert alert-light border">
+                                    <p class="mb-0" style="white-space: pre-wrap;">
+                                        <t t-esc="answer.teacher_comment"/>
+                                    </p>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Réponse idéale (GPT) -->
+                        <t t-if="answer.gpt_ideal_answer and answer.state == 'pending'">
+                            <div class="mb-4">
+                                <h5>
+                                    <i class="fa fa-lightbulb me-2"></i>
+                                    Réponse idéale suggérée par l'IA
+                                </h5>
+                                <div class="alert alert-info">
+                                    <p class="mb-0" style="white-space: pre-wrap;">
+                                        <t t-esc="answer.gpt_ideal_answer"/>
+                                    </p>
+                                    <hr/>
+                                    <small class="text-muted">
+                                        <i class="fa fa-info-circle me-1"></i>
+                                        Cette réponse est suggérée par l'IA à titre indicatif
+                                    </small>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

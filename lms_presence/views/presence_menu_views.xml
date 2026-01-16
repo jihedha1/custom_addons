@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Menu principal sous Formevo -->
+        <menuitem
+            id="menu_presence_main"
+            name="Présence"
+            sequence="100"
+        />
+
+        <!-- Sous-menu Sessions -->
+        <menuitem
+            id="menu_attendance_sessions"
+            name="Sessions"
+            parent="menu_presence_main"
+            sequence="10"
+        />
+
+        <!-- Toutes les sessions -->
+        <menuitem
+            id="menu_attendance_session_all"
+            name="Toutes les sessions"
+            parent="menu_attendance_sessions"
+            action="lms_presence.action_attendance_session_all"
+            sequence="10"
+        />
+
+        <!-- Mes sessions -->
+        <menuitem
+            id="menu_my_sessions"
+            name="Mes sessions"
+            parent="menu_attendance_sessions"
+            action="lms_presence.action_my_sessions"
+            sequence="20"
+        />
+
+        <!-- Feuilles de présence -->
+        <menuitem
+            id="menu_attendance_list"
+            name="Feuilles de présence"
+            parent="menu_presence_main"
+            action="lms_presence.action_attendance_line"
+            sequence="20"
+        />
+
+        <!-- Journaux -->
+        <menuitem
+            id="menu_session_logs"
+            name="Journaux"
+            parent="menu_presence_main"
+            action="lms_presence.action_session_log"
+            sequence="30"
+        />
+
+        <!-- Configuration -->
+        <menuitem
+            id="menu_config_presence"
+            name="Configuration"
+            parent="menu_presence_main"
+            sequence="40"
+        />
+
+        <!-- Participants -->
+        <menuitem
+            id="menu_config_participants"
+            name="Participants"
+            parent="menu_config_presence"
+            action="lms_presence.action_res_partner_participants"
+            sequence="10"
+        />
+
+    </data>
+</odoo>

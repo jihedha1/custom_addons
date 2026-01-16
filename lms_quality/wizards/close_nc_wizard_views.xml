@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Assistant de clôture de non-conformité -->
+        <record id="view_close_nc_wizard_form" model="ir.ui.view">
+            <field name="name">quality.close.nc.wizard.form</field>
+            <field name="model">quality.close.nc.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Clôturer la non-conformité">
+                    <header>
+                        <button name="action_close_nc" type="object" string="Clôturer" class="btn-primary"/>
+                        <button string="Annuler" special="cancel" class="btn-secondary"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Clôture de la non-conformité</h1>
+                            <h2>
+                                <field name="non_conformity_id" readonly="1"/>
+                            </h2>
+                        </div>
+
+                        <group>
+                            <group string="Évaluation">
+                                <field name="effectiveness" required="1"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <label for="closure_notes" string="Notes de clôture"/>
+                            <field name="closure_notes" nolabel="1" required="1"/>
+                        </group>
+
+                        <group>
+                            <label for="preventive_actions" string="Actions préventives"/>
+                            <field name="preventive_actions" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour ouvrir l'assistant de clôture -->
+        <record id="action_close_nc_wizard" model="ir.actions.act_window">
+            <field name="name">Clôturer non-conformité</field>
+            <field name="res_model">quality.close.nc.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_non_conformity_id': active_id}</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lms_public_info_trainer_competency_user,Compétence Formateur - Lecture,model_lms_public_info_trainer_competency,base.group_user,1,0,0,0
+access_lms_public_info_trainer_competency_editor,Compétence Formateur - Édition,model_lms_public_info_trainer_competency,base.group_system,1,1,1,0
+access_lms_public_info_trainer_competency_manager,Compétence Formateur - Gestion,model_lms_public_info_trainer_competency,base.group_system,1,1,1,1
+
+access_slide_channel_public_info_user,Formation Public Info - Lecture,model_slide_channel,base.group_user,1,0,0,0
+access_slide_channel_public_info_editor,Formation Public Info - Édition,model_slide_channel,base.group_system,1,1,1,0
+access_slide_channel_public_info_manager,Formation Public Info - Gestion,model_slide_channel,base.group_system,1,1,1,1
+access_appointment_wizard,appointment.wizard.access,model_lms_public_info_appointment_wizard,base.group_user,1,0,0,0

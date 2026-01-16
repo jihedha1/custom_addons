@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue arbre pour les évaluations de supports -->
+        <record id="view_material_evaluation_tree" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.material_evaluation.tree</field>
+            <field name="model">lms_resources_trainers.material_evaluation</field>
+            <field name="arch" type="xml">
+                <tree string="Évaluations de supports">
+                    <field name="name"/>
+                    <field name="material_name"/>
+                    <field name="course_id"/>
+                    <field name="material_type"/>
+                    <field name="evaluator_id"/>
+                    <field name="deadline_date"/>
+                    <field name="state" widget="badge"
+                           decoration-warning="state=='in_progress'"
+                           decoration-success="state=='completed'"
+                           decoration-danger="state=='overdue'"/>
+                    <field name="overall_score" widget="progressbar" options="{'editable': false}"/>
+                    <field name="approval_status"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue formulaire pour les évaluations de supports -->
+        <record id="view_material_evaluation_form" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.material_evaluation.form</field>
+            <field name="model">lms_resources_trainers.material_evaluation</field>
+            <field name="arch" type="xml">
+                <form string="Évaluation de Support Pédagogique">
+                    <header>
+                        <button name="action_start_evaluation" string="Démarrer" type="object" class="oe_highlight"
+                                states="draft"/>
+                        <button name="action_complete_evaluation" string="Terminer" type="object" class="oe_highlight"
+                                states="in_progress"/>
+                        <button name="action_approve" string="Approuver" type="object"
+                                states="completed" attrs="{'invisible': [('approval_status','!=','pending')]}"/>
+                        <button name="action_request_revision" string="Demander révision" type="object"
+                                states="completed"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed,cancelled"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="material_name" placeholder="Nom du support"/>
+                            </h1>
+                        </div>
+                        <div class="oe_button_box" name="button_box">
+                            <div class="oe_stat_button" icon="fa-star">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">Note globale</span>
+                                    <span class="o_stat_value">
+                                        <field name="overall_score" widget="percentage" nolabel="1"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="oe_stat_button" icon="fa-clock">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">Jours restants</span>
+                                    <span class="o_stat_value">
+                                        <field name="days_until_deadline" widget="integer" nolabel="1"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <group>
+                            <group string="Support">
+                                <field name="course_id" widget="many2one" options="{'no_create': True}"/>
+                                <field name="material_type"/>
+                                <field name="material_file" widget="binary" filename="material_file.datas_fname"/>
+                                <field name="material_name"/>
+                            </group>
+                            <group string="Évaluation">
+                                <field name="evaluator_id" widget="many2one"/>
+                                <field name="evaluation_date"/>
+                                <field name="deadline_date"/>
+                                <field name="evaluation_duration"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Critères d'évaluation">
+                                <group>
+                                    <group>
+                                        <field name="content_quality" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="pedagogical_relevance" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="technical_quality" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="accessibility" widget="radio" options="{'horizontal': true}"/>
+                                    </group>
+                                    <group>
+                                        <div class="alert alert-info" role="alert">
+                                            <strong>Note globale: </strong>
+                                            <field name="overall_score" widget="percentage" nolabel="1"/>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Recommandations">
+                                <field name="recommendations" widget="text" nolabel="1" placeholder="Saisissez vos recommandations ici..."/>
+                            </page>
+                            <page string="Approbation">
+                                <group>
+                                    <group>
+                                        <field name="approval_status" widget="radio" options="{'horizontal': true}"/>
+                                        <field name="completion_date" readonly="1"/>
+                                        <field name="revision_count" readonly="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="evaluation_report" widget="binary" filename="evaluation_report.datas_fname"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Historique">
+                                <field name="message_ids" widget="mail_thread"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue recherche -->
+        <record id="view_material_evaluation_search" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.material_evaluation.search</field>
+            <field name="model">lms_resources_trainers.material_evaluation</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher évaluation">
+                    <field name="material_name"/>
+                    <field name="course_id"/>
+                    <field name="evaluator_id"/>
+                    <filter name="overdue" string="En retard" domain="[('deadline_date','&lt;',context_today()),('state','=','in_progress')]"/>
+                    <filter name="in_progress" string="En cours" domain="[('state','=','in_progress')]"/>
+                    <filter name="completed" string="Terminées" domain="[('state','=','completed')]"/>
+                    <separator/>
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_by_course" string="Formation" context="{'group_by': 'course_id'}"/>
+                        <filter name="group_by_evaluator" string="Évaluateur" context="{'group_by': 'evaluator_id'}"/>
+                        <filter name="group_by_status" string="Statut" context="{'group_by': 'approval_status'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action pour les évaluations de supports -->
+        <record id="action_material_evaluation" model="ir.actions.act_window">
+            <field name="name">Évaluations des supports</field>
+            <field name="res_model">lms_resources_trainers.material_evaluation</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_material_evaluation_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Évaluez ici la qualité des supports pédagogiques utilisés dans les formations.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

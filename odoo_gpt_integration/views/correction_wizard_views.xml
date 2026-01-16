@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- WIZARD DE CORRECTION MANUELLE -->
+    <!-- ================================================================== -->
+    <record id="view_correction_wizard_form" model="ir.ui.view">
+        <field name="name">slide.question.correction.wizard.form</field>
+        <field name="model">slide.question.correction.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assistant de Correction">
+
+                <!-- Champs cachés -->
+                <field name="pending_answer_id" invisible="1"/>
+                <field name="question_type" invisible="1"/>
+                <field name="submission_date" invisible="1"/>
+                <field name="suggested_score" invisible="1"/>
+                <field name="score_difference" invisible="1"/>
+                <field name="correction_quality" invisible="1"/>
+
+                <sheet>
+
+                    <!-- En-tête avec informations clés -->
+                    <div class="oe_title">
+                        <h1>
+                            <i class="fa fa-edit me-2"/>
+                            Assistant de Correction Manuelle
+                        </h1>
+                    </div>
+
+                    <!-- Informations contextuelles -->
+                    <group>
+                        <group string="📚 Contexte">
+                            <label for="question_text" string="Question posée"/>
+                            <div class="o_row">
+                                <field name="question_text" readonly="1"
+                                       widget="text"
+                                       nolabel="1"
+                                       class="text-muted"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="👤 Étudiant">
+                            <field name="student_name" readonly="1"/>
+                            <field name="student_email" readonly="1"
+                                   widget="email"/>
+                        </group>
+                        <group string="📊 Suggestion Automatique">
+                            <field name="suggested_score" readonly="1"
+                                   widget="progressbar"/>
+                            <label for="score_difference"/>
+                            <div class="o_row">
+                                <field name="score_difference" readonly="1"/>
+                                <span class="text-muted ms-2"
+                                      invisible="score_difference == 0">
+                                    points de différence
+                                </span>
+                            </div>
+                        </group>
+                    </group>
+
+                    <!-- Alertes -->
+                    <div class="alert alert-warning" role="alert"
+                         invisible="score_difference == 0 or score_difference &gt; -20 and score_difference &lt; 20">
+                        <i class="fa fa-exclamation-triangle me-2" title="Attention" role="img" aria-label="Attention"></i>
+                        <strong>Attention :</strong>
+                        Vous vous apprêtez à modifier significativement le score suggéré
+                        (
+                        <field name="score_difference" readonly="1" nolabel="1"/>
+                        points).
+                    </div>
+
+                    <!-- Réponse de l'étudiant -->
+                    <separator string="📝 Réponse de l'Étudiant"/>
+                    <group>
+                        <field name="student_answer" readonly="1"
+                               widget="text"
+                               nolabel="1"
+                               class="o_field_text"
+                               style="min-height: 120px; background-color: #f8f9fa; padding: 10px;"/>
+                    </group>
+
+                    <!-- Réponse idéale GPT (si disponible) -->
+                    <group invisible="gpt_ideal_answer == False">
+                        <separator string="🤖 Réponse Idéale (Suggérée par IA)"/>
+                        <field name="gpt_ideal_answer" readonly="1"
+                               widget="text"
+                               nolabel="1"
+                               class="o_field_text text-muted"
+                               style="min-height: 80px; background-color: #e7f3ff; padding: 10px;"/>
+                    </group>
+
+                    <!-- Feedback suggéré -->
+                    <notebook>
+                        <page string="💡 Feedback Suggéré" name="suggested">
+                            <div class="alert alert-info mb-3" role="status">
+                                <i class="fa fa-info-circle me-2"></i>
+                                Ce feedback a été généré automatiquement.
+                                Vous pouvez le modifier ou le remplacer.
+                            </div>
+
+                            <field name="use_suggested_feedback"
+                                   widget="boolean_toggle"
+                                   string="Utiliser le feedback suggéré"/>
+
+                            <field name="suggested_feedback" readonly="1"
+                                   widget="html"
+                                   nolabel="1"
+                                   class="mt-3"/>
+                        </page>
+
+                        <page string="✏️ Votre Correction" name="correction">
+
+                            <!-- Score final -->
+                            <group>
+                                <group string="Note Finale">
+                                    <field name="final_score"
+                                           widget="integer"
+                                           class="o_field_highlight"
+                                           style="font-size: 1.5em;"/>
+
+                                    <!-- Indicateur visuel de qualité -->
+                                    <div class="mt-2">
+                                        <span class="badge bg-secondary">
+                                            <field name="correction_quality" readonly="1"/>
+                                        </span>
+                                    </div>
+                                </group>
+
+                                <group>
+                                    <!-- Boutons templates rapides -->
+                                    <div class="o_form_label">Templates Rapides</div>
+                                    <div>
+                                        <button string="Excellent (95)"
+                                                type="object"
+                                                name="action_apply_template"
+                                                context="{'template_key': 'excellent'}"
+                                                class="btn-sm btn-success me-1"/>
+                                        <button string="Bon (75)"
+                                                type="object"
+                                                name="action_apply_template"
+                                                context="{'template_key': 'good'}"
+                                                class="btn-sm btn-info me-1"/>
+                                        <button string="Incomplet (50)"
+                                                type="object"
+                                                name="action_apply_template"
+                                                context="{'template_key': 'incomplete'}"
+                                                class="btn-sm btn-warning me-1"/>
+                                        <button string="Incorrect (20)"
+                                                type="object"
+                                                name="action_apply_template"
+                                                context="{'template_key': 'incorrect'}"
+                                                class="btn-sm btn-danger"/>
+                                    </div>
+                                </group>
+                            </group>
+
+                            <!-- Feedback personnalisé -->
+                            <separator string="Feedback à Envoyer à l'Étudiant"/>
+                            <field name="final_feedback"
+                                   widget="html"
+                                   nolabel="1"
+                                   placeholder="Rédigez ici votre feedback personnalisé..."/>
+
+                            <!-- Commentaire interne -->
+                            <separator string="💬 Commentaire Interne (Optionnel)"/>
+                            <field name="teacher_comment"
+                                   widget="text"
+                                   nolabel="1"
+                                   placeholder="Note personnelle visible uniquement par les enseignants (optionnel)..."/>
+
+                        </page>
+
+                        <page string="📋 Templates" name="templates">
+                            <div class="alert alert-light" role="status">
+                                <h5>📚 Bibliothèque de Templates</h5>
+                                <p class="text-muted">
+                                    Cliquez sur un template pour l'appliquer instantanément
+                                </p>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border-success">
+                                        <div class="card-header bg-success text-white">
+                                            <strong>✅ Excellente Réponse</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text small text-muted">
+                                                Réponse démontre une compréhension approfondie,
+                                                tous les points clés abordés avec précision.
+                                            </p>
+                                            <button string="Appliquer (Score: 95)"
+                                                    type="object"
+                                                    name="action_apply_template"
+                                                    context="{'template_key': 'excellent'}"
+                                                    class="btn btn-success btn-sm"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white">
+                                            <strong>👍 Bonne Réponse</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text small text-muted">
+                                                Compréhension correcte de l'essentiel,
+                                                quelques détails pourraient être ajoutés.
+                                            </p>
+                                            <button string="Appliquer (Score: 75)"
+                                                    type="object"
+                                                    name="action_apply_template"
+                                                    context="{'template_key': 'good'}"
+                                                    class="btn btn-info btn-sm"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border-warning">
+                                        <div class="card-header bg-warning text-dark">
+                                            <strong>⚠️ Réponse Incomplète</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text small text-muted">
+                                                Sur la bonne voie mais manque de développement
+                                                et d'arguments étayés.
+                                            </p>
+                                            <button string="Appliquer (Score: 50)"
+                                                    type="object"
+                                                    name="action_apply_template"
+                                                    context="{'template_key': 'incomplete'}"
+                                                    class="btn btn-warning btn-sm"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="card border-danger">
+                                        <div class="card-header bg-danger text-white">
+                                            <strong>❌ Réponse Incorrecte</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text small text-muted">
+                                                Erreurs importantes ou hors sujet,
+                                                révision du cours nécessaire.
+                                            </p>
+                                            <button string="Appliquer (Score: 20)"
+                                                    type="object"
+                                                    name="action_apply_template"
+                                                    context="{'template_key': 'incorrect'}"
+                                                    class="btn btn-danger btn-sm"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </page>
+                    </notebook>
+
+                    <!-- Options -->
+                    <group>
+                        <field name="notify_student"
+                               widget="boolean_toggle"
+                               string="Notifier l'étudiant par email"/>
+                    </group>
+
+                </sheet>
+
+                <!-- Footer avec actions -->
+                <footer>
+                    <button name="action_validate_correction"
+                            string="✅ Valider et Enregistrer"
+                            type="object"
+                            class="btn-primary"
+                            help="Enregistre la correction et notifie l'étudiant"/>
+
+                    <button name="action_accept_suggestion"
+                            string="✓ Accepter la Suggestion"
+                            type="object"
+                            class="btn-success"
+                            help="Accepte la suggestion automatique sans modification"/>
+
+                    <button name="action_reject_answer"
+                            string="✕ Rejeter (Score 0)"
+                            type="object"
+                            class="btn-danger"
+                            confirm="Êtes-vous sûr de vouloir rejeter cette réponse ? Le score sera de 0."
+                            help="Rejette la réponse avec un score de 0"/>
+
+                    <button string="Annuler"
+                            class="btn-secondary"
+                            special="cancel"/>
+
+                    <button name="action_preview_feedback"
+                            string="👁️ Prévisualiser"
+                            type="object"
+                            class="btn-link"
+                            help="Prévisualise le feedback avant envoi"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- WIZARD SIMPLIFIÉ (Vue alternative rapide) -->
+    <!-- ================================================================== -->
+    <record id="view_correction_wizard_form_simple" model="ir.ui.view">
+        <field name="name">slide.question.correction.wizard.form.simple</field>
+        <field name="model">slide.question.correction.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Correction Rapide">
+                <group>
+                    <field name="pending_answer_id" invisible="1"/>
+                    <field name="student_name" readonly="1"/>
+                    <field name="student_answer" readonly="1" widget="text"/>
+                </group>
+                <group>
+                    <group>
+                        <field name="final_score"/>
+                    </group>
+                    <group>
+                        <field name="suggested_score" readonly="1" widget="progressbar"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="use_suggested_feedback" widget="boolean_toggle"/>
+                    <field name="final_feedback" widget="html"
+                           invisible="use_suggested_feedback == False"/>
+                    <field name="suggested_feedback" widget="html" readonly="1"
+                           invisible="use_suggested_feedback == True"/>
+                </group>
+                <footer>
+                    <button name="action_validate_correction"
+                            string="Enregistrer"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Annuler"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tableau de bord des compétences -->
+        <record id="view_competency_dashboard" model="ir.ui.view">
+            <field name="name">competency.dashboard</field>
+            <field name="model">lms_trainers_competency.dashboard</field>
+            <field name="arch" type="xml">
+                <form string="Tableau de bord Compétences Formateurs">
+                    <sheet>
+                        <div class="o_dashboard_container">
+                            <!-- Première ligne: KPI -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Renouvellements en retard</h5>
+                                            <h2 class="display-4 text-danger">
+                                                <field name="overdue_renewals" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">nécessitent une action immédiate</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">À renouveler dans 30j</h5>
+                                            <h2 class="display-4 text-warning">
+                                                <field name="upcoming_renewals" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">à planifier</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Formations cette année</h5>
+                                            <h2 class="display-4">
+                                                <field name="trainings_this_year" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">par <field name="trainers_trained" widget="integer" nolabel="1"/> formateurs</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Taux de complétion</h5>
+                                            <h2 class="display-4">
+                                                <field name="renewal_completion_rate" widget="percentage" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">des renouvellements</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Deuxième ligne: Graphiques -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Renouvellements par statut</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="renewals_by_status_chart" widget="chart" nolabel="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Formations par type</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="trainings_by_type_chart" widget="chart" nolabel="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Troisième ligne: Listes -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header bg-danger text-white">
+                                            <h5 class="mb-0">Renouvellements en retard</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="overdue_renewals_list" nolabel="1">
+                                                <tree>
+                                                    <field name="trainer_id"/>
+                                                    <field name="competency_id"/>
+                                                    <field name="renewal_date"/>
+                                                    <field name="days_overdue" widget="progressbar" options="{'max_value': '365', 'editable': false}"/>
+                                                    <field name="responsible_id"/>
+                                                </tree>
+                                            </field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Dernières formations</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="recent_trainings" nolabel="1">
+                                                <tree>
+                                                    <field name="trainer_id"/>
+                                                    <field name="name"/>
+                                                    <field name="start_date"/>
+                                                    <field name="end_date"/>
+                                                    <field name="state" widget="badge"/>
+                                                </tree>
+                                            </field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour le tableau de bord -->
+        <record id="action_competency_dashboard" model="ir.actions.act_window">
+            <field name="name">Tableau de bord Compétences</field>
+            <field name="res_model">lms_trainers_competency.dashboard</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="view_id" ref="view_competency_dashboard"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Vue d'ensemble des compétences et formations des formateurs.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="yonn_slide_completion_button"
+              inherit_id="website_slides.slide_content"
+              name="Formevo - Completion Button">
+
+        <!-- Injecter le bouton sous le contenu du slide -->
+        <xpath expr="//div[contains(@class, 'o_wslides_slide_content')]" position="inside">
+            <div class="mt-3 text-center">
+                <button type="button"
+                        class="btn btn-outline-success yonn-completion-btn"
+                        t-att-data-slide-id="slide.id">
+                    Marquer comme terminé
+                </button>
+            </div>
+        </xpath>
+
+    </template>
+</odoo>

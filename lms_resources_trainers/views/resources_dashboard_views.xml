@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tableau de bord des ressources -->
+        <record id="view_resources_dashboard" model="ir.ui.view">
+            <field name="name">resources.dashboard</field>
+            <field name="model">lms_resources_trainers.dashboard</field>
+            <field name="arch" type="xml">
+                <form string="Tableau de bord Ressources &amp; Formateurs">
+                    <sheet>
+                        <div class="o_dashboard_container">
+                            <!-- Première ligne: KPI -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Formateurs actifs</h5>
+                                            <h2 class="display-4">
+                                                <field name="active_trainers" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">
+                                                <field name="trainers_percentage" widget="percentage" nolabel="1"/> du total
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Ressources disponibles</h5>
+                                            <h2 class="display-4">
+                                                <field name="available_resources" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">
+                                                <field name="resources_utilization" widget="percentage" nolabel="1"/> d'utilisation
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Réservations ce mois</h5>
+                                            <h2 class="display-4">
+                                                <field name="monthly_bookings" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">+<field name="bookings_growth" widget="percentage" nolabel="1"/> vs mois dernier</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Supports évalués</h5>
+                                            <h2 class="display-4">
+                                                <field name="completed_evaluations" widget="integer" nolabel="1"/>
+                                            </h2>
+                                            <p class="text-muted">
+                                                Note moy: <field name="average_material_score" widget="float" nolabel="1"/>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Deuxième ligne: Graphiques -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Statut des formateurs</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="trainers_by_status_chart" widget="chart" nolabel="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Réservations par type de ressource</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="bookings_by_type_chart" widget="chart" nolabel="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Troisième ligne: Alertes -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header bg-warning text-white">
+                                            <h5 class="mb-0">Alertes et actions requises</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="alerts_list" nolabel="1">
+                                                <tree colors="red:type=='urgent';orange:type=='warning';blue:type=='info'">
+                                                    <field name="type" invisible="1"/>
+                                                    <field name="message"/>
+                                                    <field name="date"/>
+                                                    <field name="action"/>
+                                                </tree>
+                                            </field>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Évaluations en cours</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <field name="active_evaluations" nolabel="1">
+                                                <tree>
+                                                    <field name="material_name"/>
+                                                    <field name="evaluator_id"/>
+                                                    <field name="deadline_date"/>
+                                                    <field name="days_remaining" widget="progressbar"/>
+                                                </tree>
+                                            </field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour le tableau de bord -->
+        <record id="action_resources_dashboard" model="ir.actions.act_window">
+            <field name="name">Tableau de bord Ressources</field>
+            <field name="res_model">lms_resources_trainers.dashboard</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+            <field name="view_id" ref="view_resources_dashboard"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Vue d'ensemble des ressources et formateurs.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

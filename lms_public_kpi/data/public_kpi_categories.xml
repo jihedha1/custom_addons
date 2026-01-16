@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Catégories d'indicateurs Qualiopi -->
+        <record id="category_satisfaction" model="public.kpi.category">
+            <field name="name">Satisfaction</field>
+            <field name="code">SAT</field>
+            <field name="description">Indicateurs de satisfaction des apprenants et des entreprises</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="category_success" model="public.kpi.category">
+            <field name="name">Réussite</field>
+            <field name="code">SUC</field>
+            <field name="description">Taux de réussite aux examens et certifications</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="category_insertion" model="public.kpi.category">
+            <field name="name">Insertion professionnelle</field>
+            <field name="code">INS</field>
+            <field name="description">Taux d'insertion professionnelle après formation</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="category_attendance" model="public.kpi.category">
+            <field name="name">Assiduité</field>
+            <field name="code">ATT</field>
+            <field name="description">Taux d'assiduité et de présence aux formations</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="category_quality" model="public.kpi.category">
+            <field name="name">Qualité pédagogique</field>
+            <field name="code">QUAL</field>
+            <field name="description">Indicateurs de qualité des formations et des formateurs</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="category_accessibility" model="public.kpi.category">
+            <field name="name">Accessibilité</field>
+            <field name="code">ACC</field>
+            <field name="description">Indicateurs d'accessibilité et d'égalité des chances</field>
+            <field name="sequence">60</field>
+        </record>
+
+        <record id="category_continuous_improvement" model="public.kpi.category">
+            <field name="name">Amélioration continue</field>
+            <field name="code">AMEL</field>
+            <field name="description">Indicateurs de traitement des non-conformités et amélioration</field>
+            <field name="sequence">70</field>
+        </record>
+</odoo>

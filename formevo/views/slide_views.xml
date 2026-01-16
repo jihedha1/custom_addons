@@ -1,0 +1,128 @@
+<odoo>
+    <!-- Action principale pour afficher tous les cours (directeur) -->
+    <record id="slide_channel_action" model="ir.actions.act_window">
+        <field name="name">Cours eLearning</field>
+        <field name="res_model">slide.channel</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+    <odoo>
+        <!-- Action pour afficher les contenus de cours (slides) -->
+        <record id="slide_slide_action" model="ir.actions.act_window">
+            <field name="name">Contenus de cours</field>
+            <field name="res_model">slide.slide</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </odoo>
+    <!-- Action pour afficher les cours de l'enseignant connecté -->
+    <record id="slide_channel_teacher_action" model="ir.actions.act_window">
+        <field name="name">Mes Cours</field>
+        <field name="res_model">slide.channel</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('user_id','=',uid)]</field>
+        <field name="context">{'default_user_id': uid}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier cours !
+            </p>
+            <p>
+                Cliquez sur "Nouveau" pour créer un cours et commencer à ajouter du contenu.
+            </p>
+        </field>
+    </record>
+    <!-- Vue liste personnalisée pour les enseignants -->
+    <record id="slide_channel_tree_teacher" model="ir.ui.view">
+        <field name="name">slide.channel.tree.teacher</field>
+        <field name="model">slide.channel</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <tree string="Mes Cours">
+                <field name="name"/>
+                <field name="user_id" readonly="1"/>
+                <field name="total_slides" string="Contenus"/>
+                <field name="members_count" string="Étudiants"/>
+                <field name="create_date"/>
+                <field name="website_published" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+    <!-- Vue formulaire personnalisée pour les enseignants -->
+    <record id="slide_channel_form_teacher" model="ir.ui.view">
+        <field name="name">slide.channel.form.teacher</field>
+        <field name="model">slide.channel</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <form string="Mon Cours">
+                <header>
+                    <button name="action_view_student_progress"
+                            string="Voir progression"
+                            type="object"
+                            class="btn-secondary"/>
+                    <button name="%(formevo.course_assign_wizard_action)d"
+                            string="Assigner aux classes"
+                            type="action"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_slides"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-play-circle">
+                            <div class="o_stat_info">
+                                <field name="total_slides" class="o_stat_value"/>
+                                <span class="o_stat_text">Contenus</span>
+                            </div>
+                        </button>
+                        <button name="action_view_student_progress"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-users">
+                            <div class="o_stat_info">
+                                <field name="members_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Étudiants</span>
+                            </div>
+                        </button>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom du cours"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id" readonly="1" string="Responsable"/>
+                            <field name="tag_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                            <field name="channel_type" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" widget="html"/>
+                        </page>
+                        <page string="Contenus">
+                            <field name="slide_ids" context="{'default_channel_id': id}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="slide_channel_teacher_action" model="ir.actions.act_window">
+        <!-- Pas de new record, on patch l'existant -->
+        <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode':'tree','view_id':ref('slide_channel_tree_teacher')}),
+      (0, 0, {'view_mode':'form','view_id':ref('slide_channel_form_teacher')})
+    ]"/>
+    </record>
+</odoo>

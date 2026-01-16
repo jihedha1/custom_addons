@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+
+    <!-- Données de démonstration pour les non-conformités -->
+    <record id="demo_nc_1" model="quality.non_conformity">
+        <field name="name">NC-2024-01-0001</field>
+        <field name="title">Retard dans la remise des attestations</field>
+        <field name="description">
+            <p>Les attestations de fin de formation sont remises avec un retard moyen de 5 jours ouvrables au lieu des 48h prévues.</p>
+            <p><strong>Impact :</strong> Insatisfaction des apprenants, risque de non-conformité Qualiopi.</p>
+            <p><strong>Cause racine identifiée :</strong> Processus manuel de génération des attestations.</p>
+        </field>
+        <field name="type">major</field>
+        <field name="category">administrative</field>
+        <field name="source">internal_audit</field>
+        <field name="detection_date">2024-01-15</field>
+        <field name="treatment_deadline">2024-03-15</field>
+        <field name="responsible_user_id" ref="base.user_admin"/>
+        <field name="state">implementation</field>
+    </record>
+
+    <record id="demo_nc_2" model="quality.non_conformity">
+        <field name="name">NC-2024-01-0002</field>
+        <field name="title">Support de cours non mis à jour</field>
+        <field name="description">
+            <p>Le support de cours "Gestion de projet avancée" n'a pas été mis à jour depuis 2 ans alors que les bonnes pratiques ont évolué.</p>
+            <p><strong>Impact :</strong> Contenu obsolète, qualité pédagogique dégradée.</p>
+            <p><strong>Cause racine :</strong> Absence de processus de révision périodique des supports.</p>
+        </field>
+        <field name="type">minor</field>
+        <field name="category">pedagogical</field>
+        <field name="source">self_assessment</field>
+        <field name="detection_date">2024-01-20</field>
+        <field name="treatment_deadline">2024-04-20</field>
+        <field name="responsible_user_id" ref="base.user_admin"/>
+        <field name="state">action_plan</field>
+    </record>
+
+    <!-- Données de démonstration pour les actions correctives -->
+    <record id="demo_ac_1" model="quality.corrective.action">
+        <field name="name">AC-2024-01-0001</field>
+        <field name="non_conformity_id" ref="demo_nc_1"/>
+        <field name="description">Automatiser la génération des attestations via un workflow Odoo</field>
+        <field name="objective">Réduire le délai de remise des attestations à 24h maximum</field>
+        <field name="responsible_user_id" ref="base.user_admin"/>
+        <field name="start_date">2024-01-20</field>
+        <field name="deadline">2024-02-28</field>
+        <field name="state">in_progress</field>
+        <field name="progress">60</field>
+    </record>
+
+    <record id="demo_ac_2" model="quality.corrective.action">
+        <field name="name">AC-2024-01-0002</field>
+        <field name="non_conformity_id" ref="demo_nc_1"/>
+        <field name="description">Former les assistants administratifs au nouveau processus</field>
+        <field name="objective">100% des assistants formés d'ici fin mars</field>
+        <field name="responsible_user_id" ref="base.user_admin"/>
+        <field name="start_date">2024-03-01</field>
+        <field name="deadline">2024-03-15</field>
+        <field name="state">draft</field>
+        <field name="progress">0</field>
+    </record>
+
+    <record id="demo_ac_3" model="quality.corrective.action">
+        <field name="name">AC-2024-01-0003</field>
+        <field name="non_conformity_id" ref="demo_nc_2"/>
+        <field name="description">Mettre à jour le support "Gestion de projet avancée"</field>
+        <field name="objective">Support conforme aux dernières bonnes pratiques (PMBOK 7)</field>
+        <field name="responsible_user_id" ref="base.user_admin"/>
+        <field name="start_date">2024-02-01</field>
+        <field name="deadline">2024-03-31</field>
+        <field name="state">in_progress</field>
+        <field name="progress">30</field>
+    </record>
+
+</odoo>

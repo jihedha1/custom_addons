@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Template: Rappel de session -->
+        <record id="mail_template_session_reminder" model="mail.template">
+            <field name="name">Rappel de session de formation</field>
+            <field name="model_id" ref="model_lms_presence_attendance_line"/>
+            <field name="email_from">${object.teacher_id.email or ''}</field>
+            <field name="email_to">${object.participant_id.email or ''}</field>
+            <field name="subject">Rappel: Session "${object.session_id.name}" le ${object.session_date_start}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <p>Bonjour <strong>${object.participant_name}</strong>,</p>
+
+    <p>Ceci est un rappel pour votre session de formation :</p>
+
+    <div style="background-color: #f5f5f5; padding: 15px; margin: 15px 0; border-left: 4px solid #3498db; border-radius: 4px;">
+        <h3 style="margin-top: 0; color: #2c3e50;">${object.session_id.name}</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 5px 0;"><strong>Formation :</strong></td>
+                <td>${object.channel_id.name or 'Non spécifié'}</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px 0;"><strong>Date et heure :</strong></td>
+                <td>${object.session_date_start}</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px 0;"><strong>Lieu :</strong></td>
+                <td>${object.session_location or 'Non spécifié'}</td>
+            </tr>
+            <tr>
+                <td style="padding: 5px 0;"><strong>Enseignant :</strong></td>
+                <td>${object.teacher_id.name or 'Non spécifié'}</td>
+            </tr>
+        </table>
+    </div>
+
+    <p>Nous vous attendons avec impatience.</p>
+
+    <p>Cordialement,<br/>L'équipe de formation</p>
+
+    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;"/>
+    <p style="color: #999; font-size: 12px;">
+        Ce message est envoyé automatiquement par le système de gestion des formations.
+    </p>
+</div>
+]]></field>
+        </record>
+
+        <!-- Template: Notification absence -->
+        <record id="mail_template_absent_notification" model="mail.template">
+            <field name="name">Notification d'absence</field>
+            <field name="model_id" ref="model_lms_presence_attendance_line"/>
+            <field name="email_from">${object.teacher_id.email or ''}</field>
+            <field name="email_to">${object.participant_id.email or ''}</field>
+            <field name="subject">Absence constatée - Session "${object.session_id.name}"</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <p>Bonjour <strong>${object.participant_name}</strong>,</p>
+
+    <p>Nous avons constaté votre absence lors de la session de formation suivante :</p>
+
+    <div style="background-color: #fff3cd; padding: 15px; margin: 15px 0; border-left: 4px solid #ffc107; border-radius: 4px;">
+        <h3 style="margin-top: 0; color: #856404;">${object.session_id.name}</h3>
+        <p><strong>Date :</strong> ${object.session_date_start}</p>
+        <p><strong>Formation :</strong> ${object.channel_id.name or 'Non spécifié'}</p>
+    </div>
+
+    <p>Si vous avez un justificatif, merci de le transmettre à votre responsable de formation.</p>
+
+    <p>Cordialement,<br/>L'équipe de formation</p>
+</div>
+]]></field>
+        </record>
+
+        <!-- Template: Notification handicap pour enseignant -->
+        <record id="mail_template_handicap_notification" model="mail.template">
+            <field name="name">Notification participant handicap</field>
+            <field name="model_id" ref="model_lms_presence_attendance_line"/>
+            <field name="email_from">${user.email or ''}</field>
+            <field name="email_to">${object.teacher_id.email or ''}</field>
+            <field name="subject">[Important] Participant avec handicap - Session "${object.session_id.name}"</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <p>Bonjour <strong>${object.teacher_id.name}</strong>,</p>
+
+    <p>Un participant avec un handicap reconnu est inscrit à votre session :</p>
+
+    <div style="background-color: #d4edda; padding: 15px; margin: 15px 0; border-left: 4px solid #28a745; border-radius: 4px;">
+        <h3 style="margin-top: 0; color: #155724;">Informations participant</h3>
+        <p><strong>Nom :</strong> ${object.participant_name}</p>
+        <p><strong>Type de handicap :</strong> ${object.disability_type or 'Non précisé'}</p>
+        <p><strong>Aménagements nécessaires :</strong></p>
+        <p style="background: white; padding: 10px; border-radius: 4px;">${object.disability_description or 'Non précisé'}</p>
+    </div>
+
+    <div style="background-color: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 4px;">
+        <h4 style="margin-top: 0;">Contact d'urgence</h4>
+        <p><strong>Nom :</strong> ${object.emergency_contact or 'Non renseigné'}</p>
+        <p><strong>Téléphone :</strong> ${object.emergency_phone or 'Non renseigné'}</p>
+    </div>
+
+    <div style="background-color: #e7f3ff; padding: 15px; margin: 15px 0; border-radius: 4px;">
+        <h4 style="margin-top: 0;">Session concernée</h4>
+        <p><strong>Session :</strong> ${object.session_id.name}</p>
+        <p><strong>Date :</strong> ${object.session_date_start}</p>
+        <p><strong>Lieu :</strong> ${object.session_location or 'Non spécifié'}</p>
+    </div>
+
+    <p>Merci de prendre en compte ces informations pour adapter votre session.</p>
+
+    <p>Cordialement,<br/>Le système de gestion des formations</p>
+</div>
+]]></field>
+        </record>
+
+        <!-- Template: Confirmation de présence -->
+        <record id="mail_template_presence_confirmed" model="mail.template">
+            <field name="name">Confirmation de présence</field>
+            <field name="model_id" ref="model_lms_presence_attendance_line"/>
+            <field name="email_from">${object.teacher_id.email or ''}</field>
+            <field name="email_to">${object.participant_id.email or ''}</field>
+            <field name="subject">Présence confirmée - Session "${object.session_id.name}"</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <p>Bonjour <strong>${object.participant_name}</strong>,</p>
+
+    <div style="background-color: #d4edda; padding: 15px; margin: 15px 0; border-left: 4px solid #28a745; border-radius: 4px;">
+        <h3 style="margin-top: 0; color: #155724;">✓ Votre présence a été confirmée</h3>
+        <p><strong>Session :</strong> ${object.session_id.name}</p>
+        <p><strong>Date :</strong> ${object.session_date_start}</p>
+        <p><strong>Heure d'arrivée :</strong> ${object.check_in or 'Non enregistrée'}</p>
+    </div>
+
+    <p>Merci de votre participation.</p>
+
+    <p>Cordialement,<br/>L'équipe de formation</p>
+</div>
+]]></field>
+        </record>
+
+        <!-- Template: Relance inactivité -->
+        <record id="mail_template_inactivity_reminder" model="mail.template">
+            <field name="name">Relance inactivité participant</field>
+            <field name="model_id" ref="model_lms_presence_attendance_line"/>
+            <field name="subject">Relance : Participation à ${object.session_id.name}</field>
+            <field name="email_from">${object.session_id.teacher_id.email or object.teacher_id.email or ''}</field>
+            <field name="email_to">${object.participant_id.email or ''}</field>
+            <field name="partner_to">${object.participant_id.id}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+    <h2 style="color: #875A7B;">Relance de participation</h2>
+
+    <p>Bonjour ${object.participant_name},</p>
+
+    <p>Nous constatons que vous n'avez pas encore validé votre présence pour la session de formation en cours.</p>
+
+    <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #875A7B; margin: 20px 0;">
+        <p><strong>Formation :</strong> ${object.channel_id.name or 'Formation'}</p>
+        <p><strong>Session :</strong> ${object.session_id.name}</p>
+        <p><strong>Date :</strong> ${object.session_date_start}</p>
+        <p><strong>Statut :</strong> Session en cours</p>
+    </div>
+
+    <p>Merci de valider votre présence dès que possible.</p>
+
+    <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin: 20px 0;">
+        <p><strong>Note Qualiopi :</strong> Cette relance fait partie de notre processus de suivi qualité.</p>
+    </div>
+
+    <p>Cordialement,<br/>L'équipe de formation</p>
+</div>
+]]></field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="demo_competency_technical" model="lms_public_info.trainer_competency">
+            <field name="name">Développement Python</field>
+            <field name="code">PYTH-001</field>
+            <field name="category">technical</field>
+            <field name="level_required">advanced</field>
+            <field name="description">Maîtrise du langage Python et de ses écosystèmes</field>
+            <field name="is_public">True</field>
+            <field name="is_certified">True</field>
+            <field name="certification_body">Python Institute</field>
+            <field name="certification_date">2024-01-15</field>
+        </record>
+
+        <record id="demo_competency_pedagogical" model="lms_public_info.trainer_competency">
+            <field name="name">Animation de formation</field>
+            <field name="code">PEDA-001</field>
+            <field name="category">pedagogical</field>
+            <field name="level_required">intermediate</field>
+            <field name="description">Techniques d'animation et de pédagogie pour adultes</field>
+            <field name="is_public">True</field>
+        </record>
+
+        <!-- Exemple : Formateur de démonstration -->
+        <record id="demo_trainer_1" model="res.partner">
+            <field name="name">Jean Dupont</field>
+            <field name="email">jean.dupont@example.com</field>
+            <field name="is_company">False</field>
+            <field name="is_trainer">True</field>
+            <field name="trainer_type">external</field>
+            <field name="diploma">Master en Informatique</field>
+            <field name="professional_experience">10 ans d'expérience en développement Python</field>
+            <field name="competency_ids" eval="[(6, 0, [ref('lms_public_info.demo_competency_technical')])]"/>
+        </record>
+
+    </data>
+</odoo>

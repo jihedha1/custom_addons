@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Snapshot de démonstration -->
+        <record id="demo_kpi_snapshot_1" model="public.kpi.snapshot">
+            <field name="name">Indicateurs Q1 2024</field>
+            <field name="period_type">quarterly</field>
+            <field name="period_start">2024-01-01</field>
+            <field name="period_end">2024-03-31</field>
+            <field name="state">published</field>
+            <field name="publication_date">2024-04-10</field>
+            <field name="next_update_date">2024-07-10</field>
+            <field name="data_source">mixed</field>
+            <field name="public_notes">
+                <p>
+                    Ces indicateurs sont publiés dans le cadre de notre démarche de transparence
+                    et de conformité au référentiel Qualiopi. Les données sont collectées et vérifiées
+                    selon des procédures internes garantissant leur fiabilité.
+                </p>
+            </field>
+        </record>
+
+        <!-- Indicateurs de démonstration -->
+        <record id="demo_kpi_1" model="public.kpi.version">
+            <field name="snapshot_id" ref="demo_kpi_snapshot_1"/>
+            <field name="category_id" ref="category_satisfaction"/>
+            <field name="name">Satisfaction globale des apprenants</field>
+            <field name="value">92.5</field>
+            <field name="unit">%</field>
+            <field name="previous_value">90.2</field>
+            <field name="state">published</field>
+            <field name="description">Note moyenne de satisfaction sur l'ensemble des formations</field>
+            <field name="sequence">10</field>
+            <field name="display_color">success</field>
+        </record>
+
+        <record id="demo_kpi_2" model="public.kpi.version">
+            <field name="snapshot_id" ref="demo_kpi_snapshot_1"/>
+            <field name="category_id" ref="category_success"/>
+            <field name="name">Taux de réussite aux certifications</field>
+            <field name="value">87.3</field>
+            <field name="unit">%</field>
+            <field name="previous_value">85.1</field>
+            <field name="state">published</field>
+            <field name="description">Pourcentage d'apprenants ayant obtenu leur certification</field>
+            <field name="sequence">20</field>
+            <field name="display_color">primary</field>
+        </record>
+
+        <record id="demo_kpi_3" model="public.kpi.version">
+            <field name="snapshot_id" ref="demo_kpi_snapshot_1"/>
+            <field name="category_id" ref="category_insertion"/>
+            <field name="name">Taux d'insertion à 6 mois</field>
+            <field name="value">78.9</field>
+            <field name="unit">%</field>
+            <field name="previous_value">76.5</field>
+            <field name="state">published</field>
+            <field name="description">Pourcentage d'apprenants en emploi ou en poursuite d'études 6 mois après la formation</field>
+            <field name="sequence">30</field>
+            <field name="display_color">info</field>
+        </record>
+
+        <record id="demo_kpi_4" model="public.kpi.version">
+            <field name="snapshot_id" ref="demo_kpi_snapshot_1"/>
+            <field name="category_id" ref="category_attendance"/>
+            <field name="name">Taux d'assiduité moyen</field>
+            <field name="value">94.2</field>
+            <field name="unit">%</field>
+            <field name="previous_value">93.8</field>
+            <field name="state">published</field>
+            <field name="description">Pourcentage moyen de présence aux sessions de formation</field>
+            <field name="sequence">40</field>
+            <field name="display_color">warning</field>
+        </record>
+
+        <record id="demo_kpi_5" model="public.kpi.version">
+            <field name="snapshot_id" ref="demo_kpi_snapshot_1"/>
+            <field name="category_id" ref="category_quality"/>
+            <field name="name">Qualité perçue des formateurs</field>
+            <field name="value">4.6</field>
+            <field name="unit">/5</field>
+            <field name="previous_value">4.5</field>
+            <field name="state">published</field>
+            <field name="description">Note moyenne attribuée aux formateurs par les apprenants</field>
+            <field name="sequence">50</field>
+            <field name="display_color">success</field>
+        </record>
+
+        <record id="demo_kpi_6" model="public.kpi.version">
+            <field name="snapshot_id" ref="demo_kpi_snapshot_1"/>
+            <field name="category_id" ref="category_accessibility"/>
+            <field name="name">Taux de satisfaction des aménagements</field>
+            <field name="value">88.7</field>
+            <field name="unit">%</field>
+            <field name="previous_value">86.3</field>
+            <field name="state">published</field>
+            <field name="description">Satisfaction des apprenants bénéficiant d'aménagements spécifiques</field>
+            <field name="sequence">60</field>
+            <field name="display_color">info</field>
+        </record>
+
+        <record id="demo_kpi_7" model="public.kpi.version">
+            <field name="snapshot_id" ref="demo_kpi_snapshot_1"/>
+            <field name="category_id" ref="category_continuous_improvement"/>
+            <field name="name">Taux de clôture des non-conformités</field>
+            <field name="value">95.2</field>
+            <field name="unit">%</field>
+            <field name="previous_value">93.8</field>
+            <field name="state">published</field>
+            <field name="description">Pourcentage de non-conformités traitées dans les délais</field>
+            <field name="sequence">70</field>
+            <field name="display_color">primary</field>
+        </record>
+
+    </data>
+</odoo>

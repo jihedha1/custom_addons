@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ================================================================== -->
+        <!-- CATÉGORIE -->
+        <!-- ================================================================== -->
+        <record id="module_category_elearning_ai" model="ir.module.category">
+            <field name="name">E-Learning IA</field>
+            <field name="description">Gestion des droits pour le module E-Learning avec IA</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- GROUPES -->
+        <!-- ================================================================== -->
+
+        <!-- Groupe: Étudiant -->
+        <record id="group_elearning_student" model="res.groups">
+            <field name="name">Étudiant E-Learning</field>
+            <field name="category_id" ref="module_category_elearning_ai"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- Groupe: Enseignant -->
+        <record id="group_elearning_teacher" model="res.groups">
+            <field name="name">Enseignant E-Learning</field>
+            <field name="category_id" ref="module_category_elearning_ai"/>
+            <field name="implied_ids" eval="[(4, ref('group_elearning_student'))]"/>
+        </record>
+
+        <!-- Groupe: Administrateur E-Learning -->
+        <record id="group_elearning_admin" model="res.groups">
+            <field name="name">Administrateur E-Learning</field>
+            <field name="category_id" ref="module_category_elearning_ai"/>
+            <field name="implied_ids" eval="[(4, ref('group_elearning_teacher'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- RÈGLES D'ENREGISTREMENT (Record Rules) -->
+        <!-- ================================================================== -->
+
+        <!-- Règle: Étudiants voient seulement leurs propres réponses en attente -->
+        <record id="pending_answer_student_rule" model="ir.rule">
+            <field name="name">Étudiant: Voir ses propres réponses</field>
+            <field name="model_id" ref="model_slide_question_pending_answer"/>
+            <field name="groups" eval="[(4, ref('group_elearning_student'))]"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Règle: Enseignants voient les réponses de leurs cours -->
+        <record id="pending_answer_teacher_rule" model="ir.rule">
+            <field name="name">Enseignant: Voir les réponses de leurs cours</field>
+            <field name="model_id" ref="model_slide_question_pending_answer"/>
+            <field name="groups" eval="[(4, ref('group_elearning_teacher'))]"/>
+            <field name="domain_force">['|', ('slide_id.channel_id.user_id', '=', user.id), ('slide_id.channel_id.user_id', '=', False)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Règle: Étudiants peuvent lire les questions publiées -->
+        <record id="question_student_read_rule" model="ir.rule">
+            <field name="name">Étudiant: Lire les questions</field>
+            <field name="model_id" ref="website_slides.model_slide_question"/>
+            <field name="groups" eval="[(4, ref('group_elearning_student'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Règle: Enseignants voient les questions de leurs cours -->
+        <record id="question_teacher_rule" model="ir.rule">
+            <field name="name">Enseignant: Voir les questions de leurs cours</field>
+            <field name="model_id" ref="website_slides.model_slide_question"/>
+            <field name="groups" eval="[(4, ref('group_elearning_teacher'))]"/>
+            <field name="domain_force">['|', ('slide_id.channel_id.user_id', '=', user.id), ('slide_id.channel_id.user_id', '=', False)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Règle: Enseignants voient les chapitres de leurs cours -->
+        <record id="slide_teacher_rule" model="ir.rule">
+            <field name="name">Enseignant: Voir les chapitres de leurs cours</field>
+            <field name="model_id" ref="website_slides.model_slide_slide"/>
+            <field name="groups" eval="[(4, ref('group_elearning_teacher'))]"/>
+            <field name="domain_force">['|', ('channel_id.user_id', '=', user.id), ('channel_id.user_id', '=', False)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Règle: Enseignants voient leurs propres cours -->
+        <record id="channel_teacher_rule" model="ir.rule">
+            <field name="name">Enseignant: Voir leurs cours</field>
+            <field name="model_id" ref="website_slides.model_slide_channel"/>
+            <field name="groups" eval="[(4, ref('group_elearning_teacher'))]"/>
+            <field name="domain_force">['|', ('user_id', '=', user.id), ('user_id', '=', False)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

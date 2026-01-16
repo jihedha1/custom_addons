@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view non-conformités -->
+        <record id="view_non_conformity_tree" model="ir.ui.view">
+            <field name="name">quality.non.conformity.tree</field>
+            <field name="model">quality.non_conformity</field>
+            <field name="arch" type="xml">
+                <tree string="Non-conformités">
+                    <field name="name"/>
+                    <field name="title"/>
+                    <field name="type" widget="badge"
+                           decoration-danger="type == 'critical'"
+                           decoration-warning="type == 'major'"/>
+                    <field name="category"/>
+                    <field name="state" widget="badge"/>
+                    <field name="detection_date"/>
+                    <field name="treatment_deadline"/>
+                    <field name="responsible_user_id"/>
+                    <field name="action_count"/>
+                    <field name="completion_rate" widget="progressbar" options="{'current_value': 'completion_rate', 'max_value': '100'}"/>
+                    <field name="is_overdue" invisible="1"/>
+                    <field name="days_overdue" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view non-conformités -->
+        <record id="view_non_conformity_form" model="ir.ui.view">
+            <field name="name">quality.non.conformity.form</field>
+            <field name="model">quality.non_conformity</field>
+            <field name="arch" type="xml">
+                <form string="Non-conformité">
+                    <header>
+                        <button name="action_start_analysis" type="object" string="Démarrer analyse"
+                                class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_create_action_plan" type="object" string="Créer plan d'action"
+                                invisible="state != 'analysis'"/>
+                        <button name="action_start_implementation" type="object" string="Démarrer mise en œuvre"
+                                invisible="state != 'action_plan'"/>
+                        <button name="action_start_verification" type="object" string="Démarrer vérification"
+                                invisible="state != 'implementation'"/>
+                        <button name="action_close" type="object" string="Clôturer"
+                                class="oe_highlight" invisible="state != 'verification'"/>
+                        <button name="action_reopen" type="object" string="Ré-ouvrir"
+                                invisible="state not in ['closed', 'cancelled']"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,analysis,action_plan,implementation,verification,closed,cancelled"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" string="Référence"/>
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                            <field name="title" placeholder="Titre de la non-conformité..."/>
+                        </div>
+
+                        <group>
+                            <group string="Classification">
+                                <field name="type"/>
+                                <field name="category"/>
+                                <field name="source"/>
+                            </group>
+                            <group string="Dates">
+                                <field name="detection_date"/>
+                                <field name="treatment_deadline"/>
+                                <field name="is_overdue" invisible="1"/>
+                                <field name="days_overdue" invisible="1"/>
+                            </group>
+                            <group string="Responsable">
+                                <field name="responsible_user_id"/>
+                                <field name="state"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Description" name="description">
+                                <field name="description" nolabel="1"/>
+                            </page>
+
+                            <page string="Actions correctives" name="actions">
+                                <field name="corrective_action_ids" widget="one2many">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="description"/>
+                                        <field name="responsible_user_id"/>
+                                        <field name="start_date"/>
+                                        <field name="deadline"/>
+                                        <field name="state" widget="badge"/>
+                                        <field name="progress" widget="progressbar" options="{'current_value': 'progress', 'max_value': '100'}"/>
+                                        <field name="is_overdue" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="Indicateurs" name="indicators">
+                                <group>
+                                    <group string="Avancement">
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_value">
+                                                <field name="action_count" readonly="1"/>
+                                            </span>
+                                            <span class="o_stat_text">Actions</span>
+                                        </div>
+
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_value">
+                                                <field name="completed_action_count" readonly="1"/>
+                                            </span>
+                                            <span class="o_stat_text">Terminées</span>
+                                        </div>
+
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_value">
+                                                <field name="completion_rate" readonly="1"/>%
+                                            </span>
+                                            <span class="o_stat_text">Taux de complétion</span>
+                                        </div>
+                                    </group>
+
+                                    <group string="Délais" invisible="treatment_deadline == False">
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_value">
+                                                <field name="treatment_deadline" readonly="1"/>
+                                            </span>
+                                            <span class="o_stat_text">Échéance</span>
+                                        </div>
+
+                                        <div class="o_stat_info" invisible="is_overdue == False">
+                                            <span class="o_stat_value" style="color: #dc3545;">
+                                                <field name="days_overdue" readonly="1"/> jours
+                                            </span>
+                                            <span class="o_stat_text">Retard</span>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Documents" name="documents">
+                                <field name="attachment_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="mimetype"/>
+                                        <field name="create_date"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view non-conformités -->
+        <record id="view_non_conformity_search" model="ir.ui.view">
+            <field name="name">quality.non.conformity.search</field>
+            <field name="model">quality.non_conformity</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher non-conformités">
+                    <field name="name"/>
+                    <field name="title"/>
+                    <field name="responsible_user_id"/>
+                    <field name="type"/>
+                    <field name="state"/>
+                    <filter string="En retard" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                    <filter string="À traiter" name="to_treat" domain="[('state', 'in', ['draft', 'analysis'])]"/>
+                    <filter string="En cours" name="in_progress" domain="[('state', 'in', ['action_plan', 'implementation'])]"/>
+                    <separator/>
+                    <filter string="Mes NC" name="my_nc" domain="[('responsible_user_id', '=', uid)]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter string="Type" name="group_by_type" context="{'group_by': 'type'}"/>
+                        <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Responsable" name="group_by_responsible" context="{'group_by': 'responsible_user_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

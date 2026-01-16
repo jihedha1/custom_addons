@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Assistant de prise de rendez-vous -->
+        <record id="view_appointment_wizard_form" model="ir.ui.view">
+            <field name="name">lms_public_info.appointment_wizard.form</field>
+            <field name="model">lms_public_info.appointment_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Prendre rendez-vous">
+                    <header>
+                        <button name="action_create_appointment" type="object" string="Créer" class="btn-primary"/>
+                        <button string="Annuler" special="cancel" class="btn-secondary"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Nouveau rendez-vous</h1>
+                        </div>
+
+                        <group>
+                            <group string="Formation">
+                                <field name="channel_id" required="1"/>
+                            </group>
+                            <group string="Contact">
+                                <field name="partner_id" required="1" context="{'search_default_is_company': False}"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="Type de rendez-vous">
+                                <field name="appointment_type" required="1"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="Disponibilités">
+                                <field name="preferred_date" required="1"/>
+                                <field name="preferred_time" required="1"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <label for="notes" string="Notes"/>
+                            <field name="notes" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour ouvrir l'assistant -->
+        <record id="action_appointment_wizard" model="ir.actions.act_window">
+            <field name="name">Prendre rendez-vous</field>
+            <field name="res_model">lms_public_info.appointment_wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_channel_id': active_id}</field>
+        </record>
+
+    </data>
+</odoo>

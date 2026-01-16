@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue arbre pour les profils formateurs -->
+        <record id="view_trainer_profile_tree" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.trainer_profile.tree</field>
+            <field name="model">lms_resources_trainers.trainer_profile</field>
+            <field name="arch" type="xml">
+                <tree string="Formateurs">
+                    <field name="name"/>
+                    <field name="specialization"/>
+                    <field name="skills_ids" widget="many2many_tags"/>
+                    <field name="years_experience"/>
+                    <field name="hourly_rate"/>
+                    <field name="state" widget="badge" decoration-success="state=='active'" decoration-danger="state=='inactive'"/>
+                    <field name="mandatory_documents_complete" widget="boolean"/>
+                    <field name="last_activity_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue formulaire pour les profils formateurs -->
+        <record id="view_trainer_profile_form" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.trainer_profile.form</field>
+            <field name="model">lms_resources_trainers.trainer_profile</field>
+            <field name="arch" type="xml">
+                <form string="Profil Formateur">
+                    <header>
+                        <button name="action_activate" string="Activer" type="object" class="oe_highlight"
+                                states="draft" confirm="Voulez-vous activer ce formateur ?"/>
+                        <button name="action_deactivate" string="Désactiver" type="object"
+                                states="active" confirm="Voulez-vous désactiver ce formateur ?"/>
+                        <button name="action_archive" string="Archiver" type="object"
+                                states="inactive" confirm="Archiver après 3 mois d'inactivité ?"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,inactive,archived"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom du formateur"/>
+                            </h1>
+                            <div class="o_float_subtitle">
+                                <span class="badge badge-pill bg-primary" attrs="{'invisible': [('state','!=','active')]}">
+                                    Actif
+                                </span>
+                                <span class="badge badge-pill bg-warning" attrs="{'invisible': [('state','!=','inactive')]}">
+                                    Inactif
+                                </span>
+                            </div>
+                        </div>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="%(action_open_trainer_document_wizard)d"
+                                    type="action"
+                                    class="oe_stat_button"
+                                    icon="fa-file"
+                                    context="{'default_trainer_id': active_id}">
+                                <div class="o_stat_info">
+                                    <field name="document_count" widget="statinfo" string="Documents"/>
+                                </div>
+                            </button>
+                            <button name="action_view_trainings"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-calendar">
+                                <div class="o_stat_info">
+                                    <field name="training_count" widget="statinfo" string="Formations"/>
+                                </div>
+                            </button>
+                            <button name="action_view_evaluations"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-star">
+                                <div class="o_stat_info">
+                                    <field name="average_rating" widget="statinfo" string="Note moy."/>
+                                </div>
+                            </button>
+                        </div>
+                        <group>
+                            <group string="Informations personnelles">
+                                <field name="partner_id" widget="many2one" options="{'no_create': True}"/>
+                                <field name="email"/>
+                                <field name="phone"/>
+                                <field name="specialization"/>
+                                <field name="years_experience"/>
+                            </group>
+                            <group string="Tarification">
+                                <field name="hourly_rate"/>
+                                <field name="daily_rate" readonly="1"/>
+                                <field name="mandatory_documents_complete" readonly="1"/>
+                                <field name="activation_date" readonly="1"/>
+                                <field name="last_activity_date" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Compétences">
+                                <field name="skills_ids" widget="many2many_tags" colspan="4"/>
+                                <field name="biography" widget="html" colspan="4"/>
+                            </page>
+                            <page string="Documents">
+                                <field name="document_ids" colspan="4" nolabel="1">
+                                    <tree>
+                                        <field name="document_type_id"/>
+                                        <field name="name"/>
+                                        <field name="issue_date"/>
+                                        <field name="expiry_date"/>
+                                        <field name="state" widget="badge"/>
+                                        <field name="attachment_id" filename="attachment_id.datas_fname" widget="binary"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Disponibilités">
+                                <field name="availability_ids" colspan="4" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="day_of_week" widget="selection"/>
+                                        <field name="start_time" widget="float_time"/>
+                                        <field name="end_time" widget="float_time"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Formations">
+                                <field name="training_ids" colspan="4" nolabel="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="start_date"/>
+                                        <field name="duration"/>
+                                        <field name="location"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Évaluations">
+                                <field name="evaluation_ids" colspan="4" nolabel="1">
+                                    <tree>
+                                        <field name="survey_id"/>
+                                        <field name="scoring_percentage" widget="progressbar"/>
+                                        <field name="create_date"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue recherche -->
+        <record id="view_trainer_profile_search" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.trainer_profile.search</field>
+            <field name="model">lms_resources_trainers.trainer_profile</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher formateur">
+                    <field name="name"/>
+                    <field name="specialization"/>
+                    <field name="skills_ids"/>
+                    <field name="state"/>
+                    <filter name="active" string="Actifs" domain="[('state','=','active')]"/>
+                    <filter name="inactive" string="Inactifs" domain="[('state','=','inactive')]"/>
+                    <filter name="documents_missing" string="Documents incomplets" domain="[('mandatory_documents_complete','=',False)]"/>
+                    <separator/>
+                    <group expand="0" string="Grouper par">
+                        <filter name="group_by_specialization" string="Spécialisation" context="{'group_by': 'specialization'}"/>
+                        <filter name="group_by_state" string="Statut" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action pour les profils formateurs -->
+        <record id="action_trainer_profile" model="ir.actions.act_window">
+            <field name="name">Formateurs</field>
+            <field name="res_model">lms_resources_trainers.trainer_profile</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_trainer_profile_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Gérez ici les profils des formateurs. Assurez-vous que tous les documents obligatoires sont à jour.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

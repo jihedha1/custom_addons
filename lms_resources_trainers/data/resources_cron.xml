@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Cron pour vérifier les expirations de documents -->
+        <record id="cron_check_document_expiry" model="ir.cron">
+            <field name="name">Vérification expiration documents formateurs</field>
+            <field name="model_id" ref="model_lms_resources_trainers_trainer_document"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_document_expiry()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">False</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Cron pour supprimer les formateurs inactifs après 3 mois -->
+        <record id="cron_clean_inactive_trainers" model="ir.cron">
+            <field name="name">Nettoyage formateurs inactifs</field>
+            <field name="model_id" ref="model_lms_resources_trainers_trainer_profile"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_clean_inactive_trainers()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">False</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Cron pour envoyer les notifications avant formation -->
+        <record id="cron_send_training_reminders" model="ir.cron">
+            <field name="name">Notifications avant formation</field>
+            <field name="model_id" ref="model_calendar_event"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_training_reminders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">False</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

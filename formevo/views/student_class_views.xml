@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Action pour les classes d'étudiants -->
+        <record id="student_class_action" model="ir.actions.act_window">
+            <field name="name">Classes d'étudiants</field>
+            <field name="res_model">yonn.student.class</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'search_default_active': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créez votre première classe d'étudiants.
+                </p>
+            </field>
+        </record>
+
+        <!-- Vue Kanban -->
+        <record id="student_class_kanban_view" model="ir.ui.view">
+            <field name="name">yonn.student.class.kanban</field>
+            <field name="model">yonn.student.class</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="name"/>
+                    <field name="teacher_id"/>
+                    <field name="student_count"/>
+                    <field name="course_count"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_header">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_card_body">
+                                    <p>
+                                        <i class="fa fa-user" title="Enseignant"/>
+                                        <field name="teacher_id"/>
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-users" title="Étudiants"/>
+                                        <field name="student_count"/>
+                                        Étudiants
+                                    </p>
+                                    <p>
+                                        <i class="fa fa-book" title="Cours"/>
+                                        <field name="course_count"/>
+                                        Cours
+                                    </p>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue Liste -->
+        <record id="student_class_tree_view" model="ir.ui.view">
+            <field name="name">yonn.student.class.tree</field>
+            <field name="model">yonn.student.class</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="teacher_id"/>
+                    <field name="student_count"/>
+                    <field name="course_count"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Formulaire -->
+        <record id="student_class_form_view" model="ir.ui.view">
+            <field name="name">yonn.student.class.form</field>
+            <field name="model">yonn.student.class</field>
+            <field name="arch" type="xml">
+                <form string="Classe d'étudiants">
+                    <header>
+                        <!-- Boutons d'action principaux avec icônes -->
+                        <button name="action_sync_students_with_course"
+                                type="object"
+                                string="Synchroniser étudiants et cours"
+                                class="btn-primary"/>
+
+                        <button name="actionviewstudentprogress"
+                                string="Voir progression"
+                                type="object"
+                                class="btn-secondary"
+                                icon="fa-chart-line"
+                                modifiers="{'invisible': [['student_ids','=',False]]}"/>
+                    </header>
+
+                    <sheet>
+                        <!-- Titre avec badge de statut -->
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" class="oe_inline" placeholder="Nom de la classe"/>
+                                <field name="active" widget="boolean_toggle" class="oe_inline ms-3"/>
+                            </h1>
+                        </div>
+
+                        <!-- Statistiques améliorées avec couleurs -->
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_students"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-users"
+                                    modifiers="{'invisible': [['student_count','=',0]]}">
+                                <div class="o_stat_info">
+                                    <field name="student_count" class="o_stat_value text-primary"/>
+                                    <span class="o_stat_text">Étudiants</span>
+                                </div>
+                            </button>
+
+                            <button name="action_view_courses"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-book"
+                                    modifiers="{'invisible': [['course_count','=',0]]}">
+                                <div class="o_stat_info">
+                                    <field name="course_count" class="o_stat_value text-success"/>
+                                    <span class="o_stat_text">Cours</span>
+                                </div>
+                            </button>
+
+                            <button name="action_view_enrollments"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-graduation-cap"
+                                    invisible="total_enrollments == 0">
+                                <div class="o_stat_info">
+                                    <field name="total_enrollments" class="o_stat_value text-info"/>
+                                    <span class="o_stat_text">Inscriptions</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Informations principales avec icônes -->
+                        <group>
+                            <group string="📚 Informations générales" class="col-md-6">
+                                <field name="description" widget="text" placeholder="Description de la classe..."/>
+                                <field name="teacher_id" options="{'no_create': True, 'no_open': True}"/>
+                            </group>
+
+                            <group string="👥 Participants" class="col-md-6">
+                                <field name="student_ids"
+                                       widget="many2many_tags"
+                                       options="{'color_field': 'color', 'no_create_edit': True}"
+                                       placeholder="Sélectionnez les étudiants..."/>
+
+                                <field name="assigned_course_ids"
+                                       domain="[('user_id', '=', teacher_id)]"
+                                       widget="many2many_tags"/>
+                            </group>
+                        </group>
+
+                        <!-- Onglets avec contenu riche -->
+                        <notebook>
+                            <page string="📊 Statistiques détaillées" name="stats">
+                                <group>
+                                    <group string="Métriques de base">
+                                        <field name="student_count" readonly="1"/>
+                                        <field name="course_count" readonly="1"/>
+                                        <field name="total_enrollments" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="📝 Activité" name="activity">
+                                <!-- Chatter pour les activités -->
+                                <div class="oe_chatter">
+                                    <field name="message_follower_ids"/>
+                                    <field name="activity_ids"/>
+                                    <field name="message_ids"/>
+                                </div>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="student_class_search_view" model="ir.ui.view">
+            <field name="name">yonn.student.class.search</field>
+            <field name="model">yonn.student.class</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="teacher_id"/>
+                    <separator/>
+                    <filter name="active" string="Actives" domain="[('active','=',True)]"/>
+                    <filter name="empty_class" string="Vides" domain="[('student_count','=',0)]"/>
+                    <separator/>
+                    <group string="Grouper par" expand="0">
+                        <filter name="group_by_teacher" string="Enseignant" context="{'group_by':'teacher_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+    </data>
+</odoo>

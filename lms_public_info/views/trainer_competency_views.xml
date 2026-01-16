@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view compétences -->
+        <record id="view_trainer_competency_tree" model="ir.ui.view">
+            <field name="name">lms_public_info.trainer_competency.tree</field>
+            <field name="model">lms_public_info.trainer_competency</field>
+            <field name="arch" type="xml">
+                <tree string="Compétences">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="category"/>
+                    <field name="level_required"/>
+                    <field name="trainer_count" widget="statinfo" string="Formateurs"/>
+                    <field name="is_certified" widget="boolean_toggle"/>
+                    <field name="is_public" widget="boolean_toggle"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view compétences -->
+        <record id="view_trainer_competency_form" model="ir.ui.view">
+            <field name="name">lms_public_info.trainer_competency.form</field>
+            <field name="model">lms_public_info.trainer_competency</field>
+            <field name="arch" type="xml">
+                <form string="Compétence Formateur">
+                    <header>
+                        <!-- Bouton Rendre public -->
+                        <button name="action_make_public" type="object"
+                                class="oe_highlight"
+                                icon="fa-globe"
+                                invisible="is_public"
+                                string="Rendre public"/>
+
+                        <!-- Bouton Rendre privé -->
+                        <button name="action_make_private" type="object"
+                                class="btn-warning"
+                                icon="fa-lock"
+                                invisible="not is_public"
+                                string="Rendre privé"/>
+
+                        <!-- Boutons standard -->
+                        <button special="cancel" string="Annuler" class="btn-secondary"/>
+                        <button special="save" string="Enregistrer" class="btn-primary"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_trainers" type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-users"
+                                    context="{'search_default_competency_id': active_id}">
+                                <div class="o_stat_info">
+                                    <field name="trainer_count" widget="statinfo"
+                                           string="Formateurs"/>
+                                </div>
+                            </button>
+                            <button name="action_view_attachments" type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-paperclip">
+                                <div class="o_stat_info">
+                                    <field name="attachment_count" widget="statinfo"
+                                           string="Documents"/>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom de la compétence..."/>
+                            </h1>
+                            <h3>
+                                <field name="code" placeholder="Code..."/>
+                            </h3>
+                        </div>
+
+                        <!-- Les champs is_certified et is_public sont maintenant bien placés -->
+                        <group>
+                            <group string="Statut">
+                                <field name="is_certified" widget="boolean_toggle" string="Certifiée"/>
+                                <field name="is_public" widget="boolean_toggle" string="Publique"/>
+                                <field name="active" widget="boolean_toggle" string="Active"/>
+                            </group>
+                            <group string="Classification">
+                                <field name="category" widget="radio"/>
+                                <field name="level_required"/>
+                                <field name="sequence"/>
+                            </group>
+                        </group>
+
+                        <!-- Section Certification - conditionnelle -->
+                        <group string="Certification" invisible="not is_certified">
+                            <group>
+                                <field name="certification_body"/>
+                                <field name="certification_date"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Description">
+                                <field name="description" nolabel="1"/>
+                            </page>
+
+                            <page string="Formateurs">
+                                <field name="trainer_ids" widget="many2many_tags"/>
+                            </page>
+
+                            <page string="Documents">
+                                <field name="attachment_ids">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="mimetype"/>
+                                        <field name="file_size" widget="file_size"/>
+                                        <field name="create_date"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>        <!-- Search view compétences -->
+        <record id="view_trainer_competency_search" model="ir.ui.view">
+            <field name="name">lms_public_info.trainer_competency.search</field>
+            <field name="model">lms_public_info.trainer_competency</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher compétences">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="description"/>
+                    <filter string="Techniques" name="technical" domain="[('category', '=', 'technical')]"/>
+                    <filter string="Pédagogiques" name="pedagogical" domain="[('category', '=', 'pedagogical')]"/>
+                    <filter string="Certifiées" name="certified" domain="[('is_certified', '=', True)]"/>
+                    <filter string="Publiques" name="public" domain="[('is_public', '=', True)]"/>
+                    <filter string="Actives" name="active" domain="[('active', '=', True)]"/>
+                    <separator/>
+                    <filter string="Mes compétences" name="my_competencies" domain="[]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter string="Catégorie" name="group_by_category" context="{'group_by': 'category'}"/>
+                        <filter string="Niveau" name="group_by_level" context="{'group_by': 'level_required'}"/>
+                        <filter string="Certification" name="group_by_certified"
+                                context="{'group_by': 'is_certified'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action pour le menu -->
+        <record id="action_trainer_competency" model="ir.actions.act_window">
+            <field name="name">Compétences Formateurs</field>
+            <field name="res_model">lms_public_info.trainer_competency</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Ajoutez votre première compétence !
+                </p>
+                <p>
+                    Gérez les compétences des formateurs, catégorisez-les et assignez-les aux formateurs.
+                </p>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

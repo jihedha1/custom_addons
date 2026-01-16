@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Template pour expiration de document -->
+        <record id="mail_template_document_expiry" model="mail.template">
+            <field name="name">Expiration document formateur</field>
+            <field name="model_id" ref="model_lms_resources_trainers_trainer_document"/>
+            <field name="email_from">${object.company_id.email or 'formation@example.com'}</field>
+            <field name="email_to">${object.trainer_id.email}</field>
+            <field name="subject">Expiration de votre document: ${object.document_type_id.name}</field>
+            <field name="body_html"><![CDATA[
+                <p>Bonjour ${object.trainer_id.name},</p>
+
+                <p>Votre document <strong>${object.document_type_id.name}</strong> expire le ${object.expiry_date}.</p>
+
+                <p>Veuillez fournir une version mise à jour avant cette date pour maintenir votre habilitation.</p>
+
+                <p>Cordialement,<br/>
+                L'équipe formation</p>
+            ]]></field>
+        </record>
+
+        <!-- Template pour formateur inactif -->
+        <record id="mail_template_trainer_inactive" model="mail.template">
+            <field name="name">Notification formateur inactif</field>
+            <field name="model_id" ref="model_lms_resources_trainers_trainer_profile"/>
+            <field name="email_from">${object.company_id.email or 'formation@example.com'}</field>
+            <field name="email_to">${object.email}</field>
+            <field name="subject">Mise à jour de votre profil formateur</field>
+            <field name="body_html"><![CDATA[
+                <p>Bonjour ${object.name},</p>
+
+                <p>Votre profil formateur n'a pas été mis à jour depuis plus de 3 mois.</p>
+
+                <p>Pour maintenir votre profil actif, veuillez vérifier vos informations et documents.</p>
+
+                <p>À défaut de mise à jour, votre profil sera désactivé dans 30 jours.</p>
+
+                <p>Cordialement,<br/>
+                L'équipe formation</p>
+            ]]></field>
+        </record>
+
+        <!-- Template pour réservation de ressource -->
+        <record id="mail_template_resource_booking" model="mail.template">
+            <field name="name">Confirmation réservation ressource</field>
+            <field name="model_id" ref="model_lms_resources_trainers.resource_booking"/>
+            <field name="email_from">${object.company_id.email or 'formation@example.com'}</field>
+            <field name="email_to">${object.requester_id.email}</field>
+            <field name="subject">Confirmation réservation: ${object.resource_id.name}</field>
+            <field name="body_html"><![CDATA[
+                <p>Bonjour ${object.requester_id.name},</p>
+
+                <p>Votre réservation a été confirmée.</p>
+
+                <p><strong>Détails:</strong></p>
+                <ul>
+                    <li>Ressource: ${object.resource_id.name}</li>
+                    <li>Date de début: ${object.start_date}</li>
+                    <li>Date de fin: ${object.end_date}</li>
+                    <li>Référence: ${object.name}</li>
+                </ul>
+
+                <p>Cordialement,<br/>
+                L'équipe logistique</p>
+            ]]></field>
+        </record>
+
+        <!-- Template pour évaluation de support -->
+        <record id="mail_template_material_evaluation" model="mail.template">
+            <field name="name">Demande évaluation support pédagogique</field>
+            <field name="model_id" ref="model_lms_resources_trainers.material_evaluation"/>
+            <field name="email_from">${object.company_id.email or 'formation@example.com'}</field>
+            <field name="email_to">${object.evaluator_id.email}</field>
+            <field name="subject">Évaluation du support: ${object.material_name}</field>
+            <field name="body_html"><![CDATA[
+                <p>Bonjour ${object.evaluator_id.name},</p>
+
+                <p>Vous avez été désigné pour évaluer le support pédagogique suivant:</p>
+
+                <p><strong>${object.material_name}</strong><br/>
+                Cours: ${object.course_id.name}</p>
+
+                <p>Veuillez compléter l'évaluation avant le ${object.deadline_date}.</p>
+
+                <p>Cordialement,<br/>
+                L'équipe qualité</p>
+            ]]></field>
+        </record>
+    </data>
+</odoo>

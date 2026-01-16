@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Cron pour vérifier les renouvellements de compétences -->
+        <record id="cron_check_competency_renewal" model="ir.cron">
+            <field name="name">Vérification renouvellement compétences</field>
+            <field name="model_id" ref="model_lms_trainers_competency_competency_renewal"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_renewal_due()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">False</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Cron pour planifier les activités annuelles de mise à jour -->
+        <record id="cron_schedule_renewal_activities" model="ir.cron">
+            <field name="name">Planification activités de renouvellement</field>
+            <field name="model_id" ref="model_lms_trainers_competency_competency_renewal"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_schedule_renewal_activities()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">False</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</odoo>

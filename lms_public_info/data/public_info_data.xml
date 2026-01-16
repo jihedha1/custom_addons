@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Compétences de formateur par défaut -->
+    <record id="competency_category_technical" model="lms_public_info.trainer_competency">
+        <field name="name">Compétence technique</field>
+        <field name="code">TECH-001</field>
+        <field name="category">technical</field>
+        <field name="level_required">advanced</field>
+        <field name="description">Maîtrise des aspects techniques du sujet</field>
+        <field name="is_public">True</field>
+    </record>
+
+    <record id="competency_category_pedagogical" model="lms_public_info.trainer_competency">
+        <field name="name">Compétence pédagogique</field>
+        <field name="code">PED-001</field>
+        <field name="category">pedagogical</field>
+        <field name="level_required">intermediate</field>
+        <field name="description">Capacité à transmettre des connaissances efficacement</field>
+        <field name="is_public">True</field>
+    </record>
+
+    <record id="competency_category_managerial" model="lms_public_info.trainer_competency">
+        <field name="name">Compétence managériale</field>
+        <field name="code">MGT-001</field>
+        <field name="category">managerial</field>
+        <field name="level_required">intermediate</field>
+        <field name="description">Gestion de groupe et animation d'équipe</field>
+        <field name="is_public">True</field>
+    </record>
+
+    <record id="competency_category_language" model="lms_public_info.trainer_competency">
+        <field name="name">Compétence linguistique</field>
+        <field name="code">LANG-001</field>
+        <field name="category">language</field>
+        <field name="level_required">intermediate</field>
+        <field name="description">Maîtrise de langues étrangères</field>
+        <field name="is_public">True</field>
+    </record>
+
+    <record id="competency_category_certification" model="lms_public_info.trainer_competency">
+        <field name="name">Certification professionnelle</field>
+        <field name="code">CERT-001</field>
+        <field name="category">certification</field>
+        <field name="level_required">advanced</field>
+        <field name="description">Certifications reconnues dans le domaine</field>
+        <field name="is_public">True</field>
+    </record>
+</odoo>

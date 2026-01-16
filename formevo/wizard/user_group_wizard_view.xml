@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue formulaire de l'assistant utilisateur (Odoo 17.0) -->
+        <record id="user_group_wizard_form" model="ir.ui.view">
+            <field name="name">yonn.user.group.wizard.form</field>
+            <field name="model">yonn.user.group.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Configurer Utilisateur Yonn">
+                    <sheet>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="user_type"/>
+                            <field name="yonn_role"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_assign_groups"
+                                string="Configurer"
+                                type="object"
+                                class="btn-primary"/>
+                        <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action de l'assistant -->
+        <record id="user_group_wizard_action" model="ir.actions.act_window">
+            <field name="name">Configurer Utilisateur Yonn</field>
+            <field name="res_model">yonn.user.group.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

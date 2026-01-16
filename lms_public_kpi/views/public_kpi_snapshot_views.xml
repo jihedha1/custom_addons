@@ -1,0 +1,787 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- =============================================== -->
+        <!-- Vue Tree améliorée avec décorations            -->
+        <!-- =============================================== -->
+        <record id="view_public_kpi_snapshot_tree" model="ir.ui.view">
+    <field name="name">public.kpi.snapshot.tree</field>
+    <field name="model">public.kpi.snapshot</field>
+    <field name="arch" type="xml">
+        <tree string="Snapshots d'indicateurs"
+              decoration-success="state == 'published'"
+              decoration-warning="state == 'review'"
+              decoration-muted="state == 'archived'"
+              decoration-danger="update_alert">
+
+            <!-- Colonne statut avec badge -->
+            <field name="state" widget="badge"
+                   decoration-success="state == 'published'"
+                   decoration-warning="state == 'review'"
+                   decoration-muted="state == 'archived'"/>
+
+            <!-- Informations principales -->
+            <field name="name" string="Titre"/>
+            <field name="period_type" string="Période"/>
+            <field name="period_start" widget="date"/>
+            <field name="period_end" widget="date"/>
+            <field name="period_duration" string="Durée (j)" optional="hide"/>
+
+            <!-- Métriques -->
+            <field name="kpi_count" string="KPI"/>
+            <field name="published_kpi_count" string="Publiés"/>
+            <field name="completion_rate" string="Complétion %" widget="progressbar"/>
+            <field name="average_kpi_value" string="Moyenne" optional="hide"/>
+
+            <!-- Dates -->
+            <field name="publication_date" widget="date" optional="show"/>
+            <field name="next_update_date" widget="date" optional="show"/>
+
+            <!-- Alertes -->
+            <field name="update_alert" string="⚠️" invisible="1"/>
+            <field name="days_overdue" string="Retard (j)"
+                   invisible="not update_alert" optional="show"/>
+
+            <!-- Actions -->
+            <field name="view_count" string="👁️ Vues" optional="hide"/>
+            <field name="attachment_count" string="📎" optional="hide"/>
+
+            <!-- Utilisateur -->
+            <field name="validator_id" string="Validé par" optional="hide"/>
+            <field name="create_uid" string="Créé par" optional="hide"/>
+
+        </tree>
+    </field>
+</record>
+
+        <!-- =============================================== -->
+        <!-- Vue Formulaire complète                        -->
+        <!-- =============================================== -->
+        <record id="view_public_kpi_snapshot_form" model="ir.ui.view">
+            <field name="name">public.kpi.snapshot.form</field>
+            <field name="model">public.kpi.snapshot</field>
+            <field name="arch" type="xml">
+                <form string="Snapshot d'indicateurs">
+                    <header>
+                        <!-- Actions selon état -->
+                        <button name="action_submit_for_review" type="object"
+                                string="Soumettre pour révision"
+                                class="oe_highlight"
+                                invisible="state != 'draft'"
+                                groups="lms_public_kpi.group_kpi_editor"/>
+
+                        <button name="action_publish" type="object"
+                                string="Publier"
+                                class="oe_highlight"
+                                invisible="state not in ['review', 'draft']"
+                                confirm="Êtes-vous sûr de vouloir publier ce snapshot ? Cette action le rendra visible publiquement."
+                                groups="lms_public_kpi.group_kpi_manager"/>
+
+                        <button name="action_reject" type="object"
+                                string="Rejeter"
+                                invisible="state != 'review'"
+                                groups="lms_public_kpi.group_kpi_manager"/>
+
+                        <button name="action_archive" type="object"
+                                string="Archiver"
+                                invisible="state != 'published'"
+                                confirm="Archiver ce snapshot le rendra inaccessible publiquement."
+                                groups="lms_public_kpi.group_kpi_manager"/>
+
+                        <button name="action_unarchive" type="object"
+                                string="Réactiver"
+                                invisible="state != 'archived'"
+                                groups="lms_public_kpi.group_kpi_manager"/>
+
+                        <!-- Actions utilitaires -->
+                        <button name="action_calculate_kpis" type="object"
+                                string="Calculer KPI"
+                                invisible="state == 'archived'"
+                                groups="lms_public_kpi.group_kpi_editor"/>
+
+                        <button name="action_duplicate" type="object"
+                                string="Dupliquer"
+                                groups="lms_public_kpi.group_kpi_editor"/>
+
+                        <button name="action_export_audit_proof" type="object"
+                                string="Export Audit"
+                                invisible="state != 'published'"
+                                groups="lms_public_kpi.group_kpi_manager"/>
+
+                        <!-- Barre de statut -->
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,review,published"/>
+                    </header>
+
+                    <sheet>
+                        <!-- Ribbon pour alertes -->
+                        <widget name="web_ribbon" title="⚠️ Mise à jour en retard"
+                                bg_color="bg-danger"
+                                invisible=" not update_alert"/>
+
+                        <widget name="web_ribbon" title="📦 Archivé"
+                                bg_color="bg-secondary"
+                                invisible="state != 'archived'"/>
+
+                        <!-- Boutons en haut à droite -->
+                        <div class="oe_button_box" name="button_box">
+                            <!-- Bouton KPI -->
+                            <button class="oe_stat_button" type="object"
+                                    name="action_view_kpis" icon="fa-bar-chart">
+                                <field string="Indicateurs" name="kpi_count" widget="statinfo"/>
+                            </button>
+
+                            <!-- Bouton Publiés -->
+                            <button class="oe_stat_button" type="object"
+                                    name="action_view_kpis" icon="fa-check-circle"
+                                    invisible="published_kpi_count == 0">
+                                <field string="Publiés" name="published_kpi_count" widget="statinfo"/>
+                            </button>
+
+                            <!-- Bouton Complétion -->
+                            <button class="oe_stat_button" icon="fa-tasks">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="completion_rate" widget="float"
+                                               options="{'precision': 1}"/>%
+                                    </span>
+                                    <span class="o_stat_text">Complétion</span>
+                                </div>
+                            </button>
+
+                            <!-- Bouton Documents -->
+                            <button class="oe_stat_button" type="object"
+                                    name="action_view_attachments" icon="fa-paperclip"
+                                    invisible="attachment_count == 0">
+                                <field string="Documents" name="attachment_count" widget="statinfo"/>
+                            </button>
+
+                            <!-- Bouton Vues -->
+                            <button class="oe_stat_button" icon="fa-eye"
+                                    invisible="view_count == 0">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="view_count"/>
+                                    </span>
+                                    <span class="o_stat_text">Vues</span>
+                                </div>
+                            </button>
+
+                            <button class="oe_stat_button" type="object"
+                                    name="action_open_public_url" icon="fa-globe"
+                                    invisible="state != 'published'">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">URL publique</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Titre -->
+                        <div class="oe_title">
+                            <label for="name" string="Titre du snapshot"/>
+                            <h1>
+                                <field name="name" placeholder="Ex: Indicateurs Q1 2024"/>
+                            </h1>
+                        </div>
+
+                        <!-- Alerte mise à jour -->
+                        <div class="alert alert-danger" role="alert"
+                             invisible="not update_alert">
+                            <strong>⚠️ Mise à jour en retard !</strong>
+                            <p class="mb-0">
+                                Ce snapshot devait être mis à jour le
+                                <field name="next_update_date" readonly="1" class="font-weight-bold"/>
+                                (retard: <field name="days_overdue" readonly="1"/> jours).
+                                Veuillez créer un nouveau snapshot pour maintenir la conformité Qualiopi.
+                            </p>
+                        </div>
+
+                        <!-- Champs invisibles pour compute -->
+                        <field name="update_alert" invisible="1"/>
+
+                        <!-- Groupes principaux -->
+                        <group>
+                            <group string="Période de référence">
+                                <field name="period_type"/>
+                                <field name="period_start"/>
+                                <field name="period_end"/>
+                                <field name="period_duration" readonly="1"/>
+                                <field name="previous_snapshot_id"
+                                       domain="[('state', '=', 'published'), ('id', '!=', id)]"/>
+                            </group>
+
+                            <group string="Publication">
+                                <field name="data_source"/>
+                                <field name="external_source_url"
+                                       placeholder="https://..."
+                                       invisible="data_source != 'external'"/>
+                                <field name="publication_date" readonly="1"/>
+                                <field name="next_update_date"/>
+                                <field name="validator_id" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Métriques -->
+                        <group string="📊 Métriques" invisible="kpi_count == 0">
+                            <group>
+                                <label for="average_kpi_value" string="Moyenne des indicateurs"/>
+                                <div>
+                                    <field name="average_kpi_value" class="oe_inline"/> %
+                                </div>
+
+                                <label for="global_evolution_rate" string="Évolution globale"/>
+                                <div>
+                                    <field name="global_evolution_rate" class="oe_inline"
+                                           decoration-success="global_evolution_rate &gt; 0"
+                                           decoration-danger="global_evolution_rate &lt; 0"/> %
+                                    <span invisible="global_evolution_rate &lt;= 0">↗</span>
+                                    <span invisible="global_evolution_rate &gt;= 0">↘</span>
+                                </div>
+                            </group>
+
+                            <group>
+                                <field name="view_count" readonly="1"/>
+                                <field name="last_view_date" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Notebook avec onglets -->
+                        <notebook>
+                            <!-- Onglet Indicateurs -->
+                            <page string="📊 Indicateurs" name="kpis">
+                                <field name="kpi_version_ids">
+                                    <tree editable="bottom"
+                                          decoration-success="state == 'published'"
+                                          decoration-muted="value == 0">
+                                        <field name="category_id"/>
+                                        <field name="name"/>
+                                        <field name="value"/>
+                                        <field name="unit"/>
+                                        <field name="previous_value" optional="hide"/>
+                                        <field name="evolution_rate" optional="show"
+                                               decoration-success="evolution_rate &gt; 0"
+                                               decoration-danger="evolution_rate &lt; 0"/>
+                                        <field name="evolution_direction" optional="hide"/>
+                                        <field name="calculation_method" optional="hide"/>
+                                        <field name="state" widget="badge"/>
+                                        <button name="action_calculate" type="object"
+                                                string="Calculer"
+                                                icon="fa-calculator"
+                                                invisible="calculation_method == 'manual'"/>
+                                    </tree>
+                                </field>
+
+                                <!-- Résumé -->
+                                <group class="oe_subtotal_footer" invisible="kpi_count == 0">
+                                    <field name="kpi_count" readonly="1"/>
+                                    <field name="published_kpi_count" readonly="1"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="completion_rate"/>
+                                    </div>
+                                    <field name="completion_rate" nolabel="1" readonly="1"
+                                           class="oe_subtotal_footer_separator" widget="progressbar"/>
+                                </group>
+                            </page>
+
+                            <!-- Onglet Notes publiques -->
+                            <page string="📝 Notes publiques" name="public_notes">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="alert alert-info" role="alert" aria-label="Information">
+                                                <i class="fa fa-info-circle mr-2"></i>
+                                                Ces notes seront visibles publiquement sur le site web avec les indicateurs.
+                                            </div>
+                                            <field name="public_notes" nolabel="1"
+                                                   class="o_form_textarea"
+                                                   placeholder="Informations à afficher avec les indicateurs sur le site web... Exemples :
+                            • Contexte général des indicateurs
+                            • Limites et précautions d'interprétation
+                            • Sources de données
+                            • Période de référence"
+                                                   style="min-height: 200px;"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+
+                            <page string="🔬 Méthodologie" name="methodology">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="alert alert-warning" role="alert">
+                                                <i class="fa fa-exclamation-triangle mr-2"></i>
+                                                Cette méthodologie doit être rigoureuse et conforme aux exigences Qualiopi.
+                                            </div>
+                                            <field name="methodology" nolabel="1"
+                                                   class="o_form_textarea"
+                                                   placeholder="Explication détaillée de la méthodologie de calcul des indicateurs...
+                            Exemples :
+                            • Formule de calcul pour chaque indicateur
+                            • Méthodes de collecte des données
+                            • Corrections et ajustements appliqués
+                            • Référentiel Qualiopi : indicateurs 1, 2, 3...
+                            • Fréquence de mise à jour
+                            • Responsables du calcul"
+                                                   style="min-height: 250px;"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </page>
+
+                            <!-- Onglet Documents -->
+                            <page string="📎 Documents justificatifs" name="attachments">
+                                <field name="attachment_ids" widget="many2many_binary"
+                                       string="Pièces jointes"/>
+                            </page>
+
+                            <!-- Onglet QR Code -->
+                            <page string="📱 QR Code" name="qr_code"
+                                  invisible="state != 'published'">
+                                <group>
+                                    <field name="public_url" readonly="1" widget="url"/>
+                                    <field name="qr_code" widget="image"
+                                           options="{'size': [150, 150]}"
+                                           invisible="not qr_code"/>
+                                </group>
+                                <div class="alert alert-info" role="alert"
+                                     invisible="not qr_code">
+                                    <p class="mb-0">
+                                        Le QR Code sera généré automatiquement après publication.
+                                        Il permettra un accès rapide aux indicateurs depuis un smartphone.
+                                    </p>
+                                </div>
+                            </page>
+
+                            <!-- Onglet Historique -->
+                            <!-- Onglet Historique -->
+                            <page string="📜 Historique" name="history">
+                                <div class="container">
+                                    <div class="row">
+                                        <!-- Colonne gauche : Snapshots liés -->
+                                        <div class="col-md-8">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h5 class="mb-0">
+                                                        <i class="fa fa-sitemap mr-2"></i>
+                                                        Chaîne des snapshots
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <!-- Snapshot précédent -->
+                                                    <div class="row mb-4">
+                                                        <div class="col-12">
+                                                            <h6 class="text-muted">
+                                                                <i class="fa fa-arrow-left mr-1"></i>
+                                                                Précédent
+                                                            </h6>
+                                                            <field name="previous_snapshot_id" widget="many2one" readonly="1" nolabel="1"
+                                                                   options="{'no_create': True, 'no_open': True}"
+                                                                   class="oe_read_only"/>
+                                                            <div class="text-muted mt-1" invisible="previous_snapshot_id">
+                                                                <small>Aucun snapshot précédent</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Snapshot actuel -->
+                                                    <div class="row mb-4">
+                                                        <div class="col-12">
+                                                            <div class="alert alert-primary">
+                                                                <strong>
+                                                                    <i class="fa fa-dot-circle-o mr-1"></i>
+                                                                    Snapshot actuel
+                                                                </strong>
+                                                                <div class="mt-1">
+                                                                    <span class="badge badge-secondary mr-2">
+                                                                        <field name="period_type"/>
+                                                                    </span>
+                                                                    <field name="period_start" widget="date"/> →
+                                                                    <field name="period_end" widget="date"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Snapshots suivants -->
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <h6 class="text-muted">
+                                                                <i class="fa fa-arrow-right mr-1"></i>
+                                                                Suivants
+                                                            </h6>
+                                                            <field name="next_snapshot_ids" readonly="1" nolabel="1">
+                                                                <tree decoration-muted="state == 'archived'"
+                                                                      decoration-success="state == 'published'"
+                                                                      decoration-warning="state == 'review'">
+                                                                    <field name="name" string="Titre"/>
+                                                                    <field name="period_start" widget="date"/>
+                                                                    <field name="period_end" widget="date"/>
+                                                                    <field name="period_type" string="Type"/>
+                                                                    <field name="state" widget="badge"/>
+                                                                    <field name="publication_date" widget="date"/>
+                                                                    <field name="kpi_count" string="KPI"/>
+                                                                    <field name="completion_rate" string="Complétion" widget="progressbar"/>
+                                                                </tree>
+                                                            </field>
+                                                            <div class="text-muted mt-2" invisible="next_snapshot_ids">
+                                                                <small>Aucun snapshot suivant</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Colonne droite : Chronologie -->
+                                        <div class="col-md-4">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h5 class="mb-0">
+                                                        <i class="fa fa-history mr-2"></i>
+                                                        Chronologie
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul class="list-unstyled timeline">
+                                                        <!-- Création -->
+                                                        <li class="mb-3">
+                                                            <div class="timeline-item">
+                                                                <div class="timeline-marker bg-info">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </div>
+                                                                <div class="timeline-content">
+                                                                    <h6 class="mb-0">Création</h6>
+                                                                    <small class="text-muted">
+                                                                        <field name="create_date" widget="datetime" readonly="1"/>
+                                                                    </small>
+                                                                    <div class="text-muted">
+                                                                        <small>
+                                                                            Par: <field name="create_uid" widget="many2one_avatar_user" readonly="1"/>
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+
+                                                        <!-- Révision -->
+                                                        <li class="mb-3" invisible="not review_date">
+                                                            <div class="timeline-item">
+                                                                <div class="timeline-marker bg-warning">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </div>
+                                                                <div class="timeline-content">
+                                                                    <h6 class="mb-0">En révision</h6>
+                                                                    <small class="text-muted">
+                                                                        <field name="review_date" widget="date" readonly="1"/>
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+
+                                                        <!-- Publication -->
+                                                        <li class="mb-3" invisible="not publication_date">
+                                                            <div class="timeline-item">
+                                                                <div class="timeline-marker bg-success">
+                                                                    <i class="fa fa-check"></i>
+                                                                </div>
+                                                                <div class="timeline-content">
+                                                                    <h6 class="mb-0">Publication</h6>
+                                                                    <small class="text-muted">
+                                                                        <field name="publication_date" widget="date" readonly="1"/>
+                                                                    </small>
+                                                                    <div class="text-muted">
+                                                                        <small>
+                                                                            Validé par: <field name="validator_id" widget="many2one_avatar_user" readonly="1"/>
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+
+                                                        <!-- Dernière modification -->
+                                                        <li class="mb-3">
+                                                            <div class="timeline-item">
+                                                                <div class="timeline-marker bg-secondary">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </div>
+                                                                <div class="timeline-content">
+                                                                    <h6 class="mb-0">Dernière modification</h6>
+                                                                    <small class="text-muted">
+                                                                        <field name="write_date" widget="datetime" readonly="1"/>
+                                                                    </small>
+                                                                    <div class="text-muted">
+                                                                        <small>
+                                                                            Par: <field name="write_uid" widget="many2one_avatar_user" readonly="1"/>
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+
+                                                        <!-- Archivage -->
+                                                        <li class="mb-3" invisible="not archive_date">
+                                                            <div class="timeline-item">
+                                                                <div class="timeline-marker bg-dark">
+                                                                    <i class="fa fa-archive"></i>
+                                                                </div>
+                                                                <div class="timeline-content">
+                                                                    <h6 class="mb-0">Archivage</h6>
+                                                                    <small class="text-muted">
+                                                                        <field name="archive_date" widget="date" readonly="1"/>
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+
+                                                    <!-- Statistiques de cycle de vie -->
+                                                    <!-- Statistiques de cycle de vie -->
+                                                    <div class="mt-4">
+                                                        <h6>Durées</h6>
+                                                        <table class="table table-sm">
+                                                            <tr invisible="not review_date">
+                                                                <td>Création → Révision</td>
+                                                                <td class="text-right">
+                                                                    <span invisible="not review_date or not create_date">
+                                                                        <!-- Calcul des jours -->
+                                                                        <field name="review_date" invisible="1"/>
+                                                                        <field name="create_date" invisible="1"/>
+                                                                        <!-- Vous aurez besoin d'un champ computed pour cette valeur -->
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr invisible="not publication_date">
+                                                                <td>Révision → Publication</td>
+                                                                <td class="text-right">
+                                                                    <span invisible="not publication_date or not review_date">
+                                                                        <!-- Même principe -->
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr invisible="state != 'published'">
+                                                                <td>Durée de publication</td>
+                                                                <td class="text-right">
+                                                                    <span invisible="not publication_date">
+                                                                        <!-- Même principe -->
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CSS pour la timeline -->
+                                <style>
+                                    .timeline {
+                                        position: relative;
+                                        padding-left: 30px;
+                                    }
+                                    .timeline::before {
+                                        content: '';
+                                        position: absolute;
+                                        left: 15px;
+                                        top: 0;
+                                        bottom: 0;
+                                        width: 2px;
+                                        background: #e9ecef;
+                                    }
+                                    .timeline-item {
+                                        position: relative;
+                                        margin-bottom: 20px;
+                                    }
+                                    .timeline-marker {
+                                        position: absolute;
+                                        left: -30px;
+                                        top: 0;
+                                        width: 30px;
+                                        height: 30px;
+                                        border-radius: 50%;
+                                        color: white;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                    }
+                                    .timeline-content {
+                                        padding-left: 10px;
+                                    }
+                                </style>
+                            </page>
+
+                            <!-- Onglet Notes internes -->
+                            <page string="🔒 Notes internes" name="internal_notes"
+                                  groups="lms_public_kpi.group_kpi_manager">
+                                <field name="notes" placeholder="Commentaires internes non visibles publiquement..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+
+                    <!-- Chatter -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- =============================================== -->
+        <!-- Vue Search améliorée                           -->
+        <!-- =============================================== -->
+        <record id="view_public_kpi_snapshot_search" model="ir.ui.view">
+            <field name="name">public.kpi.snapshot.search</field>
+            <field name="model">public.kpi.snapshot</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher snapshots">
+                    <!-- Champs de recherche -->
+                    <field name="name" string="Titre" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="period_start"/>
+                    <field name="period_end"/>
+                    <field name="publication_date"/>
+
+                    <!-- Filtres prédéfinis -->
+                    <filter string="📝 Brouillon" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="👁️ En révision" name="review" domain="[('state', '=', 'review')]"/>
+                    <filter string="✅ Publié" name="published" domain="[('state', '=', 'published')]"/>
+                    <filter string="📦 Archivé" name="archived" domain="[('state', '=', 'archived')]"/>
+
+                    <separator/>
+
+                    <!-- CORRIGÉ : Utiliser directement la date plutôt qu'un champ computed -->
+                    <filter string="⚠️ Mise à jour en retard" name="overdue"
+                            domain="[('next_update_date', '&lt;', context_today())]"/>
+                    <filter string="🔔 Mise à jour proche" name="upcoming_update"
+                            domain="[('next_update_date', '&lt;=', (context_today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d')), ('next_update_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+
+                    <separator/>
+
+                    <filter string="Mensuel" name="monthly" domain="[('period_type', '=', 'monthly')]"/>
+                    <filter string="Trimestriel" name="quarterly" domain="[('period_type', '=', 'quarterly')]"/>
+                    <filter string="Semestriel" name="semiannual" domain="[('period_type', '=', 'semiannual')]"/>
+                    <filter string="Annuel" name="annual" domain="[('period_type', '=', 'annual')]"/>
+
+                    <separator/>
+
+                    <filter string="Mes snapshots" name="my_snapshots"
+                            domain="[('create_uid', '=', uid)]"/>
+
+                    <separator/>
+
+                    <!-- Filtres date -->
+                    <filter string="Période actuelle" name="current_period"
+                          domain="[('period_start', '&lt;=', context_today()), ('period_end', '&gt;=', context_today())]"/>
+                    <filter string="Publié ce mois" name="published_this_month"
+                          domain="[('publication_date', '&gt;=', (context_today() + relativedelta(day=1, months=-1)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Publié cette année" name="published_this_year"
+                          domain="[('publication_date', '&gt;=', (context_today() + relativedelta(day=1, month=1, years=-1)).strftime('%Y-%m-%d'))]"/>
+
+                    <separator/>
+
+                    <!-- Groupements -->
+                    <group expand="0" string="Grouper par">
+                        <filter string="Statut" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Type de période" name="group_by_period" context="{'group_by': 'period_type'}"/>
+                        <filter string="Source données" name="group_by_source" context="{'group_by': 'data_source'}"/>
+                        <filter string="Mois de publication" name="group_by_pub_month"
+                                context="{'group_by': 'publication_date:month'}"/>
+                        <filter string="Créateur" name="group_by_creator" context="{'group_by': 'create_uid'}"/>
+                        <filter string="Validateur" name="group_by_validator" context="{'group_by': 'validator_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- =============================================== -->
+        <!-- Vue Calendar                                   -->
+        <!-- =============================================== -->
+        <!-- =============================================== -->
+<!-- Vue Calendar                                   -->
+<!-- =============================================== -->
+
+        <!-- =============================================== -->
+        <!-- Vue Pivot pour analyse                         -->
+        <!-- =============================================== -->
+        <record id="view_public_kpi_snapshot_pivot" model="ir.ui.view">
+            <field name="name">public.kpi.snapshot.pivot</field>
+            <field name="model">public.kpi.snapshot</field>
+            <field name="arch" type="xml">
+                <pivot string="Analyse des snapshots">
+                    <field name="period_type" type="row"/>
+                    <field name="state" type="col"/>
+                    <field name="kpi_count" type="measure"/>
+                    <field name="published_kpi_count" type="measure"/>
+                    <field name="completion_rate" type="measure"/>
+                    <field name="average_kpi_value" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- =============================================== -->
+        <!-- Vue Graph                                      -->
+        <!-- =============================================== -->
+        <record id="view_public_kpi_snapshot_graph" model="ir.ui.view">
+            <field name="name">public.kpi.snapshot.graph</field>
+            <field name="model">public.kpi.snapshot</field>
+            <field name="arch" type="xml">
+                <graph string="Statistiques snapshots" type="line">
+                    <field name="publication_date" interval="month"/>
+                    <field name="average_kpi_value" type="measure"/>
+                    <field name="completion_rate" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- =============================================== -->
+        <!-- Actions                                        -->
+        <!-- =============================================== -->
+
+        <!-- Action principale -->
+        <record id="action_public_kpi_snapshot" model="ir.actions.act_window">
+            <field name="name">Snapshots d'indicateurs</field>
+            <field name="res_model">public.kpi.snapshot</field>
+            <field name="view_mode">kanban,tree,form,pivot,graph</field>
+            <field name="context">{
+                'search_default_published': 1,
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer votre premier snapshot d'indicateurs
+                </p>
+                <p>
+                    Les snapshots permettent de publier vos indicateurs de performance
+                    conformément au référentiel Qualiopi.
+                </p>
+            </field>
+        </record>
+
+        <!-- Action: Mes snapshots -->
+        <record id="action_my_public_kpi_snapshots" model="ir.actions.act_window">
+            <field name="name">Mes snapshots</field>
+            <field name="res_model">public.kpi.snapshot</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[('create_uid', '=', uid)]</field>
+            <field name="context">{
+                'default_state': 'draft',
+                'search_default_draft': 1,
+            }</field>
+        </record>
+
+        <!-- Action: Snapshots en retard -->
+        <record id="action_overdue_kpi_snapshots" model="ir.actions.act_window">
+            <field name="name">⚠️ Mises à jour en retard</field>
+            <field name="res_model">public.kpi.snapshot</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('update_alert', '=', True)]</field>
+            <field name="context">{
+                'search_default_overdue': 1,
+            }</field>
+        </record>
+
+    </data>
+</odoo>

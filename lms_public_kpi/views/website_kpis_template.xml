@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- =============================================== -->
+        <!-- TEMPLATE : Page principale KPI publics         -->
+        <!-- Design conforme charte graphique formations    -->
+        <!-- =============================================== -->
+        <template id="kpi_public_snapshot_page" name="Indicateurs Publics Qualiopi">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure">
+
+                    <!-- Hero Section avec gradient -->
+                    <section style="background: linear-gradient(135deg, #09171E 0%, #1B3E41 50%, #2B6559 100%); padding: 100px 0 60px;">
+                        <div class="container text-center">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-10">
+                                    <!-- Breadcrumb -->
+                                    <nav aria-label="breadcrumb" class="mb-4">
+                                        <ol class="breadcrumb bg-transparent justify-content-center" style="background: transparent !important;">
+                                            <li class="breadcrumb-item">
+                                                <a href="/" class="text-white" style="opacity: 0.8;">
+                                                    <i class="fa fa-home mr-1"></i>
+                                                    Accueil
+                                                </a>
+                                            </li>
+                                            <li class="breadcrumb-item active text-white" aria-current="page" style="opacity: 0.9;">
+                                                Indicateurs de Performance
+                                            </li>
+                                        </ol>
+                                    </nav>
+
+                                    <!-- Titre principal -->
+                                    <h1 class="display-3 font-weight-bold mb-4" style="color: #FFFFFF; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                                        <i class="fa fa-chart-line mr-3"></i>
+                                        Nos Indicateurs de Performance
+                                    </h1>
+
+                                    <t t-if="snapshot">
+                                        <p class="lead mb-3" style="font-size: 20px; color: #E0F7EA; opacity: 0.95;">
+                                            Période du
+                                            <span t-field="snapshot.period_start" t-options='{"widget": "date", "format": "dd MMMM yyyy"}'/>
+                                            au
+                                            <span t-field="snapshot.period_end" t-options='{"widget": "date", "format": "dd MMMM yyyy"}'/>
+                                        </p>
+                                        <p class="text-white-50">
+                                            <i class="fa fa-calendar mr-2"></i>
+                                            Dernière mise à jour :
+                                            <span t-field="snapshot.publication_date" t-options='{"widget": "date", "format": "dd MMMM yyyy"}'/>
+                                        </p>
+                                    </t>
+                                    <t t-else="">
+                                        <p class="lead text-white-50">
+                                            Nos indicateurs de performance seront bientôt disponibles.
+                                        </p>
+                                    </t>
+
+                                    <!-- Badge Qualiopi -->
+                                    <div class="mt-4">
+                                        <span class="badge badge-pill px-4 py-3" style="background: rgba(122, 247, 167, 0.2); color: #7AF7A7; border: 2px solid rgba(122, 247, 167, 0.5); font-size: 16px; font-weight: 600;">
+                                            <i class="fa fa-certificate mr-2"></i>
+                                            Certification Qualiopi
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Contenu principal -->
+                    <section class="py-5">
+                        <div class="container">
+                            <t t-if="snapshot">
+                                <!-- Notes publiques -->
+                                <div t-if="snapshot.public_notes" class="row mb-5">
+                                    <div class="col-12">
+                                        <div class="card border-0 shadow-sm" style="border-radius: 20px; border-left: 5px solid #7AF7A7; background: rgba(122, 247, 167, 0.05);">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="mr-4">
+                                                        <i class="fa fa-info-circle" style="font-size: 36px; color: #2B6559;"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h5 class="mb-3" style="color: #1B3E41; font-weight: 700;">
+                                                            À propos de ces indicateurs
+                                                        </h5>
+                                                        <div t-raw="snapshot.public_notes" style="color: #1B3E41; line-height: 1.7;"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Grille des indicateurs -->
+                                <div class="row">
+                                    <t t-foreach="snapshot.kpi_version_ids.filtered(lambda k: k.state == 'published').sorted('sequence')" t-as="kpi">
+                                        <div class="col-lg-4 col-md-6 mb-4">
+                                            <div class="card h-100 border-0 shadow-sm kpi-card" style="border-radius: 20px; overflow: hidden; transition: all 0.3s;">
+                                                <!-- Header avec catégorie -->
+                                                <div class="card-header border-0 py-3" t-attf-style="background: linear-gradient(135deg, rgba(9, 23, 30, 0.05), rgba(27, 62, 65, 0.1)); border-top: 4px solid {{kpi.display_color == 'success' and '#7AF7A7' or kpi.display_color == 'primary' and '#2B6559' or '#1B3E41'}};">
+                                                    <span class="badge badge-pill px-3 py-2" style="background: rgba(122, 247, 167, 0.2); color: #2B6559; font-size: 12px; font-weight: 600;">
+                                                        <i class="fa fa-tag mr-1"></i>
+                                                        <t t-esc="kpi.category_id.name"/>
+                                                    </span>
+                                                </div>
+
+                                                <div class="card-body text-center p-4">
+                                                    <!-- Titre indicateur -->
+                                                    <h5 class="card-title mb-4" style="color: #1B3E41; font-weight: 600; min-height: 48px; line-height: 1.4;">
+                                                        <t t-esc="kpi.name"/>
+                                                    </h5>
+
+                                                    <!-- Valeur principale -->
+                                                    <div class="mb-4">
+                                                        <h2 class="display-3 font-weight-bold mb-0" t-attf-style="color: {{kpi.display_color == 'success' and '#2B6559' or kpi.display_color == 'primary' and '#1B3E41' or '#274B4C'}}; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                                            <t t-esc="'{:,.1f}'.format(kpi.value).replace(',', ' ')"/>
+                                                            <small class="text-muted h4">
+                                                                <t t-esc="kpi.unit"/>
+                                                            </small>
+                                                        </h2>
+                                                    </div>
+
+                                                    <!-- Évolution -->
+                                                    <t t-if="kpi.evolution_rate != 0 and kpi.previous_value">
+                                                        <div class="mb-3">
+                                                            <span t-attf-class="badge badge-pill px-3 py-2 {{
+                                                                'badge-success' if kpi.evolution_direction == 'up'
+                                                                else 'badge-danger' if kpi.evolution_direction == 'down'
+                                                                else 'badge-secondary'
+                                                            }}" style="font-size: 14px;">
+                                                                <t t-if="kpi.evolution_direction == 'up'">
+                                                                    <i class="fa fa-arrow-up"></i>
+                                                                </t>
+                                                                <t t-elif="kpi.evolution_direction == 'down'">
+                                                                    <i class="fa fa-arrow-down"></i>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <i class="fa fa-minus"></i>
+                                                                </t>
+                                                                <t t-esc="'{:,.1f}'.format(abs(kpi.evolution_rate))"/>%
+                                                            </span>
+                                                            <div class="text-muted small mt-2">
+                                                                vs période précédente (<t t-esc="'{:,.1f}'.format(kpi.previous_value)"/><t t-esc="kpi.unit"/>)
+                                                            </div>
+                                                        </div>
+                                                    </t>
+
+                                                    <!-- Description -->
+                                                    <t t-if="kpi.description">
+                                                        <p class="card-text text-muted small mt-3" style="line-height: 1.6;">
+                                                            <t t-esc="kpi.description"/>
+                                                        </p>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+
+                                <!-- Méthodologie et conformité -->
+                                <div class="row mt-5">
+                                    <div class="col-12">
+                                        <div class="card border-0 shadow-sm" style="border-radius: 20px; overflow: hidden; border-left: 5px solid #2B6559;">
+                                            <div class="card-header border-0 py-4" style="background: linear-gradient(135deg, rgba(43, 101, 89, 0.1), rgba(27, 62, 65, 0.05));">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center mr-4" style="width: 60px; height: 60px; background: rgba(43, 101, 89, 0.2);">
+                                                        <i class="fa fa-info-circle" style="color: #2B6559; font-size: 28px;"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="mb-1" style="color: #1B3E41; font-weight: 700;">
+                                                            Méthodologie et conformité Qualiopi
+                                                        </h4>
+                                                        <p class="text-muted mb-0">Transparence et traçabilité de nos données</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-4" style="background: #f8f9fa;">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="d-flex align-items-start">
+                                                            <i class="fa fa-check-circle mr-3 mt-1" style="color: #2B6559; font-size: 20px;"></i>
+                                                            <div>
+                                                                <h6 style="color: #1B3E41; font-weight: 600;">Conformité référentiel</h6>
+                                                                <p class="text-muted small mb-0">
+                                                                    Ces indicateurs sont calculés et publiés conformément au référentiel national Qualiopi.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <div class="d-flex align-items-start">
+                                                            <i class="fa fa-shield mr-3 mt-1" style="color: #2B6559; font-size: 20px;"></i>
+                                                            <div>
+                                                                <h6 style="color: #1B3E41; font-weight: 600;">Fiabilité des données</h6>
+                                                                <p class="text-muted small mb-0">
+                                                                    Les données sont collectées selon des procédures garantissant leur fiabilité et traçabilité.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mt-3">
+                                                    <div class="col-md-4">
+                                                        <div class="text-center p-3">
+                                                            <i class="fa fa-calendar-check-o mb-2" style="font-size: 32px; color: #2B6559;"></i>
+                                                            <h6 style="color: #1B3E41;">Périodicité</h6>
+                                                            <p class="text-muted small mb-0">
+                                                                <span t-esc="snapshot.data_source_label"/>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="text-center p-3">
+                                                            <i class="fa fa-database mb-2" style="font-size: 32px; color: #2B6559;"></i>
+                                                            <h6 style="color: #1B3E41;">Source</h6>
+                                                            <p class="text-muted small mb-0">
+                                                                <t t-esc="dict(snapshot._fields['data_source'].selection).get(snapshot.data_source)"/>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="text-center p-3">
+                                                            <i class="fa fa-refresh mb-2" style="font-size: 32px; color: #2B6559;"></i>
+                                                            <h6 style="color: #1B3E41;">Prochaine publication</h6>
+                                                            <p class="text-muted small mb-0">
+                                                                <t t-if="snapshot.next_update_date">
+                                                                    <span t-field="snapshot.next_update_date" t-options='{"widget": "date"}'/>
+                                                                </t>
+                                                                <t t-else="">
+                                                                    Non programmée
+                                                                </t>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="row mt-5 text-center">
+                                    <div class="col-12">
+                                        <div class="d-flex flex-wrap justify-content-center" style="gap: 15px;">
+                                            <a t-attf-href="/kpis/snapshot/{{snapshot.id}}/pdf" class="btn btn-lg px-5 py-3 shadow" style="background: linear-gradient(135deg, #2B6559, #7AF7A7); color: white; border: none; border-radius: 12px; font-weight: 700; min-width: 240px;">
+                                                <i class="fa fa-download mr-2"></i>
+                                                Télécharger en PDF
+                                            </a>
+
+                                            <a href="/contactus" class="btn btn-outline-primary btn-lg px-5 py-3" style="border-radius: 12px; border-color: #2B6559; color: #2B6559; border-width: 2px; min-width: 240px;">
+                                                <i class="fa fa-envelope mr-2"></i>
+                                                Nous contacter
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </t>
+                            <t t-else="">
+                                <!-- Aucun snapshot disponible -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+                                            <div class="card-body text-center py-5">
+                                                <i class="fa fa-chart-line mb-4" style="font-size: 80px; color: #ccc;"></i>
+                                                <h3 class="mb-3" style="color: #1B3E41;">Indicateurs bientôt disponibles</h3>
+                                                <p class="lead text-muted mb-4">
+                                                    Nos indicateurs de performance seront publiés prochainement.
+                                                </p>
+                                                <a href="/contactus" class="btn btn-lg px-5 py-3" style="background: #2B6559; color: white; border-radius: 12px;">
+                                                    <i class="fa fa-envelope mr-2"></i>
+                                                    Nous contacter pour plus d'informations
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </section>
+
+                </div>
+
+                <!-- Styles CSS personnalisés -->
+                <style>
+                    /* Cartes KPI avec effet de survol */
+                    .kpi-card {
+                        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    }
+
+                    .kpi-card:hover {
+                        transform: translateY(-10px);
+                        box-shadow: 0 20px 40px rgba(43, 101, 89, 0.2) !important;
+                    }
+
+                    /* Animations d'apparition */
+                    @keyframes fadeInUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(30px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+
+                    .kpi-card {
+                        animation: fadeInUp 0.6s ease-out;
+                        animation-fill-mode: both;
+                    }
+
+                    .kpi-card:nth-child(1) { animation-delay: 0.1s; }
+                    .kpi-card:nth-child(2) { animation-delay: 0.2s; }
+                    .kpi-card:nth-child(3) { animation-delay: 0.3s; }
+                    .kpi-card:nth-child(4) { animation-delay: 0.4s; }
+                    .kpi-card:nth-child(5) { animation-delay: 0.5s; }
+                    .kpi-card:nth-child(6) { animation-delay: 0.6s; }
+
+                    /* Breadcrumb personnalisé */
+                    .breadcrumb-item + .breadcrumb-item::before {
+                        content: "›";
+                        color: rgba(255, 255, 255, 0.5);
+                    }
+
+                    /* Badges avec effet de brillance */
+                    .badge {
+                        transition: all 0.3s ease;
+                    }
+
+                    .badge:hover {
+                        transform: scale(1.05);
+                        box-shadow: 0 4px 12px rgba(122, 247, 167, 0.3);
+                    }
+
+                    /* Boutons améliorés */
+                    .btn {
+                        transition: all 0.3s ease;
+                    }
+
+                    .btn:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+                    }
+
+                    /* Responsive */
+                    @media (max-width: 991.98px) {
+                        .display-3 {
+                            font-size: 2.5rem !important;
+                        }
+                    }
+
+                    @media (max-width: 767.98px) {
+                        .display-3 {
+                            font-size: 2rem !important;
+                        }
+
+                        .btn-lg {
+                            width: 100%;
+                            margin-bottom: 10px;
+                        }
+                    }
+
+                    /* Smooth scroll */
+                    html {
+                        scroll-behavior: smooth;
+                    }
+                </style>
+
+            </t>
+        </template>
+
+        <!-- =============================================== -->
+        <!-- TEMPLATE : Widget KPI intégrable              -->
+        <!-- =============================================== -->
+        <template id="kpi_widget_template" name="Widget KPI">
+            <div class="kpi-widget-container py-4">
+                <div class="container">
+                    <div class="row">
+                        <t t-foreach="kpis" t-as="kpi">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card border-0 shadow-sm text-center p-4" style="border-radius: 15px; min-height: 200px;">
+                                    <div class="mb-2">
+                                        <span class="badge badge-pill px-3 py-1" style="background: rgba(122, 247, 167, 0.2); color: #2B6559; font-size: 11px;">
+                                            <t t-esc="kpi.category_id.name"/>
+                                        </span>
+                                    </div>
+                                    <div class="display-4 font-weight-bold mb-2" t-attf-style="color: #2B6559;">
+                                        <t t-esc="'{:,.1f}'.format(kpi.value)"/>
+                                        <small class="h5 text-muted"><t t-esc="kpi.unit"/></small>
+                                    </div>
+                                    <h6 class="text-muted mb-0" style="font-size: 14px;">
+                                        <t t-esc="kpi.name"/>
+                                    </h6>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="/kpis/latest" class="btn btn-primary px-4 py-2" style="background: #2B6559; border: none; border-radius: 10px;">
+                            Voir tous les indicateurs
+                            <i class="fa fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Widget vide -->
+        <template id="kpi_widget_empty" name="Widget KPI vide">
+            <div class="kpi-widget-empty text-center py-5">
+                <i class="fa fa-chart-line mb-3" style="font-size: 64px; color: #ccc;"></i>
+                <p class="text-muted mb-0">
+                    <t t-esc="message or 'Indicateurs bientôt disponibles'"/>
+                </p>
+            </div>
+        </template>
+    </data>
+</odoo>

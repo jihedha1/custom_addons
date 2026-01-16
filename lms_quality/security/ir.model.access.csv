@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_quality_non_conformity_user,quality.non_conformity user,model_quality_non_conformity,group_quality_user,1,1,1,0
+access_quality_non_conformity_manager,quality.non_conformity manager,model_quality_non_conformity,group_quality_manager,1,1,1,1
+access_quality_corrective_action_user,quality.corrective.action user,model_quality_corrective_action,group_quality_user,1,1,1,0
+access_quality_corrective_action_manager,quality.corrective.action manager,model_quality_corrective_action,group_quality_manager,1,1,1,1
+access_quality_close_nc_wizard_user,quality.close.nc.wizard user,model_quality_close_nc_wizard,group_quality_user,1,1,1,1
+access_quality_close_nc_wizard_manager,quality.close.nc.wizard manager,model_quality_close_nc_wizard,group_quality_manager,1,1,1,1
+access_quality_dashboard_user,quality.dashboard user,model_quality_dashboard,group_quality_user,1,0,0,0
+access_quality_dashboard_manager,quality.dashboard manager,model_quality_dashboard,group_quality_manager,1,0,0,0
+access_quality_indicator_user,quality.indicator user,model_quality_indicator,group_quality_user,1,1,1,0
+access_quality_indicator_manager,quality.indicator manager,model_quality_indicator,group_quality_manager,1,1,1,1

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ========== RESTRICTIONS D'ACTIONS MENU ========== -->
+
+        <!-- Cache certains menus pour les apprenants -->
+        <record id="hide_backend_for_students" model="ir.rule">
+            <field name="name">Hide Backend Access for Students</field>
+            <field name="model_id" ref="base.model_ir_ui_menu"/>
+            <field name="domain_force">[('id', 'not in', [
+                ref('base.menu_administration'),
+                ref('base.menu_management'),
+                ref('website_slides.website_slides_menu_root')
+                ])]
+            </field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_student'))]"/>
+        </record>
+        <record id="slide_partner_rule_portal_own" model="ir.rule">
+            <field name="name">Portal: own slide partner only</field>
+            <field name="model_id" ref="website_slides.model_slide_slide_partner"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        </record>
+
+
+        <!-- ========== SÉCURITÉ API/CONTROLLERS ========== -->
+
+        <!-- Contrôle d'accès pour les APIs de tracking -->
+        <record id="api_tracking_security" model="ir.rule">
+            <field name="name">API Tracking Security</field>
+            <field name="model_id" ref="model_elearning_tracking"/>
+            <field name="domain_force">[
+                '|',
+                ('partner_id', '=', user.partner_id.id),
+                ('course_id.user_id', '=', user.id)
+                ]
+            </field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ========== RESTRICTIONS SPÉCIALES ========== -->
+
+        <!-- Les apprenants ne peuvent pas modifier les cours -->
+        <record id="restrict_course_modification_students" model="ir.rule">
+            <field name="name">Students Cannot Modify Courses</field>
+            <field name="model_id" ref="website_slides.model_slide_channel"/>
+            <field name="domain_force">[(0, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_student'))]"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Les apprenants ne peuvent pas voir les autres apprenants -->
+        <record id="restrict_partner_access_students" model="ir.rule">
+            <field name="name">Students Cannot See Other Students</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">[('id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view KPI versions - VERSION SANS DÉCORATIONS -->
+        <record id="view_public_kpi_version_tree" model="ir.ui.view">
+            <field name="name">public.kpi.version.tree</field>
+            <field name="model">public.kpi.version</field>
+            <field name="arch" type="xml">
+                <tree string="Versions d'indicateurs">
+                    <field name="name"/>
+                    <field name="snapshot_id"/>
+                    <field name="category_id"/>
+                    <field name="value"/>
+                    <field name="unit"/>
+                    <field name="state" widget="badge"/>
+                    <field name="calculation_method"/>
+                    <!-- SUPPRIMER LES DÉCORATIONS : -->
+                    <!-- <field name="evolution_rate" widget="monetary"
+                           decoration-success="evolution_direction == 'up'"
+                           decoration-danger="evolution_direction == 'down'"/> -->
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view KPI versions - CORRIGÉ POUR ODOO 17 -->
+        <record id="view_public_kpi_version_form" model="ir.ui.view">
+            <field name="name">public.kpi.version.form</field>
+            <field name="model">public.kpi.version</field>
+            <field name="arch" type="xml">
+                <form string="Indicateur">
+                    <header>
+                        <!-- CORRECTION : Syntaxe Odoo 17 pour invisible -->
+                        <button name="action_calculate" type="object" string="Calculer"
+                                invisible="calculation_method == 'manual'"/>
+                        <button name="action_publish" type="object" string="Publier"
+                                class="oe_highlight" invisible="state != 'draft'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,published,archived"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nom de l'indicateur..."/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Contexte">
+                                <field name="snapshot_id"/>
+                                <field name="category_id"/>
+                                <field name="sequence"/>
+                                <field name="display_color"/>
+                            </group>
+                            <group string="Valeur">
+                                <field name="value"/>
+                                <field name="unit"/>
+                                <field name="previous_value"/>
+                                <field name="evolution_rate" readonly="1"/>
+                                <field name="evolution_direction" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Description" name="description">
+                                <field name="description" nolabel="1"/>
+                            </page>
+
+                            <page string="Calcul" name="calculation">
+                                <group>
+                                    <field name="calculation_method"/>
+                                    <!-- CORRECTION : Syntaxe Odoo 17 -->
+                                    <field name="data_source_model" invisible="calculation_method == 'manual'"/>
+                                    <field name="data_source_domain" invisible="calculation_method == 'manual'"/>
+                                    <field name="last_calculation_date" readonly="1"/>
+                                </group>
+                            </page>
+
+                            <page string="Preuves" name="evidence">
+                                <group>
+                                    <field name="evidence_notes" string="Notes de preuve"/>
+                                    <field name="evidence_attachment_ids" string="Documents justificatifs"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view KPI versions -->
+        <record id="view_public_kpi_version_search" model="ir.ui.view">
+            <field name="name">public.kpi.version.search</field>
+            <field name="model">public.kpi.version</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher indicateurs">
+                    <field name="name"/>
+                    <field name="snapshot_id"/>
+                    <field name="category_id"/>
+                    <field name="state"/>
+                    <filter string="À publier" name="to_publish" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Publiés" name="published" domain="[('state', '=', 'published')]"/>
+                    <filter string="Calcul automatique" name="auto_calc" domain="[('calculation_method', '!=', 'manual')]"/>
+                    <separator/>
+                    <group expand="0" string="Grouper par">
+                        <filter string="Snapshot" name="group_by_snapshot" context="{'group_by': 'snapshot_id'}"/>
+                        <filter string="Catégorie" name="group_by_category" context="{'group_by': 'category_id'}"/>
+                        <filter string="Statut" name="group_by_state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

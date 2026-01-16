@@ -1,0 +1,97 @@
+<odoo>
+    <record id="rdv_confirmation_page" model="website.page">
+        <field name="name">Confirmation de Rendez-vous</field>
+        <field name="url">/formation/rdv/confirmation</field>
+        <field name="view_id" ref="rdv_confirmation"/> <!-- Make sure this is 'rdv_confirmation' -->
+        <field name="website_published">True</field>
+    </record>
+
+
+    <!-- Route pour soumettre le formulaire de RDV -->
+    <record id="rdv_form_submit_route" model="ir.actions.server">
+        <field name="name">Soumettre le formulaire de rendez-vous</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+            'message': 'Merci pour votre demande !',
+            'type': 'success',
+            }
+            }
+        </field>
+    </record>
+    <!-- Formulaire de Prise de Rendez-vous -->
+    <template id="formation_rdv_form" name="Formulaire Prise RDV">
+        <t t-call="website.layout">
+            <div id="wrap" class="container py-5">
+                <h1 class="text-center mb-4">📅 Prendre Rendez-vous</h1>
+
+                <form action="/formation/rdv/submit" method="POST" class="col-lg-8 offset-lg-2">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div class="mb-3">
+                        <label class="form-label">Votre Nom *</label>
+                        <input type="text" name="name" class="form-control" required="1"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email *</label>
+                        <input type="email" name="email" class="form-control" required="1"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Téléphone *</label>
+                        <input type="tel" name="phone" class="form-control" required="1"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Formation concernée</label>
+                        <select name="course_id" class="form-select">
+                            <option value="">-- Sélectionner --</option>
+                            <t t-foreach="request.env['slide.channel'].sudo().search([('website_published','=',True)])"
+                               t-as="course">
+                                <option t-att-value="course.id" t-esc="course.name"/>
+                            </t>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Date souhaitée</label>
+                        <input type="date" name="preferred_date" class="form-control"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Message</label>
+                        <textarea name="message" class="form-control" rows="4"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        Envoyer ma demande
+                    </button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- Page de confirmation du rendez-vous -->
+    <template id="rdv_confirmation" name="Confirmation de rendez-vous">
+        <t t-call="website.layout">
+            <div id="wrap" class="container py-5">
+                <h1 class="text-center mb-4">Votre rendez-vous a été enregistré</h1>
+                <p class="text-center">
+                    Merci pour votre demande de rendez-vous. Un conseiller vous contactera dans les plus brefs délais.
+                </p>
+                <div class="text-center">
+                    <a href="/" class="btn btn-primary">Retour à l'accueil</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+    <!-- Route pour afficher la page de confirmation -->
+
+</odoo>

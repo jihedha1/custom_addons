@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1"> <!-- Utiliser noupdate="1" pour les données de sécurité est une bonne pratique -->
+
+        <record id="module_category_yonn_elearning" model="ir.module.category">
+            <field name="name">FORMEVO</field>
+            <field name="description">Système de droits pour la plateforme eLearning</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- ========== GROUPE APPRENANT ========== -->
+        <!-- CORRECTION : L'apprenant hérite de "Utilisateur du portail", PAS de "Utilisateur interne" -->
+        <record id="group_yonn_elearning_student" model="res.groups">
+            <field name="name">FORMEVO: Apprenant</field>
+            <field name="category_id" ref="module_category_yonn_elearning"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="comment">Accès limité au portail et aux cours assignés. Ne peut pas voir le back-office.</field>
+        </record>
+
+        <!-- ========== GROUPE ENSEIGNANT ========== -->
+        <!-- L'enseignant est un utilisateur interne, donc il hérite de base.group_user (comportement par défaut) -->
+        <record id="group_yonn_elearning_teacher" model="res.groups">
+            <field name="name">FORMEVO: Enseignant</field>
+            <field name="category_id" ref="module_category_yonn_elearning"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Création et gestion de cours depuis le back-office.</field>
+        </record>
+
+        <!-- ========== GROUPE DIRECTEUR ========== -->
+        <!-- Le directeur est un enseignant avec plus de droits. Il hérite donc du groupe Enseignant. -->
+        <record id="group_yonn_elearning_director" model="res.groups">
+            <field name="name">FORMEVO: Directeur</field>
+            <field name="category_id" ref="module_category_yonn_elearning"/>
+            <field name="implied_ids" eval="[(4, ref('group_yonn_elearning_teacher'))]"/>
+            <field name="comment">Accès complet à tous les cours, classes et statistiques.</field>
+        </record>
+
+    </data>
+</odoo>

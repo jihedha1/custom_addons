@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue formulaire du wizard -->
+        <record id="view_schedule_assessment_wizard_form" model="ir.ui.view">
+            <field name="name">schedule.assessment.wizard.form</field>
+            <field name="model">lms_evaluation_results.schedule_assessment_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Planifier des Évaluations à Froid">
+                    <sheet>
+                        <group>
+                            <!-- CHANGEMENT ICI : channel_ids devient channels -->
+                            <field name="channels" widget="many2many" required="1"/>
+                        </group>
+
+                        <group>
+                            <group string="Questionnaires">
+                                <field name="create_j30"/>
+                                <field name="survey_30_id" attrs="{'required': [('create_j30', '=', True)]}"/>
+                                <field name="create_j90"/>
+                                <field name="survey_90_id" attrs="{'required': [('create_j90', '=', True)]}"/>
+                            </group>
+                        </group>
+
+                        <group string="Participants">
+                            <field name="partner_ids" widget="many2many_tags"/>
+                            <separator/>
+                            <label string="Si vide : tous les participants ayant terminé la formation"/>
+                        </group>
+
+                        <group string="Rappels">
+                            <field name="max_reminders"/>
+                            <field name="reminder_interval_days"/>
+                        </group>
+
+                        <footer>
+                            <button name="action_schedule_assessments" string="Planifier" type="object" class="btn-primary"/>
+                            <button string="Annuler" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour ouvrir le wizard -->
+        <record id="action_schedule_assessment_wizard" model="ir.actions.act_window">
+            <field name="name">Planifier des évaluations</field>
+            <field name="res_model">lms_evaluation_results.schedule_assessment_wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="lms_evaluation_results.model_lms_evaluation_results_cold_assessment"/>
+            <field name="binding_type">action</field>
+        </record>
+    </data>
+</odoo>

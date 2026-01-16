@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Menu principal qualité -->
+        <menuitem id="menu_quality_main" name="Qualité"
+                   sequence="40"/>
+
+        <!-- Sous-menu Non-conformités -->
+        <menuitem id="menu_non_conformities" name="Non-conformités"
+                  parent="menu_quality_main" sequence="10"/>
+
+        <!-- Actions must be defined BEFORE they are referenced in menus -->
+
+        <!-- Actions -->
+        <record id="action_non_conformity" model="ir.actions.act_window">
+            <field name="name">Non-conformités</field>
+            <field name="res_model">quality.non_conformity</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_non_conformity_search"/>
+            <field name="context">{'default_state': 'draft'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smelling_face">
+                    Déclarez une nouvelle non-conformité
+                </p>
+            </field>
+        </record>
+
+        <record id="action_my_non_conformities" model="ir.actions.act_window">
+            <field name="name">Mes non-conformités</field>
+            <field name="res_model">quality.non_conformity</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('responsible_user_id', '=', uid)]</field>
+            <field name="search_view_id" ref="view_non_conformity_search"/>
+        </record>
+
+        <record id="action_corrective_action" model="ir.actions.act_window">
+            <field name="name">Actions correctives</field>
+            <field name="res_model">quality.corrective.action</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_corrective_action_search"/>
+        </record>
+
+        <record id="action_my_corrective_actions" model="ir.actions.act_window">
+            <field name="name">Mes actions correctives</field>
+            <field name="res_model">quality.corrective.action</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('responsible_user_id', '=', uid)]</field>
+            <field name="search_view_id" ref="view_corrective_action_search"/>
+        </record>
+
+        <!-- Tableau de bord qualité -->
+        <record id="action_quality_dashboard" model="ir.actions.act_window">
+            <field name="name">Tableau de bord Qualité</field>
+            <field name="res_model">quality.non_conformity</field>
+            <field name="view_mode">pivot,graph,tree</field>
+            <field name="view_id" ref="view_non_conformity_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smelling_face">
+                    Tableau de bord des indicateurs qualité
+                </p>
+            </field>
+        </record>
+
+        <!-- Now define menu items AFTER actions -->
+        <menuitem id="menu_non_conformity_all" name="Toutes les NC"
+                  parent="menu_non_conformities" action="action_non_conformity" sequence="10"/>
+
+        <menuitem id="menu_non_conformity_my" name="Mes NC"
+                  parent="menu_non_conformities" action="action_my_non_conformities" sequence="20"/>
+
+        <!-- Sous-menu Actions correctives -->
+        <menuitem id="menu_corrective_actions" name="Actions correctives"
+                  parent="menu_quality_main" sequence="20"/>
+
+        <menuitem id="menu_corrective_action_all" name="Toutes les actions"
+                  parent="menu_corrective_actions" action="action_corrective_action" sequence="10"/>
+
+        <menuitem id="menu_corrective_action_my" name="Mes actions"
+                  parent="menu_corrective_actions" action="action_my_corrective_actions" sequence="20"/>
+
+        <!-- Sous-menu Tableau de bord -->
+        <menuitem id="menu_quality_dashboard" name="Tableau de bord"
+                  parent="menu_quality_main" action="action_quality_dashboard" sequence="90"/>
+
+    </data>
+</odoo>

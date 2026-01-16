@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vue calendrier pour les réservations de ressources -->
+        <record id="view_resource_booking_calendar" model="ir.ui.view">
+            <field name="name">lms_resources_trainers.resource_booking.calendar</field>
+            <field name="model">lms_resources_trainers.resource_booking</field>
+            <field name="arch" type="xml">
+                <calendar string="Calendrier des réservations"
+                          date_start="start_date"
+                          date_stop="end_date"
+                          color="resource_id"
+                          mode="month">
+                    <field name="name"/>
+                    <field name="resource_id"/>
+                    <field name="requester_id"/>
+                    <field name="state"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Action calendrier -->
+        <record id="action_resource_booking_calendar" model="ir.actions.act_window">
+            <field name="name">Calendrier des réservations</field>
+            <field name="res_model">lms_resources_trainers.resource_booking</field>
+            <field name="view_mode">calendar,tree,form</field>
+            <field name="view_id" ref="view_resource_booking_calendar"/>
+        </record>
+    </data>
+</odoo>

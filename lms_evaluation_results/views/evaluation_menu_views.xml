@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_cold_assessment" model="ir.actions.act_window">
+            <field name="name">Évaluations à Froid</field>
+            <field name="res_model">lms_evaluation_results.cold_assessment</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_results_dashboard" model="ir.actions.act_window">
+            <field name="name">Tableau de bord Résultats</field>
+            <field name="res_model">lms_evaluation_results.results_dashboard</field>
+            <field name="view_mode">form</field>
+        </record>
+        <record id="menu_formations_resultats" model="website.menu">
+            <field name="name">Nos Résultats</field>
+            <field name="url">/formations/resultats</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">30</field>
+        </record>
+        <!-- Menu principal -->
+        <menuitem id="menu_lms_evaluation"
+                  name="Évaluations &amp; Résultats"
+                  sequence="20"
+                  parent="website.menu_website_configuration"/>
+
+        <!-- Sous-menus -->
+        <menuitem id="menu_cold_assessments"
+                  name="Évaluations à Froid"
+                  parent="menu_lms_evaluation"
+                  sequence="10"
+                  action="action_cold_assessment"/>
+
+        <menuitem id="menu_results_dashboard"
+                  name="Tableau de bord"
+                  parent="menu_lms_evaluation"
+                  sequence="20"
+                  action="action_results_dashboard"/>
+
+        <menuitem id="menu_evaluation_reports"
+                  name="Rapports"
+                  parent="menu_lms_evaluation"
+                  sequence="30"/>
+
+        <menuitem id="menu_export_tools"
+                  name="Outils d'Export"
+                  parent="menu_evaluation_reports"
+                  sequence="10"
+                  action="action_export_results_wizard"/>
+
+        <menuitem id="menu_schedule_tools"
+                  name="Planification"
+                  parent="menu_evaluation_reports"
+                  sequence="20"
+                  action="action_schedule_assessment_wizard"/>
+
+        <!-- Actions déjà définies dans d'autres fichiers -->
+
+    </data>
+</odoo>

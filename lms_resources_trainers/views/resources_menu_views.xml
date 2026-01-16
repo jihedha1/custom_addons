@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Menu principal -->
+        <menuitem id="menu_lms_resources"
+                  name="Ressources &amp; Formateurs"
+                  sequence="30"
+                  parent="website.menu_website_configuration"/>
+
+        <!-- Sous-menu Formateurs -->
+        <menuitem id="menu_trainers"
+                  name="Formateurs"
+                  parent="menu_lms_resources"
+                  sequence="10"/>
+
+        <menuitem id="menu_trainer_profiles"
+                  name="Profils formateurs"
+                  parent="menu_trainers"
+                  sequence="10"
+                  action="action_trainer_profile"/>
+
+        <!-- Sous-menu Ressources -->
+        <menuitem id="menu_resources"
+                  name="Ressources"
+                  parent="menu_lms_resources"
+                  sequence="20"/>
+
+        <menuitem id="menu_resource_management"
+                  name="Gestion des ressources"
+                  parent="menu_resources"
+                  sequence="10"
+                  action="action_resource_management"/>
+
+        <menuitem id="menu_resource_bookings"
+                  name="Réservations"
+                  parent="menu_resources"
+                  sequence="20"
+                  action="action_resource_booking"/>
+
+        <menuitem id="menu_resource_calendar"
+                  name="Calendrier"
+                  parent="menu_resources"
+                  sequence="30"
+                  action="action_resource_booking_calendar"/>
+
+        <!-- Sous-menu Qualité -->
+        <menuitem id="menu_quality_resources"
+                  name="Qualité des supports"
+                  parent="menu_lms_resources"
+                  sequence="30"/>
+
+        <menuitem id="menu_material_evaluations"
+                  name="Évaluations des supports"
+                  parent="menu_quality_resources"
+                  sequence="10"
+                  action="action_material_evaluation"/>
+
+        <!-- Tableau de bord -->
+        <menuitem id="menu_resources_dashboard"
+                  name="Tableau de bord"
+                  parent="menu_lms_resources"
+                  sequence="40"
+                  action="action_resources_dashboard"/>
+
+        <!-- Actions supplémentaires -->
+        <record id="action_resource_booking" model="ir.actions.act_window">
+            <field name="name">Réservations de ressources</field>
+            <field name="res_model">lms_resources_trainers.resource_booking</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Consultez et gérez les réservations de salles et d'équipements.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

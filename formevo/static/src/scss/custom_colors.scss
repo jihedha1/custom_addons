@@ -1,0 +1,89 @@
+:root {
+    --color-1: #09171E;
+    --color-2: #1B3E41;
+    --color-3: #2B6559;
+    --color-4: #274B4C;
+    --color-5: #7AF7A7;
+    --color-6: #21564A;
+    --color-7: #031F2D;
+    --color-8: #001728;
+}
+
+// Barre de navigation principale
+.o_main_navbar {
+    background: var(--color-1) !important;
+}
+
+// Background du menu Apps
+.o_app_drawer {
+    background-color: var(--color-2) !important;
+}
+
+// Logo et titre en en-tête
+.o_menu_brand img,
+.o_menu_brand .o_app_name {
+    filter: brightness(0) saturate(100%) invert(87%) sepia(0%) saturate(1%) hue-rotate(333deg) brightness(105%) contrast(103%);
+}
+
+// Texte des liens et icônes actives
+a, .o_app_icon, .o_menu_brand {
+    color: var(--color-5) !important;
+}
+
+// Boutons primaires
+.btn-primary {
+    background-color: var(--color-5);
+    border-color: var(--color-5);
+    color: var(--color-8);
+
+    &:hover {
+        background-color: var(--color-3);
+        border-color: var(--color-3);
+    }
+}
+
+// Cartes, onglets et panels
+.card, .nav.nav-pills .nav-link, .o_panel {
+    background-color: var(--color-4);
+    border-color: var(--color-6);
+}
+
+// Bordures et séparateurs
+hr, .o_form_statusbar {
+    border-color: var(--color-7) !important;
+}
+
+// État actif des menus
+.o_menu_systray li a:hover, .o_menu_systray li.active a {
+    background-color: var(--color-3) !important;
+}
+
+// Inputs et champs sélectionnés
+input:focus, .o_input, .o_field_widget {
+    border-color: var(--color-5) !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--color-5), .25) !important;
+}
+/* Adapter les boutons secondaires avec la palette */
+.btn-secondary, .btn-light, .o_button_import, .o_button_import + .btn {
+    background-color: var(--color-3) !important;   /* #7AF7A7 : vert pâle de la palette */
+    border-color: var(--color-3) !important;
+    color: var(--color-2) !important;              /* #1B3E41 : texte très lisible */
+
+    &:hover, &:focus {
+        background-color: var(--color-3) !important; /* #2B6559 */
+        border-color: var(--color-3) !important;
+        color: #fff !important;
+    }
+.yonn-completion-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0 8px 0;
+}
+
+.yonn-completion-btn {
+    min-width: 220px;
+    font-size: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+}

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view évaluations positionnement -->
+        <record id="view_placement_assessment_tree" model="ir.ui.view">
+            <field name="name">formation.placement.assessment.tree</field>
+            <field name="model">formation.placement.assessment</field>
+            <field name="arch" type="xml">
+                <tree string="Évaluations positionnement">
+                    <field name="name"/>
+                    <field name="channel_id"/>
+                    <field name="partner_id"/>
+                    <field name="state" widget="badge"/>
+                    <field name="assignment_date"/>
+                    <field name="assessment_date"/>
+                    <field name="score" widget="progressbar" options="{'current_value': 'score', 'max_value': '100'}"/>
+                    <field name="level"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view évaluations positionnement -->
+        <record id="view_placement_assessment_form" model="ir.ui.view">
+            <field name="name">formation.placement.assessment.form</field>
+            <field name="model">formation.placement.assessment</field>
+            <field name="arch" type="xml">
+                <form string="Évaluation positionnement">
+                    <header>
+                        <button name="action_assign" type="object" string="Assigner"
+                                class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_start" type="object" string="Démarrer"
+                                attrs="{'invisible': [('state', '!=', 'assigned')]}"/>
+                        <button name="action_complete" type="object" string="Terminer"
+                                class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['in_progress', 'assigned'])]}"/>
+                        <button name="action_generate_plan" type="object" string="Créer plan"
+                                attrs="{'invisible': [('state', '!=', 'completed')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,assigned,in_progress,completed,expired,cancelled"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Contexte">
+                                <field name="channel_id" readonly="1"/>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="survey_id"/>
+                            </group>
+                            <group string="Dates">
+                                <field name="assignment_date" readonly="1"/>
+                                <field name="deadline_date" readonly="1"/>
+                                <field name="assessment_date" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Résultats" name="results">
+                                <group>
+                                    <group string="Scores">
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_value">
+                                                <field name="score" readonly="1"/>%
+                                            </span>
+                                            <span class="o_stat_text">Score</span>
+                                        </div>
+
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_value">
+                                                <field name="score_scaled" readonly="1"/>/20
+                                            </span>
+                                            <span class="o_stat_text">Sur 20</span>
+                                        </div>
+
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_value">
+                                                <field name="level" readonly="1"/>
+                                            </span>
+                                            <span class="o_stat_text">Niveau</span>
+                                        </div>
+                                    </group>
+
+                                    <group string="Questionnaire" attrs="{'invisible': [('user_input_id', '=', False)]}">
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_value">
+                                                <a t-att-href="'/survey/print/%s' % user_input_id.access_token" target="_blank">
+                                                    Voir les réponses
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Recommandations" name="recommendations">
+                                <field name="recommendations" nolabel="1"/>
+                                <field name="needs_remediation" attrs="{'invisible': [('needs_remediation', '=', False)]}"/>
+                                <field name="remediation_plan" attrs="{'invisible': [('needs_remediation', '=', False)]}" nolabel="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view évaluations positionnement -->
+        <record id="view_placement_assessment_search" model="ir.ui.view">
+            <field name="name">formation.placement.assessment.search</field>
+            <field name="model">formation.placement.assessment</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher évaluations">
+                    <field name="name"/>
+                    <field name="channel_id"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                    <field name="level"/>
+                    <filter string="À assigner" name="to_assign" domain="[('state', '=', 'draft')]"/>
+                    <filter string="En cours" name="in_progress" domain="[('state', 'in', ['assigned', 'in_progress'])]"/>
+                    <filter string="Terminées" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <separator/>
+                    <filter string="Mes évaluations" name="my_assessments" domain="[('partner_id', '=', uid.partner_id.id)]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter string="Formation" name="group_by_channel" context="{'group_by': 'channel_id'}"/>
+                        <filter string="Statut" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Niveau" name="group_by_level" context="{'group_by': 'level'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

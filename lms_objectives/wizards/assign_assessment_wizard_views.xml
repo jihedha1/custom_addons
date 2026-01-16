@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Assistant assignation questionnaire -->
+        <record id="view_assign_assessment_wizard_form" model="ir.ui.view">
+            <field name="name">formation.assign.assessment.wizard.form</field>
+            <field name="model">formation.assign.assessment.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Assigner questionnaire positionnement">
+                    <header>
+                        <button name="action_assign" type="object" string="Assigner" class="btn-primary"/>
+                        <button string="Annuler" special="cancel" class="btn-secondary"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Assigner questionnaire de positionnement</h1>
+                        </div>
+
+                        <group>
+                            <group string="Formation">
+                                <field name="channel_id" required="1"/>
+                            </group>
+                            <group string="Questionnaire">
+                                <field name="survey_id" required="1"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <label for="partner_ids" string="Apprenants"/>
+                            <field name="partner_ids" nolabel="1" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   domain="[('is_training_participant', '=', True)]"/>
+                        </group>
+
+                        <group>
+                            <group string="Options">
+                                <field name="send_email" string="Envoyer email d'invitation"/>
+                                <field name="create_activity" string="Créer activité de rappel"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action pour ouvrir l'assistant -->
+        <record id="action_assign_assessment_wizard" model="ir.actions.act_window">
+            <field name="name">Assigner questionnaire positionnement</field>
+            <field name="res_model">formation.assign.assessment.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_channel_id': active_id}</field>
+        </record>
+
+    </data>
+</odoo>

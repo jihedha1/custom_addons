@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Types de compétences -->
+        <record id="competency_type_technical" model="lms_trainers_competency.competency_type">
+            <field name="name">Technique</field>
+            <field name="description">Compétences techniques spécifiques</field>
+        </record>
+
+        <record id="competency_type_pedagogical" model="lms_trainers_competency.competency_type">
+            <field name="name">Pédagogique</field>
+            <field name="description">Compétences en pédagogie et animation</field>
+        </record>
+
+        <record id="competency_type_soft_skills" model="lms_trainers_competency.competency_type">
+            <field name="name">Soft skills</field>
+            <field name="description">Compétences comportementales</field>
+        </record>
+
+        <!-- Types de formations pour formateurs -->
+        <record id="trainer_training_type_refresher" model="lms_trainers_competency.trainer_training_type">
+            <field name="name">Formation de mise à niveau</field>
+            <field name="code">REFRESHER</field>
+        </record>
+
+        <record id="trainer_training_type_certification" model="lms_trainers_competency.trainer_training_type">
+            <field name="name">Certification</field>
+            <field name="code">CERTIFICATION</field>
+        </record>
+
+        <record id="trainer_training_type_workshop" model="lms_trainers_competency.trainer_training_type">
+            <field name="name">Atelier pratique</field>
+            <field name="code">WORKSHOP</field>
+        </record>
+
+        <record id="trainer_training_type_conference" model="lms_trainers_competency.trainer_training_type">
+            <field name="name">Conférence / Séminaire</field>
+            <field name="code">CONFERENCE</field>
+        </record>
+    </data>
+</odoo>

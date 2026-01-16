@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="slide_channel_action" model="ir.actions.act_window">
+            <field name="name">Cours eLearning</field>
+            <field name="res_model">slide.channel</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <!-- Vue liste personnalisée pour channels -->
+        <record id="slide_channel_tree_custom" model="ir.ui.view">
+            <field name="name">slide.channel.tree.custom</field>
+            <field name="model">slide.channel</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="total_slides"/>
+                    <field name="total_views"/>
+                    <field name="website_published"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue formulaire personnalisée -->
+        <record id="slide_channel_form_custom" model="ir.ui.view">
+            <field name="name">slide.channel.form.custom</field>
+            <field name="model">slide.channel</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="%(course_assign_wizard_action)d"
+                                string="Assigner à des classes"
+                                type="action"
+                                class="btn-secondary"/>
+                        <button name="action_view_student_progress"
+                                string="Dashboard de Progression"
+                                type="object"
+                                class="btn-primary"
+                                icon="fa-bar-chart"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="website_published"/>
+                            </group>
+                            <group>
+                                <field name="total_slides"/>
+                                <field name="total_views"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description"/>
+                            </page>
+                            <page string="Contenus">
+                                <field name="slide_ids"/>
+                            </page>
+                            <page string="Informations Complémentaire " name="qualiopi_info">
+
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

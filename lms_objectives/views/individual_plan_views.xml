@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view plans individualisés -->
+        <record id="view_individual_plan_tree" model="ir.ui.view">
+            <field name="name">formation.individual.plan.tree</field>
+            <field name="model">formation.individual.plan</field>
+            <field name="arch" type="xml">
+                <tree string="Plans individualisés">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="channel_id"/>
+                    <field name="state" widget="badge"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="progress" widget="progressbar" options="{'current_value': 'progress', 'max_value': '100'}"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view plans individualisés -->
+        <record id="view_individual_plan_form" model="ir.ui.view">
+            <field name="name">formation.individual.plan.form</field>
+            <field name="model">formation.individual.plan</field>
+            <field name="arch" type="xml">
+                <form string="Plan individualisé">
+                    <header>
+                        <button name="action_validate" type="object" string="Valider"
+                                class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_sign" type="object" string="Faire signer"
+                                attrs="{'invisible': [('state', '!=', 'validated')]}"/>
+                        <button name="action_mark_signed" type="object" string="Marquer signé"
+                                attrs="{'invisible': [('state', '!=', 'signed')]}"/>
+                        <button name="action_start_progress" type="object" string="Démarrer"
+                                attrs="{'invisible': [('state', 'not in', ['signed', 'validated'])]}"/>
+                        <button name="action_complete" type="object" string="Terminer"
+                                class="oe_highlight" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,validated,signed,in_progress,completed,cancelled"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Contexte">
+                                <field name="assessment_id"/>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="channel_id" readonly="1"/>
+                            </group>
+                            <group string="Planning">
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                                <field name="estimated_hours"/>
+                                <field name="progress"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Objectifs spécifiques" name="objectives">
+                                <field name="specific_objectives" nolabel="1"/>
+                            </page>
+
+                            <page string="Approche pédagogique" name="approach">
+                                <field name="pedagogical_approach" nolabel="1"/>
+                            </page>
+
+                            <page string="Adaptations" name="adaptations">
+                                <field name="adaptations" nolabel="1"/>
+                            </page>
+
+                            <page string="Critères d'évaluation" name="criteria">
+                                <field name="evaluation_criteria" nolabel="1"/>
+                            </page>
+
+                            <page string="Signature" name="signature" attrs="{'invisible': [('state', 'not in', ['signed', 'completed'])]}">
+                                <group>
+                                    <field name="signature" widget="image" readonly="1"/>
+                                    <field name="signature_name" readonly="1"/>
+                                    <field name="signature_date" readonly="1"/>
+                                </group>
+                            </page>
+
+                            <page string="Suivi" name="tracking">
+                                <group>
+                                    <group string="Avancement">
+                                        <div class="o_stat_info">
+                                            <span class="o_stat_value">
+                                                <field name="progress" readonly="1"/>%
+                                            </span>
+                                            <span class="o_stat_text">Progression</span>
+                                        </div>
+
+                                        <div class="o_stat_info" attrs="{'invisible': [('completion_date', '=', False)]}">
+                                            <span class="o_stat_value">
+                                                <field name="completion_date" readonly="1"/>
+                                            </span>
+                                            <span class="o_stat_text">Date d'achèvement</span>
+                                        </div>
+
+                                        <div class="o_stat_info" attrs="{'invisible': [('evaluation_score', '=', 0)]}">
+                                            <span class="o_stat_value">
+                                                <field name="evaluation_score" readonly="1"/>%
+                                            </span>
+                                            <span class="o_stat_text">Score final</span>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view plans individualisés -->
+        <record id="view_individual_plan_search" model="ir.ui.view">
+            <field name="name">formation.individual.plan.search</field>
+            <field name="model">formation.individual.plan</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher plans">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="channel_id"/>
+                    <field name="state"/>
+                    <filter string="À valider" name="to_validate" domain="[('state', '=', 'draft')]"/>
+                    <filter string="À signer" name="to_sign" domain="[('state', '=', 'validated')]"/>
+                    <filter string="En cours" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                    <separator/>
+                    <filter string="Mes plans" name="my_plans" domain="[('partner_id', '=', uid.partner_id.id)]"/>
+                    <group expand="0" string="Grouper par">
+                        <filter string="Formation" name="group_by_channel" context="{'group_by': 'channel_id'}"/>
+                        <filter string="Statut" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Apprenant" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_public_kpi_snapshot_public,public.kpi.snapshot public,model_public_kpi_snapshot,base.group_public,1,0,0,0
+access_public_kpi_snapshot_user,public.kpi.snapshot user,model_public_kpi_snapshot,base.group_user,1,0,0,0
+access_public_kpi_snapshot_editor,public.kpi.snapshot editor,model_public_kpi_snapshot,lms_public_kpi.group_kpi_editor,1,1,1,0
+access_public_kpi_snapshot_manager,public.kpi.snapshot manager,model_public_kpi_snapshot,lms_public_kpi.group_kpi_manager,1,1,1,1
+access_public_kpi_version_public,public.kpi.version public,model_public_kpi_version,base.group_public,1,0,0,0
+access_public_kpi_version_user,public.kpi.version user,model_public_kpi_version,base.group_user,1,0,0,0
+access_public_kpi_version_editor,public.kpi.version editor,model_public_kpi_version,lms_public_kpi.group_kpi_editor,1,1,1,0
+access_public_kpi_version_manager,public.kpi.version manager,model_public_kpi_version,lms_public_kpi.group_kpi_manager,1,1,1,1
+access_public_kpi_category_public,public.kpi.category public,model_public_kpi_category,base.group_public,1,0,0,0
+access_public_kpi_category_user,public.kpi.category user,model_public_kpi_category,base.group_user,1,0,0,0
+access_public_kpi_category_manager,public.kpi.category manager,model_public_kpi_category,lms_public_kpi.group_kpi_manager,1,1,1,1
+access_kpi_rejection_wizard_user,kpi.rejection.wizard user,model_kpi_rejection_wizard,base.group_user,1,1,1,0
+access_kpi_rejection_wizard_editor,kpi.rejection.wizard editor,model_kpi_rejection_wizard,lms_public_kpi.group_kpi_editor,1,1,1,0
+access_kpi_rejection_wizard_manager,kpi.rejection.wizard manager,model_kpi_rejection_wizard,lms_public_kpi.group_kpi_manager,1,1,1,1

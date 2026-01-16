@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Création des groupes (si nécessaire) -->
+    <record id="group_public_info_editor" model="res.groups">
+        <field name="name">Éditeur Informations Publiques</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_public_info_manager" model="res.groups">
+        <field name="name">Manager Informations Publiques</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('group_public_info_editor'))]"/>
+    </record>
+
+    <!-- Règle de sécurité simplifiée (OPTIONNEL - à supprimer si problème) -->
+    <record id="trainer_competency_rule" model="ir.rule">
+        <field name="name">Éditeurs: leurs compétences</field>
+        <field name="model_id" ref="model_lms_public_info_trainer_competency"/>
+        <field name="groups" eval="[(4, ref('group_public_info_editor'))]"/>
+        <field name="domain_force">[('active', '=', True)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

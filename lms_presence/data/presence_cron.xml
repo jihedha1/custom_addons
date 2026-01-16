@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Cron pour les rappels standard (J-7, J-3, J-1) -->
+        <record id="cron_session_reminders" model="ir.cron">
+            <field name="name">Rappels sessions de formation</field>
+            <field name="model_id" ref="model_lms_presence_attendance_session"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_session_reminders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- US-C4: Cron pour les relances d'inactivité -->
+        <record id="cron_inactivity_reminders" model="ir.cron">
+            <field name="name">Relances participants inactifs (US-C4)</field>
+            <field name="model_id" ref="model_lms_presence_attendance_session"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_inactivity_reminders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Cron synchronisation participants -->
+        <record id="cron_sync_participants" model="ir.cron">
+            <field name="name">Synchronisation participants sessions</field>
+            <field name="model_id" ref="model_lms_presence_attendance_session"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_sync_participants()</field>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Cron détection absences automatique -->
+        <record id="cron_detect_absences" model="ir.cron">
+            <field name="name">Détection automatique des absences</field>
+            <field name="model_id" ref="model_lms_presence_attendance_session"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_detect_absences()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

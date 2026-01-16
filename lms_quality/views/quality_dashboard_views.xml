@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vue tableau de bord qualité -->
+        <record id="view_quality_dashboard_form" model="ir.ui.view">
+            <field name="name">quality.dashboard.form</field>
+            <field name="model">quality.dashboard</field>
+            <field name="arch" type="xml">
+                <form string="Tableau de bord Qualité">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Tableau de bord Qualité</h1>
+                            <h2>Indicateurs Qualiopi</h2>
+                        </div>
+
+                        <!-- Période d'analyse -->
+                        <group>
+                            <group string="Période d'analyse">
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="Synthèse">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="count_nc_total" widget="statinfo" string="Total NC"/>
+                                    </span>
+                                    <span class="o_stat_text">Non-conformités</span>
+                                </div>
+
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value" style="color: #dc3545;">
+                                        <field name="count_nc_open" widget="statinfo" string="NC ouvertes"/>
+                                    </span>
+                                    <span class="o_stat_text">Ouvertes</span>
+                                </div>
+
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value" style="color: #ffc107;">
+                                        <field name="count_nc_overdue" widget="statinfo" string="NC en retard"/>
+                                    </span>
+                                    <span class="o_stat_text">En retard</span>
+                                </div>
+
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value" style="color: #28a745;">
+                                        <field name="count_nc_closed" widget="statinfo" string="NC clôturées"/>
+                                    </span>
+                                    <span class="o_stat_text">Clôturées</span>
+                                </div>
+                            </group>
+
+                            <group string="Répartition par type">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="count_nc_minor" widget="statinfo" string="NC mineures"/>
+                                    </span>
+                                    <span class="o_stat_text">Mineures</span>
+                                </div>
+
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="count_nc_major" widget="statinfo" string="NC majeures"/>
+                                    </span>
+                                    <span class="o_stat_text">Majeures</span>
+                                </div>
+
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="count_nc_critical" widget="statinfo" string="NC critiques"/>
+                                    </span>
+                                    <span class="o_stat_text">Critiques</span>
+                                </div>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Liste des NC ouvertes" name="open_nc">
+                                <field name="open_nc_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="title"/>
+                                        <field name="type" widget="badge"/>
+                                        <field name="responsible_user_id"/>
+                                        <field name="detection_date"/>
+                                        <field name="treatment_deadline"/>
+                                        <field name="days_overdue"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="Actions en retard" name="overdue_actions">
+                                <field name="overdue_action_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="non_conformity_id"/>
+                                        <field name="description"/>
+                                        <field name="responsible_user_id"/>
+                                        <field name="deadline"/>
+                                        <field name="days_overdue"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Kanban pour les non-conformités -->
+        <record id="view_non_conformity_kanban" model="ir.ui.view">
+            <field name="name">quality.non_conformity.kanban</field>
+            <field name="model">quality.non_conformity</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="title"/>
+                    <field name="type"/>
+                    <field name="state"/>
+                    <field name="responsible_user_id"/>
+                    <field name="treatment_deadline"/>
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_record_title">
+                                    <field name="name"/> - <field name="title"/>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div>
+                                        <field name="type" widget="badge"/>
+                                        <field name="state" widget="badge"/>
+                                    </div>
+                                    <div>
+                                        Responsable: <field name="responsible_user_id"/>
+                                    </div>
+                                    <div t-if="record.treatment_deadline.raw_value">
+                                        Échéance: <field name="treatment_deadline"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree view évaluations à froid -->
+        <record id="view_cold_assessment_tree" model="ir.ui.view">
+            <field name="name">lms_evaluation_results.cold_assessment.tree</field>
+            <field name="model">lms_evaluation_results.cold_assessment</field>
+            <field name="arch" type="xml">
+                <tree string="Évaluations à froid" decoration-success="state=='completed'" decoration-info="state=='sent'" decoration-warning="state=='scheduled'" decoration-danger="state=='expired'">
+                    <field name="name"/>
+                    <field name="channel_id"/>
+                    <field name="partner_id"/>
+                    <field name="assessment_type"/>
+                    <field name="scheduled_date"/>
+                    <field name="sent_date"/>
+                    <field name="response_date"/>
+                    <field name="state" widget="badge" decoration-success="state=='completed'" decoration-info="state=='sent'" decoration-warning="state=='scheduled'" decoration-danger="state=='expired'"/>
+                    <field name="score" optional="hide" widget="progressbar"/>
+                    <field name="satisfaction_rate" optional="hide" widget="progressbar"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view évaluations à froid -->
+        <record id="view_cold_assessment_form" model="ir.ui.view">
+            <field name="name">lms_evaluation_results.cold_assessment.form</field>
+            <field name="model">lms_evaluation_results.cold_assessment</field>
+            <field name="arch" type="xml">
+                <form string="Évaluation à froid">
+                    <header>
+                        <button name="action_schedule" type="object" string="Planifier"
+                                class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_send" type="object" string="Envoyer"
+                                class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['draft', 'scheduled'])]}"/>
+                        <button name="action_complete" type="object" string="Terminer"
+                                class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['sent', 'in_progress'])]}"/>
+                        <button name="action_send_reminder" type="object" string="Envoyer rappel"
+                                attrs="{'invisible': ['|', ('state', '!=', 'sent'), ('reminder_count', '>=', 'max_reminders')]}"/>
+                        <button name="action_cancel" type="object" string="Annuler"
+                                attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,scheduled,sent,in_progress,completed"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="%(action_view_survey_user_input)d" type="action"
+                                    class="oe_stat_button" icon="fa-list-alt"
+                                    attrs="{'invisible': [('user_input_id', '=', False)]}">
+                                <field name="user_input_id" invisible="1"/>
+                                <div class="o_stat_info">
+                                    <span class="o_stat_text">Voir</span>
+                                    <span class="o_stat_text">Réponses</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Contexte formation">
+                                <field name="channel_id" options="{'no_create': True}"/>
+                                <field name="partner_id" options="{'no_create': True}"/>
+                                <field name="completion_id" readonly="1"/>
+                                <field name="completion_date"/>
+                            </group>
+                            <group string="Configuration évaluation">
+                                <field name="assessment_type"/>
+                                <field name="survey_id" options="{'no_create': True}"/>
+                                <field name="scheduled_date"/>
+                                <field name="deadline_date"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Relances" name="reminders">
+                                <group>
+                                    <group string="Configuration">
+                                        <field name="max_reminders"/>
+                                        <field name="reminder_interval_days"/>
+                                    </group>
+                                    <group string="Statut">
+                                        <field name="reminder_count" readonly="1"/>
+                                        <field name="reminder_sent" readonly="1"/>
+                                        <field name="last_reminder_date" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Résultats" name="results" attrs="{'invisible': [('state', '!=', 'completed')]}">
+                                <group>
+                                    <group string="Scores">
+                                        <field name="score" widget="percentage"/>
+                                        <field name="satisfaction_rate" widget="percentage"/>
+                                        <field name="effectiveness_rate" widget="percentage"/>
+                                    </group>
+
+                                    <group string="Impact professionnel">
+                                        <field name="professional_impact"/>
+                                        <field name="applied_skills"/>
+                                        <field name="career_progression"/>
+                                    </group>
+                                </group>
+
+                                <group string="Feedback apprenant">
+                                    <field name="feedback" nolabel="1" readonly="1"/>
+                                </group>
+                            </page>
+
+                            <page string="Dates" name="dates">
+                                <group>
+                                    <field name="sent_date" readonly="1"/>
+                                    <field name="response_date" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view évaluations à froid -->
+        <record id="view_cold_assessment_search" model="ir.ui.view">
+            <field name="name">lms_evaluation_results.cold_assessment.search</field>
+            <field name="model">lms_evaluation_results.cold_assessment</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher évaluations">
+                    <field name="name"/>
+                    <field name="channel_id"/>
+                    <field name="partner_id"/>
+                    <field name="assessment_type"/>
+                    <field name="state"/>
+
+                    <separator/>
+                    <filter string="À envoyer" name="to_send" domain="[('state', '=', 'scheduled'), ('scheduled_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="En attente de réponse" name="pending" domain="[('state', '=', 'sent')]"/>
+                    <filter string="Terminées" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <filter string="Expirées" name="expired" domain="[('state', '=', 'expired')]"/>
+
+                    <separator/>
+                    <filter string="J+30" name="type_30" domain="[('assessment_type', '=', '30_days')]"/>
+                    <filter string="J+90" name="type_90" domain="[('assessment_type', '=', '90_days')]"/>
+
+                    <separator/>
+                    <filter string="Cette semaine" name="this_week"
+                            domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Ce mois" name="this_month"
+                            domain="[('scheduled_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+
+                    <separator/>
+                    <group expand="0" string="Grouper par">
+                        <filter string="Formation" name="group_by_channel" context="{'group_by': 'channel_id'}"/>
+                        <filter string="Type" name="group_by_type" context="{'group_by': 'assessment_type'}"/>
+                        <filter string="Statut" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Date planifiée" name="group_by_date" context="{'group_by': 'scheduled_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action window -->
+        <record id="action_cold_assessment" model="ir.actions.act_window">
+            <field name="name">Évaluations à Froid</field>
+            <field name="res_model">lms_evaluation_results.cold_assessment</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_pending': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle évaluation à froid
+                </p>
+                <p>
+                    Les évaluations à froid permettent de mesurer l'impact de la formation
+                    à J+30 et J+90 (conformité Qualiopi).
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

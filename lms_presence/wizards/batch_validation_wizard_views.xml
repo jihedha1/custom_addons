@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="batch_validation_wizard_form" model="ir.ui.view">
+            <field name="name">lms_presence.batch_validation_wizard.form</field>
+            <field name="model">lms_presence.batch_validation_wizard</field>
+            <field name="arch" type="xml">
+                <form string="Validation en lot">
+                    <group>
+                        <field name="session_id"/>
+                        <field name="validation_type"/>
+                    </group>
+                    <group string="Lignes à valider">
+                        <field name="line_ids" nolabel="1">
+                            <tree>
+                                <field name="participant_name"/>
+                                <field name="state"/>
+                                <field name="validated_by_participant"/>
+                                <field name="validated_by_teacher"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <footer>
+                        <button string="Valider" name="action_validate" type="object" class="btn-primary"/>
+                        <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_batch_validation_wizard" model="ir.actions.act_window">
+            <field name="name">Validation en lot</field>
+            <field name="res_model">lms_presence.batch_validation_wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

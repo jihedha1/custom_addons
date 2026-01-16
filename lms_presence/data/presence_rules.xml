@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Règles pour les sessions -->
+        <record id="attendance_session_user_rule" model="ir.rule">
+            <field name="name">Sessions: Lecture pour tous</field>
+            <field name="model_id" ref="model_lms_presence_attendance_session"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="attendance_session_teacher_rule" model="ir.rule">
+            <field name="name">Sessions: Enseignants leurs sessions</field>
+            <field name="model_id" ref="model_lms_presence_attendance_session"/>
+            <field name="groups" eval="[(4, ref('group_teacher'))]"/>
+            <field name="domain_force">['|', ('teacher_id', '=', user.id), ('assistant_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Règles pour les lignes de présence -->
+        <record id="attendance_line_participant_rule" model="ir.rule">
+            <field name="name">Lignes: Participants leurs propres lignes</field>
+            <field name="model_id" ref="model_lms_presence_attendance_line"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[('participant_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="attendance_line_teacher_rule" model="ir.rule">
+            <field name="name">Lignes: Enseignants leurs sessions</field>
+            <field name="model_id" ref="model_lms_presence_attendance_line"/>
+            <field name="groups" eval="[(4, ref('group_teacher'))]"/>
+            <field name="domain_force">[('teacher_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

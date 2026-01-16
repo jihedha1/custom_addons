@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Groupes par défaut pour Qualiopi -->
+        <record id="group_qualiopi_manager" model="res.groups">
+            <field name="name">Responsable Qualiopi</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+
+        <record id="group_qualiopi_auditor" model="res.groups">
+            <field name="name">Auditeur Qualiopi</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
+        <!-- Séquence pour les numéros de preuve Qualiopi -->
+        <record id="seq_qualiopi_evidence" model="ir.sequence">
+            <field name="name">Preuve Qualiopi</field>
+            <field name="code">lms.qualiopi.evidence</field>
+            <field name="prefix">QUA/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Catégories de non-conformité par défaut -->
+        <record id="nc_category_public_info" model="lms_quality.nc_category">
+            <field name="name">Information du public</field>
+            <field name="code">PI</field>
+        </record>
+
+        <record id="nc_category_objectives" model="lms_quality.nc_category">
+            <field name="name">Objectifs pédagogiques</field>
+            <field name="code">OBJ</field>
+        </record>
+
+        <record id="nc_category_resources" model="lms_quality.nc_category">
+            <field name="name">Ressources et moyens</field>
+            <field name="code">RES</field>
+        </record>
+
+        <record id="nc_category_evaluation" model="lms_quality.nc_category">
+            <field name="name">Évaluation des résultats</field>
+            <field name="code">EVAL</field>
+        </record>
+
+        <record id="nc_category_improvement" model="lms_quality.nc_category">
+            <field name="name">Amélioration continue</field>
+            <field name="code">IMP</field>
+        </record>
+    </data>
+</odoo>

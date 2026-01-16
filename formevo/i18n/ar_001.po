@@ -1,0 +1,1016 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* formevo
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-07 19:50+0000\n"
+"PO-Revision-Date: 2025-10-07 19:50+0000\n"
+"Last-Translator: \n"
+"Language: ar_001\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+msgid "<i class=\"fa fa-book\" title=\"Cours\"/>"
+msgstr "<i class=\"fa fa-book\" title=\"الدورة\"/>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+msgid "<i class=\"fa fa-user\" title=\"Enseignant\"/>"
+msgstr "<i class=\"fa fa-user\" title=\"المعلم\"/>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+msgid "<i class=\"fa fa-users\" title=\"Étudiants\"/>"
+msgstr "<i class=\"fa fa-users\" title=\"الطلاب\"/>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "<span class=\"o_stat_text\">Contenus</span>"
+msgstr "<span class=\"o_stat_text\">المحتويات</span>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "<span class=\"o_stat_text\">Cours</span>"
+msgstr "<span class=\"o_stat_text\">الدورات</span>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "<span class=\"o_stat_text\">Inscriptions</span>"
+msgstr "<span class=\"o_stat_text\">التسجيلات</span>"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "<span class=\"o_stat_text\">Étudiants</span>"
+msgstr "<span class=\"o_stat_text\">الطلاب</span>"
+
+#. module: formevo
+#: model:res.groups,comment:formevo.group_yonn_elearning_director
+msgid "Accès complet à tous les cours, classes et statistiques."
+msgstr "الوصول الكامل إلى جميع الدورات والفصول الدراسية والإحصائيات."
+
+#. module: formevo
+#: model:res.groups,comment:formevo.group_yonn_elearning_student
+msgid ""
+"Accès limité au portail et aux cours assignés. Ne peut pas voir le back-"
+"office."
+msgstr ""
+"وصول محدود إلى البوابة والدورات المعيّنة. لا يمكنه رؤية الواجهة الخلفية."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__active
+msgid "Actif"
+msgstr "نشط"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_needaction
+msgid "Action Needed"
+msgstr "الإجراء مطلوب"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_search_view
+msgid "Actives"
+msgstr "نشطة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_ids
+msgid "Activities"
+msgstr "الأنشطة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "تمييز استثناء النشاط"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_state
+msgid "Activity State"
+msgstr "حالة النشاط"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "رمز نوع النشاط"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.user_group_wizard_form
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Annuler"
+msgstr "إلغاء"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__partner_id
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__yonn_role__student
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Apprenant"
+msgstr "متعلم"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Assigner"
+msgstr "تعيين"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.course_assign_wizard_menu
+msgid "Assigner Cours"
+msgstr "تعيين دورة"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Assigner aux classes"
+msgstr "تعيين إلى الفصول"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.course_assign_wizard_action
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Assigner un cours"
+msgstr "تعيين دورة"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_custom
+msgid "Assigner à des classes"
+msgstr "تعيين إلى الفصول"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_yonn_course_assign_wizard
+msgid "Assistant pour assigner des cours"
+msgstr "معالج تعيين الدورات"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_yonn_user_group_wizard
+msgid "Assistant pour assigner les groupes Yonn"
+msgstr "معالج لتعيين مجموعات يون"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_attachment_count
+msgid "Attachment Count"
+msgstr "عدد المرفقات"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/wizard/course_assign_wizard.py:0
+#, python-format
+msgid "Aucun étudiant sélectionné."
+msgstr "لم يتم اختيار أي طالب."
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.slide_slide_menu
+msgid "Bibliothèque de Contenus"
+msgstr "مكتبة المحتوى"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__class_id_readonly
+msgid "Class Id Readonly"
+msgstr "معرّف الفصل للقراءة فقط"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__class_id
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_course_assign_wizard__assignment_type__class
+msgid "Classe"
+msgstr "فصل"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Classe d'étudiants"
+msgstr "فصل الطلاب"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_yonn_student_class
+msgid "Classe d’étudiants pour Yonn eLearning"
+msgstr "فصل الطلاب لـ يون للتعليم الإلكتروني"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.student_class_action
+#: model:ir.ui.menu,name:formevo.student_class_menu
+msgid "Classes d'étudiants"
+msgstr "فصول الطلاب"
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.slide_channel_teacher_action
+msgid ""
+"Cliquez sur \"Nouveau\" pour créer un cours et commencer à ajouter du "
+"contenu."
+msgstr "انقر على \"جديد\" لإنشاء دورة والبدء في إضافة المحتوى."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__completion_percentage
+msgid "Complétion (%)"
+msgstr "الإكمال (%)"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Complété"
+msgstr "مكتمل"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.user_group_wizard_form
+msgid "Configurer"
+msgstr "إعداد"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.user_group_wizard_menu
+msgid "Configurer Utilisateur"
+msgstr "إعداد المستخدم"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.user_group_wizard_action
+#: model_terms:ir.ui.view,arch_db:formevo.user_group_wizard_form
+msgid "Configurer Utilisateur Yonn"
+msgstr "إعداد مستخدم يون"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_custom
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_tree_teacher
+msgid "Contenus"
+msgstr "المحتويات"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__completed_slides
+msgid "Contenus Terminés"
+msgstr "المحتويات المكتملة"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.slide_slide_action
+msgid "Contenus de cours"
+msgstr "محتويات الدورة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__course_id
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__course_id
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Cours"
+msgstr "دورة"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__assigned_course_ids
+#, python-format
+msgid "Cours assignés"
+msgstr "الدورات المعيّنة"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.slide_channel_action
+msgid "Cours eLearning"
+msgstr "دورات التعلم الإلكتروني"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_slide_channel
+msgid "Course"
+msgstr "دورة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__create_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__create_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__create_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__create_uid
+msgid "Created by"
+msgstr "تم الإنشاء بواسطة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__create_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__create_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__create_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__create_date
+msgid "Created on"
+msgstr "تاريخ الإنشاء"
+
+#. module: formevo
+#: model:res.groups,comment:formevo.group_yonn_elearning_teacher
+msgid "Création et gestion de cours depuis le back-office."
+msgstr "إنشاء وإدارة الدورات من الواجهة الخلفية."
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.slide_channel_teacher_action
+msgid "Créez votre premier cours !"
+msgstr "أنشئ دورتك الأولى!"
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.student_class_action
+msgid "Créez votre première classe d'étudiants."
+msgstr "أنشئ أول فصل طلاب."
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_custom
+msgid "Dashboard de Progression"
+msgstr "لوحة تحكم التقدم"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide_partner__x_completion_date
+msgid "Date de complétion"
+msgstr "تاريخ الإكمال"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__last_activity
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Dernière Activité"
+msgstr "آخر نشاط"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide_partner__x_last_activity
+msgid "Dernière activité"
+msgstr "آخر نشاط"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__description
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_custom
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Description"
+msgstr "الوصف"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Description de la classe..."
+msgstr "وصف الفصل..."
+
+#. module: formevo
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__yonn_role__director
+msgid "Directeur"
+msgstr "مدير"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__display_name
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__display_name
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__display_name
+msgid "Display Name"
+msgstr "اسم العرض"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide__x_time_limit
+msgid "Durée suggérée (minutes)"
+msgstr "المدة المقترحة (بالدقائق)"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_form
+msgid "Détail de Progression"
+msgstr "تفاصيل التقدم"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__teacher_id
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__yonn_role__teacher
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_search_view
+msgid "Enseignant"
+msgstr "معلم"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__teacher_id
+msgid "Enseignant responsable"
+msgstr "المعلم المسؤول"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_follower_ids
+msgid "Followers"
+msgstr "المتابعون"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "المتابعون (الشركاء)"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "أيقونة Font Awesome مثل fa-tasks"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_search_view
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Grouper par"
+msgstr "تجميع حسب"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__has_message
+msgid "Has Message"
+msgstr "يحتوي على رسالة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__id
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__id
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__id
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__id
+msgid "ID"
+msgstr "المعرّف"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_exception_icon
+msgid "Icon"
+msgstr "أيقونة"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "أيقونة للدلالة على نشاط استثنائي."
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "إذا تم التحديد، فهناك رسائل جديدة تتطلب انتباهك."
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_has_error
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "إذا تم التحديد، فبعض الرسائل بها خطأ في التسليم."
+
+#. module: formevo
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_course_assign_wizard__assignment_type__individual
+msgid "Individuel"
+msgstr "فردي"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_form
+msgid "Informations"
+msgstr "معلومات"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Inscriptions"
+msgstr "التسجيلات"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid ""
+"Inscriptions et participations créées pour tous les étudiants et cours."
+msgstr "تم إنشاء التسجيلات والمشاركات لجميع الطلاب والدورات."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_is_follower
+msgid "Is Follower"
+msgstr "متابع"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__write_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__write_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__write_uid
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__write_uid
+msgid "Last Updated by"
+msgstr "آخر تحديث بواسطة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__write_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__write_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__write_date
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__write_date
+msgid "Last Updated on"
+msgstr "آخر تحديث في"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Les cours ont été assignés aux étudiants."
+msgstr "تم تعيين الدورات للطلاب."
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/wizard/course_assign_wizard.py:0
+#, python-format
+msgid "Les étudiants sont assignés au cours."
+msgstr "تم تعيين الطلاب للدورة."
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__student_ids
+msgid "Limité au groupe Apprenants"
+msgstr "مقتصر على مجموعة المتعلمين"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.slide_channel_teacher_action
+#: model:ir.ui.menu,name:formevo.my_courses_menu
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_tree_teacher
+msgid "Mes Cours"
+msgstr "دوراتي"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_has_error
+msgid "Message Delivery error"
+msgstr "خطأ في تسليم الرسالة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_ids
+msgid "Messages"
+msgstr "الرسائل"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__assignment_type
+msgid "Mode d'assignation"
+msgstr "وضع التعيين"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Mon Cours"
+msgstr "دورتي"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "الموعد النهائي لنشاطي"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Métriques de base"
+msgstr "المقاييس الأساسية"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "الموعد النهائي للنشاط التالي"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_summary
+msgid "Next Activity Summary"
+msgstr "ملخص النشاط التالي"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_type_id
+msgid "Next Activity Type"
+msgstr "نوع النشاط التالي"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__display_name
+msgid "Nom"
+msgstr "الاسم"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__name
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Nom de la classe"
+msgstr "اسم الفصل"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Nom du cours"
+msgstr "اسم الدورة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__student_count
+msgid "Nombre d'étudiants"
+msgstr "عدد الطلاب"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__course_count
+msgid "Nombre de cours"
+msgstr "عدد الدورات"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_needaction_counter
+msgid "Number of Actions"
+msgstr "عدد الإجراءات"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_has_error_counter
+msgid "Number of errors"
+msgstr "عدد الأخطاء"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "عدد الرسائل التي تتطلب إجراءً"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "عدد الرسائل التي بها خطأ في التسليم"
+
+#. module: formevo
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__user_type__portal
+msgid "Portail"
+msgstr "البوابة"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Progression"
+msgstr "التقدم"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Progression %"
+msgstr "نسبة التقدم"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_form
+msgid "Progression Globale"
+msgstr "التقدم الإجمالي"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Progression des Cours"
+msgstr "تقدم الدورات"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/slide_models_inherit.py:0
+#, python-format
+msgid "Progression des Étudiants pour le cours : %s"
+msgstr "تقدم الطلاب للدورة: %s"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_yonn_course_progress
+msgid "Rapport de Progression agrégée par Apprenant/Cours"
+msgstr "تقرير تقدم مُجمّع حسب المتعلم/الدورة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__rating_ids
+msgid "Ratings"
+msgstr "التقييمات"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "Rechercher Progression"
+msgstr "البحث عن التقدم"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+msgid "Responsable"
+msgstr "المسؤول"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__user_id
+msgid "Responsable du Cours"
+msgstr "مسؤول الدورة"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__activity_user_id
+msgid "Responsible User"
+msgstr "المستخدم المسؤول"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__yonn_role
+msgid "Rôle Yonn eLearning"
+msgstr "دور يون للتعليم الإلكتروني"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "خطأ في تسليم الرسائل القصيرة"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__assigned_course_ids
+msgid "Seuls les cours de l’enseignant responsable sont sélectionnables."
+msgstr "يمكن اختيار دورات المعلم المسؤول فقط."
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_slide_slide_partner
+msgid "Slide / Partner decorated m2m"
+msgstr "علاقة شريحة/شريك M2M مزودة ببيانات إضافية"
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_slide_slide
+msgid "Slides"
+msgstr "الشرائح"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_form
+msgid "Statistiques"
+msgstr "إحصائيات"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"الحالة بناءً على الأنشطة\n"
+"متأخر: تم تجاوز تاريخ الاستحقاق\n"
+"اليوم: تاريخ النشاط هو اليوم\n"
+"مخطط: أنشطة مستقبلية."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__student_ids_readonly
+msgid "Student Ids Readonly"
+msgstr "معرّفات الطلاب للقراءة فقط"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#: code:addons/formevo/wizard/course_assign_wizard.py:0
+#, python-format
+msgid "Succès"
+msgstr "نجاح"
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.action_teacher_student_progress
+msgid ""
+"Suivez en temps réel la progression de vos étudiants.\n"
+"                    <br>\n"
+"                    ✅ Terminés : 100%\n"
+"                    <br>\n"
+"                    🔶 Avancé : 75–99%\n"
+"                    <br>\n"
+"                    🟨 En cours : 25–74%\n"
+"                    <br>\n"
+"                    🔴 Débutant : 1–24%\n"
+"                    <br>\n"
+"                    ⚫ Pas commencé : 0%"
+msgstr ""
+"تابع تقدّم طلابك في الوقت الفعلي.\n"
+"                    <br>\n"
+"                    ✅ مكتملون: 100%\n"
+"                    <br>\n"
+"                    🔶 متقدّم: 75–99%\n"
+"                    <br>\n"
+"                    🟨 قيد التنفيذ: 25–74%\n"
+"                    <br>\n"
+"                    🔴 مبتدئ: 1–24%\n"
+"                    <br>\n"
+"                    ⚫ لم يبدأ: 0%"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.menu_slide_slide_partner_tracking
+#: model_terms:ir.ui.view,arch_db:formevo.view_slide_slide_partner_tree_tracking
+msgid "Suivi Détaillé"
+msgstr "تتبع مفصل"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.action_slide_slide_partner_tracking
+msgid "Suivi Détaillé par Contenu"
+msgstr "تتبع مفصل حسب المحتوى"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.teacher_student_progress_menu
+msgid "Suivi des Étudiants"
+msgstr "متابعة الطلاب"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Synchronisation Odoo eLearning"
+msgstr "مزامنة Odoo eLearning"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Synchroniser étudiants et cours"
+msgstr "مزامنة الطلاب والدورات"
+
+#. module: formevo
+#: model:ir.module.category,description:formevo.module_category_yonn_elearning
+msgid "Système de droits pour la plateforme eLearning"
+msgstr "نظام صلاحيات لمنصة التعلم الإلكتروني"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Sélection incomplète."
+msgstr "اختيار غير مكتمل."
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Sélectionnez des étudiants"
+msgstr "حدد الطلاب"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Sélectionnez les étudiants..."
+msgstr "حدد الطلاب..."
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Sélectionnez un cours"
+msgstr "حدد دورة"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/wizard/course_assign_wizard.py:0
+#, python-format
+msgid "Sélectionnez un cours à assigner."
+msgstr "حدد دورة لتعيينها."
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Sélectionnez un enseignant"
+msgstr "حدد معلّمًا"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_course_assign_wizard
+msgid "Sélectionnez une classe"
+msgstr "حدد فصلًا"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__teacher_id_readonly
+msgid "Teacher Id Readonly"
+msgstr "معرّف المعلّم للقراءة فقط"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__formatted_time_spent
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Temps Passé"
+msgstr "الوقت المنقضي"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_slide_slide_partner_tree_tracking
+msgid "Temps Passé (sec)"
+msgstr "الوقت المنقضي (ثانية)"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__total_time_spent
+msgid "Temps Total (secondes)"
+msgstr "الوقت الإجمالي (ثوانٍ)"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_slide_slide__x_time_limit
+msgid "Temps estimé pour compléter ce contenu."
+msgstr "الوقت المُقدّر لإكمال هذا المحتوى."
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide_partner__x_time_spent
+msgid "Temps passé (secondes)"
+msgstr "الوقت المنقضي (ثوانٍ)"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_slide_slide__name
+msgid "Title"
+msgstr "العنوان"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_tree
+msgid "Total"
+msgstr "الإجمالي"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_progress__total_slides
+msgid "Total Contenus"
+msgstr "إجمالي المحتويات"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__total_enrollments
+msgid "Total inscriptions"
+msgstr "إجمالي التسجيلات"
+
+#. module: formevo
+#: model:ir.ui.menu,name:formevo.dashboard_menu
+msgid "Tous les Cours"
+msgstr "جميع الدورات"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__user_type
+msgid "Type d'utilisateur"
+msgstr "نوع المستخدم"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "نوع النشاط الاستثنائي في السجل."
+
+#. module: formevo
+#: model:ir.model,name:formevo.model_res_users
+msgid "User"
+msgstr "المستخدم"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_user_group_wizard__user_id
+msgid "Utilisateur"
+msgstr "المستخدم"
+
+#. module: formevo
+#: model:ir.model.fields.selection,name:formevo.selection__yonn_user_group_wizard__user_type__internal
+msgid "Utilisateur Interne"
+msgstr "مستخدم داخلي"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_search_view
+msgid "Vides"
+msgstr "فارغة"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_form_teacher
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "Voir progression"
+msgstr "عرض التقدّم"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__website_message_ids
+msgid "Website Messages"
+msgstr "رسائل الموقع"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__website_message_ids
+msgid "Website communication history"
+msgstr "سجل اتصالات الموقع"
+
+#. module: formevo
+#: model:ir.module.category,name:formevo.module_category_yonn_elearning
+#: model:ir.ui.menu,name:formevo.yonn_elearning_menu_root
+msgid "Yonn eLearning"
+msgstr "يون للتعليم الإلكتروني"
+
+#. module: formevo
+#: model:res.groups,name:formevo.group_yonn_elearning_student
+msgid "Yonn eLearning: Apprenant"
+msgstr "يون للتعليم الإلكتروني: متعلم"
+
+#. module: formevo
+#: model:res.groups,name:formevo.group_yonn_elearning_director
+msgid "Yonn eLearning: Directeur"
+msgstr "يون للتعليم الإلكتروني: مدير"
+
+#. module: formevo
+#: model:res.groups,name:formevo.group_yonn_elearning_teacher
+msgid "Yonn eLearning: Enseignant"
+msgstr "يون للتعليم الإلكتروني: معلم"
+
+#. module: formevo
+#: model:ir.model.fields,field_description:formevo.field_yonn_course_assign_wizard__student_ids
+#: model:ir.model.fields,field_description:formevo.field_yonn_student_class__student_ids
+#: model_terms:ir.ui.view,arch_db:formevo.slide_channel_tree_teacher
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_kanban_view
+msgid "Étudiants"
+msgstr "الطلاب"
+
+#. module: formevo
+#. odoo-python
+#: code:addons/formevo/models/student_class.py:0
+#, python-format
+msgid "Étudiants de la classe"
+msgstr "طلاب الفصل"
+
+#. module: formevo
+#: model:ir.model.fields,help:formevo.field_yonn_student_class__total_enrollments
+msgid "Étudiants × cours"
+msgstr "الطلاب × الدورات"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "⚫ Pas Commencé"
+msgstr "⚫ لم يبدأ"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "✅ Terminés"
+msgstr "✅ مكتملون"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "👤 Apprenant"
+msgstr "👤 متعلم"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "👥 Participants"
+msgstr "👥 المشاركون"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "👨‍🏫 Enseignant"
+msgstr "👨‍🏫 معلم"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "📊 Statistiques détaillées"
+msgstr "📊 إحصائيات مفصلة"
+
+#. module: formevo
+#: model:ir.actions.act_window,name:formevo.action_teacher_student_progress
+msgid "📊 Suivi des Étudiants"
+msgstr "📊 متابعة الطلاب"
+
+#. module: formevo
+#: model_terms:ir.actions.act_window,help:formevo.action_teacher_student_progress
+msgid "📊 Tableau de Bord de Progression"
+msgstr "📊 لوحة تحكم التقدم"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "📚 Cours"
+msgstr "📚 دورات"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "📚 Informations générales"
+msgstr "📚 معلومات عامة"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.student_class_form_view
+msgid "📝 Activité"
+msgstr "📝 نشاط"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "🔴 Débutant (>0%)"
+msgstr "🔴 مبتدئ (>0%)"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "🔶 Presque Terminé (>75%)"
+msgstr "🔶 شبه مكتمل (>75%)"
+
+#. module: formevo
+#: model_terms:ir.ui.view,arch_db:formevo.view_yonn_course_progress_search
+msgid "🟨 En Cours (>25%)"
+msgstr "🟨 قيد التنفيذ (>25%)"

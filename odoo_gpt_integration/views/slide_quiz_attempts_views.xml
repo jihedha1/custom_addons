@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_slide_quiz_add_max_attempts" model="ir.ui.view">
+        <field name="name">slide.slide.quiz.add.max.attempts</field>
+        <field name="model">slide.slide</field>
+        <field name="inherit_id" ref="website_slides.view_slide_slide_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Odoo 17: utiliser name="quiz" -->
+            <xpath expr="//page[@name='quiz']/group[@name='quiz_details']" position="inside">
+                <group string="Tentatives du Quiz">
+                    <field name="x_quiz_max_attempts"/>
+                    <div class="text-muted">
+                        0 = tentatives illimitées. Sinon, l’étudiant sera bloqué après N tentatives.
+                    </div>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
