@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ✅ Extension de la vue formateur (lms_public_info) -->
+        <record id="view_partner_form_trainer_resources" model="ir.ui.view">
+            <field name="name">res.partner.form.trainer.resources</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="lms_public_info.view_partner_form_trainer"/>
+            <field name="arch" type="xml">
+
+                <!-- Ajouter onglet Documents après Formateur -->
+                <xpath expr="//page[@string='Formateur']" position="after">
+                    <page string="Documents &amp; Validités" attrs="{'invisible': [('is_trainer', '=', False)]}">
+
+                        <group>
+                            <group string="Statut Documents">
+                                <field name="document_count" widget="statinfo"/>
+                                <field name="mandatory_documents_complete" widget="boolean"/>
+                                <field name="expiring_documents_count" widget="statinfo"/>
+                                <field name="trainer_state" widget="statusbar"/>
+                            </group>
+
+                            <group string="Actions">
+                                <button name="action_activate_trainer"
+                                        string="Activer"
+                                        type="object"
+                                        class="oe_highlight"
+                                        attrs="{'invisible': [('trainer_state', '!=', 'draft')]}"/>
+
+                                <button name="action_view_documents"
+                                        string="Voir Documents"
+                                        type="object"
+                                        class="btn-primary"
+                                        icon="fa-file"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Documents Administratifs">
+                                <field name="trainer_document_ids" nolabel="1">
+                                    <tree>
+                                        <field name="document_type_id"/>
+                                        <field name="name"/>
+                                        <field name="issue_date"/>
+                                        <field name="expiry_date"/>
+                                        <field name="days_to_expiry"/>
+                                        <field name="state" widget="badge"
+                                               decoration-success="state=='valid'"
+                                               decoration-warning="state=='pending'"
+                                               decoration-danger="state=='expired'"/>
+                                        <button name="action_validate" string="Valider" type="object"
+                                                                                     icon="fa-check" attrs="{'invisible': [('state', '!=', 'pending')]}"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </page>
+                </xpath>
+
+            <!-- Ajouter onglet Tarification -->
+            <xpath expr="//page[@string='Documents &amp; Validités']" position="after">
+                <page string="Tarification" attrs="{'invisible': [('is_trainer', '=', False)]}">
+                    <group>
+                        <group string="Tarifs">
+                            <field name="hourly_rate"/>
+                            <field name="daily_rate" readonly="1"/>
+                        </group>
+
+                        <group string="Statistiques">
+                            <field name="training_session_count"/>
+                            <field name="average_training_rating" widget="progressbar"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+            <!-- Ajouter onglet Disponibilités -->
+            <xpath expr="//page[@string='Tarification']" position="after">
+                <page string="Disponibilités" attrs="{'invisible': [('is_trainer', '=', False)]}">
+                    <group>
+                        <group string="Statut">
+                            <field name="availability_status" widget="radio"/>
+                        </group>
+
+                        <group string="Actions">
+                            <button name="action_view_availability"
+                                    string="Gérer Planning"
+                                    type="object"
+                                    class="btn-primary"
+                                    icon="fa-calendar"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Planning Hebdomadaire">
+                            <field name="availability_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="day_of_week" widget="selection"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</data>
+</odoo>
