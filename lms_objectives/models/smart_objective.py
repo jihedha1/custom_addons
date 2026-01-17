@@ -6,6 +6,7 @@ from odoo.exceptions import ValidationError
 class SmartObjective(models.Model):
     _name = 'lms_objectives.smart_objective'
     _description = 'Objectif pédagogique SMART'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
     name = fields.Char(
@@ -20,6 +21,21 @@ class SmartObjective(models.Model):
         required=True,
         ondelete='cascade'
     )
+
+    # Type d'objectif (AJOUTÉ)
+    objective_type = fields.Selection([
+        ('knowledge', 'Connaissance'),
+        ('skill', 'Compétence'),
+        ('behavior', 'Comportement'),
+    ], string='Type d\'objectif', default='skill', required=True)
+
+    # Niveau (AJOUTÉ)
+    level = fields.Selection([
+        ('beginner', 'Débutant'),
+        ('intermediate', 'Intermédiaire'),
+        ('advanced', 'Avancé'),
+        ('expert', 'Expert'),
+    ], string='Niveau', default='intermediate')
 
     # Critères SMART
     specific = fields.Text(
@@ -52,10 +68,13 @@ class SmartObjective(models.Model):
         help="Quel est le délai pour l'atteindre ?"
     )
 
-    # Compétences visées
+    # Compétences visées - CORRIGÉ avec nom de table personnalisé
     skill_ids = fields.Many2many(
         'lms_public_info.trainer_competency',
-        string='Compétences visées'
+        string='Compétences visées',
+        relation='lms_smart_trainer_rel',  # Nom court pour éviter l'erreur
+        column1='smart_objective_id',
+        column2='trainer_competency_id'
     )
 
     # Niveau de maîtrise attendu
@@ -78,6 +97,12 @@ class SmartObjective(models.Model):
         ('other', 'Autre'),
     ], string='Méthode d\'évaluation', default='quiz')
 
+    # Critères de succès (AJOUTÉ)
+    success_criteria = fields.Text(
+        string='Critères de succès',
+        help="Comment évaluer si l'objectif est atteint ?"
+    )
+
     # Métadonnées
     sequence = fields.Integer(
         string='Séquence',
@@ -96,7 +121,21 @@ class SmartObjective(models.Model):
         help="L'objectif doit-il être obligatoirement atteint ?"
     )
 
-    # Suivi
+    # Suivi (AJOUTÉ)
+    status = fields.Selection([
+        ('draft', 'Brouillon'),
+        ('active', 'Actif'),
+        ('in_progress', 'En cours'),
+        ('achieved', 'Atteint'),
+        ('not_achieved', 'Non atteint'),
+    ], string='Statut', default='draft')
+
+    current_progress = fields.Float(
+        string='Progression actuelle (%)',
+        default=0.0,
+        digits=(5, 2)
+    )
+
     achievement_rate = fields.Float(
         string='Taux d\'atteinte',
         compute='_compute_achievement',
@@ -104,9 +143,18 @@ class SmartObjective(models.Model):
         digits=(5, 2)
     )
 
+    last_evaluation_date = fields.Date(
+        string='Dernière évaluation'
+    )
+
+    evaluation_score = fields.Float(
+        string='Score évaluation',
+        digits=(5, 2)
+    )
+
     @api.depends('channel_id')
     def _compute_achievement(self):
-        # À compléter avec la logique de calcul
+        # Calculer le taux d'atteinte basé sur les résultats des participants
         for objective in self:
             objective.achievement_rate = 0.0
 

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data >
-        <!-- SÉQUENCE -->
+    <data>
+        <!-- ========================================== -->
+        <!-- SÉQUENCE                                   -->
+        <!-- ========================================== -->
         <record id="seq_cold_assessment" model="ir.sequence">
             <field name="name">Évaluation à froid</field>
             <field name="code">lms_evaluation_results.cold_assessment</field>
@@ -12,7 +14,9 @@
             <field name="company_id" eval="False"/>
         </record>
 
-        <!-- QUESTIONNAIRES ÉVALUATION À FROID -->
+        <!-- ========================================== -->
+        <!-- QUESTIONNAIRES ÉVALUATION À FROID          -->
+        <!-- ========================================== -->
 
         <!-- Questionnaire J+30 -->
         <record id="survey_template_cold_30_days" model="survey.survey">
@@ -46,24 +50,28 @@
             <field name="answer_score">100</field>
             <field name="sequence">1</field>
         </record>
+
         <record id="answer_cold_30_sat_4" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_satisfaction"/>
             <field name="value">Satisfait</field>
             <field name="answer_score">75</field>
             <field name="sequence">2</field>
         </record>
+
         <record id="answer_cold_30_sat_3" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_satisfaction"/>
             <field name="value">Neutre</field>
             <field name="answer_score">50</field>
             <field name="sequence">3</field>
         </record>
+
         <record id="answer_cold_30_sat_2" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_satisfaction"/>
             <field name="value">Peu satisfait</field>
             <field name="answer_score">25</field>
             <field name="sequence">4</field>
         </record>
+
         <record id="answer_cold_30_sat_1" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_satisfaction"/>
             <field name="value">Pas du tout satisfait</field>
@@ -86,12 +94,14 @@
             <field name="answer_score">100</field>
             <field name="sequence">1</field>
         </record>
+
         <record id="answer_cold_30_applied_sometimes" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_applied"/>
             <field name="value">Oui, occasionnellement</field>
             <field name="answer_score">50</field>
             <field name="sequence">2</field>
         </record>
+
         <record id="answer_cold_30_applied_no" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_applied"/>
             <field name="value">Pas encore</field>
@@ -114,24 +124,28 @@
             <field name="answer_score">100</field>
             <field name="sequence">1</field>
         </record>
+
         <record id="answer_cold_30_impact_h" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_impact"/>
             <field name="value">Élevé</field>
             <field name="answer_score">75</field>
             <field name="sequence">2</field>
         </record>
+
         <record id="answer_cold_30_impact_m" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_impact"/>
             <field name="value">Moyen</field>
             <field name="answer_score">50</field>
             <field name="sequence">3</field>
         </record>
+
         <record id="answer_cold_30_impact_l" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_impact"/>
             <field name="value">Faible</field>
             <field name="answer_score">25</field>
             <field name="sequence">4</field>
         </record>
+
         <record id="answer_cold_30_impact_n" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_impact"/>
             <field name="value">Aucun</field>
@@ -153,6 +167,7 @@
             <field name="answer_score">100</field>
             <field name="sequence">1</field>
         </record>
+
         <record id="answer_cold_30_career_no" model="survey.question.answer">
             <field name="question_id" ref="question_cold_30_career"/>
             <field name="value">Pas encore</field>
@@ -168,7 +183,9 @@
             <field name="description">Avez-vous des suggestions pour améliorer la formation ?</field>
         </record>
 
-        <!-- Questionnaire J+90 -->
+        <!-- ========================================== -->
+        <!-- Questionnaire J+90                         -->
+        <!-- ========================================== -->
         <record id="survey_template_cold_90_days" model="survey.survey">
             <field name="title">Évaluation à froid J+90</field>
             <field name="description"><![CDATA[
@@ -200,12 +217,14 @@
             <field name="answer_score">100</field>
             <field name="sequence">1</field>
         </record>
+
         <record id="answer_cold_90_sat_4" model="survey.question.answer">
             <field name="question_id" ref="question_cold_90_satisfaction"/>
             <field name="value">Satisfait</field>
             <field name="answer_score">75</field>
             <field name="sequence">2</field>
         </record>
+
         <record id="answer_cold_90_sat_3" model="survey.question.answer">
             <field name="question_id" ref="question_cold_90_satisfaction"/>
             <field name="value">Neutre</field>
@@ -221,7 +240,9 @@
             <field name="description">Décrivez les impacts concrets de la formation sur votre activité professionnelle après 3 mois.</field>
         </record>
 
-        <!-- TEMPLATES EMAIL -->
+        <!-- ========================================== -->
+        <!-- TEMPLATES EMAIL                            -->
+        <!-- ========================================== -->
 
         <!-- Email invitation évaluation à froid -->
         <record id="mail_template_cold_assessment" model="mail.template">

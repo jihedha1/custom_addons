@@ -4,8 +4,8 @@
 
         <!-- Tree view évaluations positionnement -->
         <record id="view_placement_assessment_tree" model="ir.ui.view">
-            <field name="name">formation.placement.assessment.tree</field>
-            <field name="model">formation.placement.assessment</field>
+            <field name="name">lms_objectives.placement_assessment.tree</field>
+            <field name="model">lms_objectives.placement_assessment</field>
             <field name="arch" type="xml">
                 <tree string="Évaluations positionnement">
                     <field name="name"/>
@@ -22,19 +22,19 @@
 
         <!-- Form view évaluations positionnement -->
         <record id="view_placement_assessment_form" model="ir.ui.view">
-            <field name="name">formation.placement.assessment.form</field>
-            <field name="model">formation.placement.assessment</field>
+            <field name="name">lms_objectives.placement_assessment.form</field>
+            <field name="model">lms_objectives.placement_assessment</field>
             <field name="arch" type="xml">
                 <form string="Évaluation positionnement">
                     <header>
                         <button name="action_assign" type="object" string="Assigner"
-                                class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                                class="oe_highlight" invisible="state != 'draft'"/>
                         <button name="action_start" type="object" string="Démarrer"
-                                attrs="{'invisible': [('state', '!=', 'assigned')]}"/>
+                                invisible="state != 'assigned'"/>
                         <button name="action_complete" type="object" string="Terminer"
-                                class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['in_progress', 'assigned'])]}"/>
+                                class="oe_highlight" invisible="state not in ['in_progress', 'assigned']"/>
                         <button name="action_generate_plan" type="object" string="Créer plan"
-                                attrs="{'invisible': [('state', '!=', 'completed')]}"/>
+                                invisible="state != 'completed'"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,assigned,in_progress,completed,expired,cancelled"/>
                     </header>
                     <sheet>
@@ -49,6 +49,7 @@
                                 <field name="channel_id" readonly="1"/>
                                 <field name="partner_id" readonly="1"/>
                                 <field name="survey_id"/>
+                                <field name="user_input_id" invisible="1"/>
                             </group>
                             <group string="Dates">
                                 <field name="assignment_date" readonly="1"/>
@@ -83,12 +84,13 @@
                                         </div>
                                     </group>
 
-                                    <group string="Questionnaire" attrs="{'invisible': [('user_input_id', '=', False)]}">
+                                    <group string="Questionnaire" invisible="not user_input_id">
                                         <div class="o_stat_info">
                                             <span class="o_stat_value">
-                                                <a t-att-href="'/survey/print/%s' % user_input_id.access_token" target="_blank">
-                                                    Voir les réponses
-                                                </a>
+                                                <button type="object"
+                                                        name="action_view_survey_responses"
+                                                        string="Voir les réponses"
+                                                        class="btn-link"/>
                                             </span>
                                         </div>
                                     </group>
@@ -97,8 +99,8 @@
 
                             <page string="Recommandations" name="recommendations">
                                 <field name="recommendations" nolabel="1"/>
-                                <field name="needs_remediation" attrs="{'invisible': [('needs_remediation', '=', False)]}"/>
-                                <field name="remediation_plan" attrs="{'invisible': [('needs_remediation', '=', False)]}" nolabel="1"/>
+                                <field name="needs_remediation" invisible="not needs_remediation"/>
+                                <field name="remediation_plan" invisible="not needs_remediation" nolabel="1"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -108,8 +110,8 @@
 
         <!-- Search view évaluations positionnement -->
         <record id="view_placement_assessment_search" model="ir.ui.view">
-            <field name="name">formation.placement.assessment.search</field>
-            <field name="model">formation.placement.assessment</field>
+            <field name="name">lms_objectives.placement_assessment.search</field>
+            <field name="model">lms_objectives.placement_assessment</field>
             <field name="arch" type="xml">
                 <search string="Rechercher évaluations">
                     <field name="name"/>

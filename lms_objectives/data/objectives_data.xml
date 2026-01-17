@@ -5,45 +5,93 @@
         <!-- Séquences -->
         <record id="seq_smart_objective" model="ir.sequence">
             <field name="name">Objectif SMART</field>
-            <field name="code">formation.smart.objective</field>
+            <field name="code">lms_objectives.smart_objective</field>
             <field name="prefix">OBJ-</field>
-            <field name="padding">3</field>
+            <field name="padding">4</field>
             <field name="company_id" eval="False"/>
         </record>
 
         <record id="seq_placement_assessment" model="ir.sequence">
             <field name="name">Évaluation positionnement</field>
-            <field name="code">formation.placement.assessment</field>
+            <field name="code">lms_objectives.placement_assessment</field>
             <field name="prefix">POS-</field>
-            <field name="padding">4</field>
+            <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
 
         <record id="seq_individual_plan" model="ir.sequence">
             <field name="name">Plan individualisé</field>
-            <field name="code">formation.individual.plan</field>
+            <field name="code">lms_objectives.individual_plan</field>
             <field name="prefix">PLAN-</field>
-            <field name="padding">4</field>
+            <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
 
-        <!-- Modèles de questionnaire de positionnement -->
-        <record id="survey_template_placement_technical" model="survey.survey">
-            <field name="title">Questionnaire de positionnement - Compétences techniques</field>
-            <field name="category">placement</field>
-            <field name="description">Évaluez vos compétences techniques avant la formation</field>
-            <field name="questions_layout">one_page</field>
-            <field name="scoring_type">scoring_without_answers</field>
-            <field name="questions_selection">all</field>
-            <field name="access_mode">public</field>
-            <field name="is_time_limited">False</field>
+        <!-- Modèle de plan de formation par défaut -->
+        <record id="plan_template_default" model="lms_objectives.plan_template">
+            <field name="name">Plan standard</field>
+            <field name="plan_type">standard</field>
+            <field name="description">Modèle de plan de formation standard</field>
+            <field name="content"><![CDATA[
+                <h3>Plan de formation individualisé</h3>
+                <h4>Apprenant : ${partner_name}</h4>
+                <h4>Formation : ${course_name}</h4>
+
+                <h5>Objectifs personnalisés</h5>
+                <p>${specific_objectives}</p>
+
+                <h5>Approche pédagogique</h5>
+                <p>${pedagogical_approach}</p>
+
+                <h5>Modalités d'évaluation</h5>
+                <p>${evaluation_criteria}</p>
+            ]]></field>
         </record>
 
-        <!-- Modèle de plan de formation -->
-        <record id="plan_template_default" model="formation.plan.template">
-            <field name="name">Modèle de plan standard</field>
-            <field name="description">Modèle générique pour les plans individualisés</field>
-            <field name="content">Contenu du modèle par défaut</field>
+        <record id="plan_template_remediation" model="lms_objectives.plan_template">
+            <field name="name">Plan de remédiation</field>
+            <field name="plan_type">remediation</field>
+            <field name="description">Plan pour apprenants ayant besoin de renforcement</field>
+            <field name="content"><![CDATA[
+                <h3>Plan de remédiation</h3>
+                <h4>Apprenant : ${partner_name}</h4>
+                <h4>Formation : ${course_name}</h4>
+
+                <div class="alert alert-warning">
+                    <h5>Points à renforcer</h5>
+                    <p>${improvement_areas}</p>
+                </div>
+
+                <h5>Objectifs de remédiation</h5>
+                <p>${specific_objectives}</p>
+
+                <h5>Approche pédagogique adaptée</h5>
+                <p>Progression plus lente, plus d'exemples pratiques, accompagnement renforcé</p>
+                <p>${pedagogical_approach}</p>
+            ]]></field>
+        </record>
+
+        <record id="plan_template_accelerated" model="lms_objectives.plan_template">
+            <field name="name">Plan accéléré</field>
+            <field name="plan_type">accelerated</field>
+            <field name="description">Plan pour apprenants de niveau avancé</field>
+            <field name="content"><![CDATA[
+                <h3>Plan de formation accéléré</h3>
+                <h4>Apprenant : ${partner_name}</h4>
+                <h4>Formation : ${course_name}</h4>
+
+                <div class="alert alert-success">
+                    <h5>Points forts identifiés</h5>
+                    <p>${strengths}</p>
+                </div>
+
+                <h5>Objectifs avancés</h5>
+                <p>${specific_objectives}</p>
+
+                <h5>Approche pédagogique</h5>
+                <p>Rythme accéléré, focus sur les aspects avancés, projets complexes</p>
+                <p>${pedagogical_approach}</p>
+            ]]></field>
         </record>
 
     </data>

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
+        <!-- ========================================== -->
+        <!-- CRON : Planification automatique          -->
+        <!-- ========================================== -->
         <record id="cron_schedule_cold_assessments" model="ir.cron">
             <field name="name">Planification auto évaluations à froid</field>
             <field name="model_id" ref="model_lms_evaluation_results_cold_assessment"/>
@@ -65,4 +69,5 @@
             <field name="priority">20</field>
         </record>
 
+    </data>
 </odoo>

@@ -1,37 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Vue formulaire du wizard -->
+        <!-- Vue wizard planification -->
         <record id="view_schedule_assessment_wizard_form" model="ir.ui.view">
             <field name="name">schedule.assessment.wizard.form</field>
-            <!-- CHANGEMENT ICI : Modifiez le modèle -->
             <field name="model">lms_eval.sched_wizard</field>
             <field name="arch" type="xml">
-                <form string="Planifier des Évaluations à Froid">
+                <form string="Planifier les évaluations">
                     <sheet>
                         <group>
-                            <field name="channel_ids" widget="many2many"
-                                   string="Formations" required="1"/>
-                        </group>
+                            <group string="Formations">
+                                <field name="ch_ids" widget="many2many_tags" string="Formations" required="1"/>
+                            </group>
 
-                        <group>
-                            <group string="Questionnaires">
-                                <field name="create_j30"/>
-                                <field name="survey_30_id" attrs="{'required': [('create_j30', '=', True)]}"/>
-                                <field name="create_j90"/>
-                                <field name="survey_90_id" attrs="{'required': [('create_j90', '=', True)]}"/>
+                            <group string="Participants">
+                                <field name="partner_ids" widget="many2many_tags"/>
+                                <!-- CORRECTION : Ajoutez class="o_form_label" -->
+                                <div class="o_form_label" style="margin-top: 10px; font-size: 12px; color: #666;">
+                                    Si vide : tous les participants ayant terminé la formation
+                                </div>
                             </group>
                         </group>
 
-                        <group string="Participants">
-                            <field name="partner_ids" widget="many2many_tags"/>
-                            <separator/>
-                            <label string="Si vide : tous les participants ayant terminé la formation"/>
+                        <group string="Types d'évaluation">
+                            <group>
+                                <field name="create_j30"/>
+                                <field name="survey_30_id" invisible="not create_j30"/>
+                            </group>
+                            <group>
+                                <field name="create_j90"/>
+                                <field name="survey_90_id" invisible="not create_j90"/>
+                            </group>
                         </group>
 
-                        <group string="Rappels">
-                            <field name="max_reminders"/>
-                            <field name="reminder_interval_days"/>
+                        <group string="Configuration des rappels">
+                            <group>
+                                <field name="max_reminders"/>
+                                <field name="reminder_interval_days"/>
+                            </group>
                         </group>
 
                         <footer>
@@ -45,13 +51,16 @@
 
         <!-- Action pour ouvrir le wizard -->
         <record id="action_schedule_assessment_wizard" model="ir.actions.act_window">
-            <field name="name">Planifier des évaluations</field>
-            <!-- CHANGEMENT ICI : Modifiez le modèle -->
+            <field name="name">Planifier les évaluations</field>
             <field name="res_model">lms_eval.sched_wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="binding_model_id" ref="lms_evaluation_results.model_lms_evaluation_results_cold_assessment"/>
-            <field name="binding_type">action</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Planifier les évaluations à froid
+                </p>
+            </field>
         </record>
+
     </data>
 </odoo>

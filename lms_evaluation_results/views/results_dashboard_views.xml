@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
         <!-- Vue tableau de bord résultats -->
         <record id="view_results_dashboard_form" model="ir.ui.view">
             <field name="name">lms_evaluation_results.results_dashboard.form</field>
@@ -10,8 +9,9 @@
                 <form string="Tableau de bord des résultats">
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button type="action"
-                                    name="%(lms_evaluation_results.action_export_results_wizard)d"
+                            <!-- Bouton simple avec méthode Python -->
+                            <button type="object"
+                                    name="action_export_results"
                                     class="oe_stat_button"
                                     icon="fa-download">
                                 <div class="o_stat_info">
@@ -29,8 +29,8 @@
                         <group>
                             <group>
                                 <field name="period"/>
-                                <field name="date_start" attrs="{'invisible': [('period', '!=', 'custom')]}"/>
-                                <field name="date_end" attrs="{'invisible': [('period', '!=', 'custom')]}"/>
+                                <field name="date_start" invisible="period != 'custom'"/>
+                                <field name="date_end" invisible="period != 'custom'"/>
                             </group>
                             <group>
                                 <field name="channel_ids" widget="many2many_tags"/>

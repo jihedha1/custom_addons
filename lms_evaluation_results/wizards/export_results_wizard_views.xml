@@ -31,10 +31,8 @@
                             </group>
 
                             <group string="Période">
-                                <field name="period_start"
-                                       attrs="{'required': True}"/>
-                                <field name="period_end"
-                                       attrs="{'required': True}"/>
+                                <field name="period_start" required="1"/>
+                                <field name="period_end" required="1"/>
                             </group>
                         </group>
 
@@ -63,10 +61,13 @@
                             </page>
                         </notebook>
 
+                        <!-- CHAMP file_data AJOUTÉ (invisible) -->
+                        <field name="file_data" invisible="1"/>
+
                         <div class="oe_chatter">
                             <field name="filename" widget="url"
                                    string="Fichier généré"
-                                   attrs="{'invisible': [('file_data', '=', False)]}"/>
+                                   invisible="not file_data"/>
                         </div>
                     </sheet>
                 </form>

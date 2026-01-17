@@ -18,14 +18,13 @@ class AssignAssessmentWizard(models.TransientModel):
         'survey.survey',
         string='Questionnaire',
         required=True,
-        domain="[('category', '=', 'placement')]"
     )
 
     partner_ids = fields.Many2many(
         'res.partner',
         string='Apprenants',
         required=True,
-        domain="[('is_training_participant', '=', True)]"
+
     )
 
     send_email = fields.Boolean(
@@ -45,7 +44,7 @@ class AssignAssessmentWizard(models.TransientModel):
         assessments_created = []
         for partner in self.partner_ids:
             # Vérifier si une évaluation existe déjà
-            existing = self.env['formation.placement.assessment'].search([
+            existing = self.env['lms_objectives.placement_assessment'].search([
                 ('partner_id', '=', partner.id),
                 ('channel_id', '=', self.channel_id.id),
                 ('state', 'not in', ['cancelled', 'expired']),
@@ -53,7 +52,7 @@ class AssignAssessmentWizard(models.TransientModel):
 
             if not existing:
                 # Créer l'évaluation
-                assessment = self.env['formation.placement.assessment'].create({
+                assessment = self.env['lms_objectives.placement_assessment'].create({
                     'channel_id': self.channel_id.id,
                     'partner_id': partner.id,
                     'survey_id': self.survey_id.id,

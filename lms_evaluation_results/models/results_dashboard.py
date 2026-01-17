@@ -10,6 +10,7 @@ class ResultsDashboard(models.TransientModel):
     """
     _name = 'lms_evaluation_results.results_dashboard'
     _description = 'Tableau de bord des résultats'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ========== FILTRES ==========
     period = fields.Selection([
@@ -475,6 +476,22 @@ class ResultsDashboard(models.TransientModel):
             'tag': 'reload',
         }
 
+    def action_export_results(self):
+        """Exporte les résultats du tableau de bord (version simple)"""
+        self.ensure_one()
+
+        # Pour l'instant, retournez un message d'information
+        # Vous pourrez implémenter l'export CSV/Excel plus tard
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Export en développement'),
+                'message': _("La fonction d'export est en cours de développement."),
+                'type': 'info',
+                'sticky': False,
+            }
+        }
     def action_export_pdf(self):
         """Exporter en PDF"""
         return self.env.ref(

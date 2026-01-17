@@ -15,10 +15,11 @@
     """,
     'author': 'Votre Société',
     'website': 'https://www.votresociete.com',
-    'depends': ['formevo', 'survey', 'sign'],
+    'depends': ['formevo', 'survey'],
     'data': [
-        'security/ir.model.access.csv',
         'security/objectives_security.xml',
+        'security/ir.model.access.csv',
+
         'data/objectives_data.xml',
         'data/survey_templates.xml',
         'data/placement_cron.xml',
@@ -27,14 +28,12 @@
         'views/individual_plan_views.xml',
         'views/slide_channel_views.xml',
         'views/res_partner_views.xml',
-        'views/objectives_dashboard.xml',
+        #'views/objectives_dashboard.xml',
         'views/objectives_menu_views.xml',
         'wizards/generate_plan_wizard_views.xml',
         'wizards/assign_assessment_wizard_views.xml',
     ],
-    'demo': [
-        'data/objectives_demo.xml',
-    ],
+
     'installable': True,
     'application': True,
     'auto_install': False,

@@ -8,19 +8,13 @@ class ResourceManagement(models.Model):
     _name = 'lms_resources_trainers.resource_management'
     _description = 'Gestion des ressources'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'name'
 
-    # Identification
-    name = fields.Char(
-        string='Nom',
-        required=True,
-        tracking=True
-    )
-
-    code = fields.Char(
-        string='Code',
-        required=True,
-        tracking=True
-    )
+    # =====================
+    # IDENTIFICATION
+    # =====================
+    name = fields.Char(string='Nom', required=True, tracking=True)
+    code = fields.Char(string='Code', required=True, tracking=True)
 
     resource_type_id = fields.Many2one(
         'lms_resources_trainers.resource_type',
@@ -29,38 +23,31 @@ class ResourceManagement(models.Model):
         tracking=True
     )
 
-    # Caractéristiques
+    # =====================
+    # CARACTÉRISTIQUES
+    # =====================
     description = fields.Text(string='Description')
-
-    capacity = fields.Integer(
-        string='Capacité (personnes)',
-        tracking=True
-    )
-
-    location = fields.Char(
-        string='Localisation',
-        required=True,
-        tracking=True
-    )
-
+    capacity = fields.Integer(string='Capacité (personnes)', tracking=True)
+    location = fields.Char(string='Localisation', required=True, tracking=True)
     floor = fields.Char(string='Étage')
-
     building = fields.Char(string='Bâtiment')
 
-    # Équipements
+    # =====================
+    # ÉQUIPEMENTS
+    # =====================
     equipment_ids = fields.Many2many(
         'lms_resources_trainers.resource_equipment',
+        'resource_equipment_rel',
+        'resource_id',
+        'equipment_id',
         string='Équipements'
     )
 
     technical_specifications = fields.Html(string='Spécifications techniques')
 
-    photos_ids = fields.One2many(
-        'ir.attachment',
-        compute='_compute_photos'
-    )
-
-    # Disponibilité et réservations
+    # =====================
+    # DISPONIBILITÉ
+    # =====================
     available_for_booking = fields.Boolean(
         string='Disponible pour réservation',
         default=True,
@@ -78,12 +65,15 @@ class ResourceManagement(models.Model):
         compute='_compute_booking_stats'
     )
 
-    current_status = fields.Char(
-        string='Statut actuel',
-        compute='_compute_current_status'
+    current_booking_id = fields.Many2one(
+        'lms_resources_trainers.resource_booking',
+        string='Réservation en cours',
+        compute='_compute_current_booking'
     )
 
-    # Maintenance
+    # =====================
+    # MAINTENANCE
+    # =====================
     maintenance_schedule = fields.Selection([
         ('weekly', 'Hebdomadaire'),
         ('monthly', 'Mensuelle'),
@@ -92,12 +82,12 @@ class ResourceManagement(models.Model):
     ], string='Planning de maintenance')
 
     last_maintenance_date = fields.Date(string='Dernière maintenance')
-
     next_maintenance_date = fields.Date(string='Prochaine maintenance')
-
     maintenance_notes = fields.Text(string='Notes de maintenance')
 
-    # Statut
+    # =====================
+    # STATUT
+    # =====================
     state = fields.Selection([
         ('available', 'Disponible'),
         ('occupied', 'Occupé'),
@@ -111,16 +101,12 @@ class ResourceManagement(models.Model):
         default=lambda self: self.env.company
     )
 
-    # Méthodes de calcul
-    def _compute_photos(self):
-        for resource in self:
-            resource.photos_ids = self.env['ir.attachment'].search([
-                ('res_model', '=', 'lms_resources_trainers.resource_management'),
-                ('res_id', '=', resource.id),
-                ('mimetype', 'ilike', 'image/%')
-            ])
-
+    # =====================
+    # MÉTHODES COMPUTE
+    # =====================
+    @api.depends('booking_ids', 'booking_ids.state', 'booking_ids.end_date')
     def _compute_booking_stats(self):
+        """Calcule le nombre de réservations à venir"""
         today = fields.Date.today()
         for resource in self:
             upcoming = resource.booking_ids.filtered(
@@ -128,18 +114,19 @@ class ResourceManagement(models.Model):
             )
             resource.upcoming_bookings = len(upcoming)
 
-    def _compute_current_status(self):
+    @api.depends('booking_ids', 'booking_ids.start_date', 'booking_ids.end_date', 'booking_ids.state')
+    def _compute_current_booking(self):
+        """Trouve la réservation en cours"""
         now = fields.Datetime.now()
         for resource in self:
-            current_booking = resource.booking_ids.filtered(
+            current = resource.booking_ids.filtered(
                 lambda b: b.start_date <= now <= b.end_date and b.state == 'confirmed'
             )
-            if current_booking:
-                resource.current_status = f"Occupé par {current_booking[0].requester_id.name}"
-            else:
-                resource.current_status = "Disponible"
+            resource.current_booking_id = current[0] if current else False
 
-    # Contraintes
+    # =====================
+    # CONTRAINTES
+    # =====================
     @api.constrains('capacity')
     def _check_capacity(self):
         for resource in self:
@@ -152,9 +139,11 @@ class ResourceManagement(models.Model):
             if self.search_count([('code', '=', resource.code), ('id', '!=', resource.id)]) > 0:
                 raise ValidationError(_('Le code doit être unique.'))
 
-    # Méthodes d'action
+    # =====================
+    # MÉTHODES D'ACTION
+    # =====================
     def action_check_availability(self, start_date, end_date):
-        """Vérifier la disponibilité de la ressource"""
+        """Vérifie la disponibilité sur une période"""
         self.ensure_one()
 
         conflicting_bookings = self.booking_ids.filtered(
@@ -167,14 +156,14 @@ class ResourceManagement(models.Model):
         return len(conflicting_bookings) == 0
 
     def action_book_resource(self, start_date, end_date, requester_id, purpose):
-        """Réserver la ressource"""
+        """Réserve la ressource"""
         self.ensure_one()
 
         if not self.available_for_booking:
             raise UserError(_('Cette ressource n\'est pas disponible pour réservation.'))
 
         if not self.action_check_availability(start_date, end_date):
-            raise UserError(_('La ressource n\'est pas disponible sur cette plage horaire.'))
+            raise UserError(_('La ressource n\'est pas disponible sur cette période.'))
 
         booking = self.env['lms_resources_trainers.resource_booking'].create({
             'resource_id': self.id,
@@ -185,13 +174,10 @@ class ResourceManagement(models.Model):
             'state': 'confirmed'
         })
 
-        # Envoyer confirmation
-        booking._send_confirmation_email()
-
         return booking
 
     def action_put_in_maintenance(self, duration_days=7):
-        """Mettre la ressource en maintenance"""
+        """Met la ressource en maintenance"""
         for resource in self:
             resource.write({
                 'state': 'maintenance',
@@ -200,8 +186,20 @@ class ResourceManagement(models.Model):
             })
 
     def action_make_available(self):
-        """Rendre la ressource disponible"""
+        """Rend la ressource disponible"""
         self.write({'state': 'available'})
+
+    def action_view_bookings(self):
+        """Ouvre les réservations de la ressource"""
+        self.ensure_one()
+        return {
+            'name': _('Réservations - %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'lms_resources_trainers.resource_booking',
+            'view_mode': 'tree,form,calendar',
+            'domain': [('resource_id', '=', self.id)],
+            'context': {'default_resource_id': self.id}
+        }
 
 
 class ResourceType(models.Model):
@@ -229,7 +227,9 @@ class ResourceBooking(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'start_date desc'
 
-    # Identification
+    # =====================
+    # IDENTIFICATION
+    # =====================
     name = fields.Char(
         string='Référence',
         default=lambda self: _('Nouvelle réservation'),
@@ -243,18 +243,11 @@ class ResourceBooking(models.Model):
         tracking=True
     )
 
-    # Dates
-    start_date = fields.Datetime(
-        string='Date de début',
-        required=True,
-        tracking=True
-    )
-
-    end_date = fields.Datetime(
-        string='Date de fin',
-        required=True,
-        tracking=True
-    )
+    # =====================
+    # DATES
+    # =====================
+    start_date = fields.Datetime(string='Date de début', required=True, tracking=True)
+    end_date = fields.Datetime(string='Date de fin', required=True, tracking=True)
 
     duration = fields.Float(
         string='Durée (heures)',
@@ -262,7 +255,18 @@ class ResourceBooking(models.Model):
         store=True
     )
 
-    # Requérant et utilisation
+    @api.depends('start_date', 'end_date')
+    def _compute_duration(self):
+        for booking in self:
+            if booking.start_date and booking.end_date:
+                delta = booking.end_date - booking.start_date
+                booking.duration = delta.total_seconds() / 3600
+            else:
+                booking.duration = 0.0
+
+    # =====================
+    # REQUÉRANT
+    # =====================
     requester_id = fields.Many2one(
         'res.partner',
         string='Demandeur',
@@ -280,22 +284,16 @@ class ResourceBooking(models.Model):
         string='Formation'
     )
 
-    purpose = fields.Text(
-        string='Objet',
-        required=True,
-        tracking=True
-    )
+    purpose = fields.Text(string='Objet', required=True, tracking=True)
+    participants_count = fields.Integer(string='Nombre de participants', tracking=True)
 
-    participants_count = fields.Integer(
-        string='Nombre de participants',
-        tracking=True
-    )
-
-    # Statut
+    # =====================
+    # STATUT
+    # =====================
     state = fields.Selection([
         ('draft', 'Brouillon'),
         ('confirmed', 'Confirmée'),
-        ('in_use', 'En cours d\'utilisation'),
+        ('in_use', 'En cours'),
         ('completed', 'Terminée'),
         ('cancelled', 'Annulée')
     ], string='Statut', default='draft', tracking=True)
@@ -303,37 +301,12 @@ class ResourceBooking(models.Model):
     confirmation_date = fields.Datetime(string='Date de confirmation')
     confirmed_by = fields.Many2one('res.users', string='Confirmé par')
 
-    # Notes et documents
     notes = fields.Text(string='Notes')
-    document_ids = fields.One2many(
-        'ir.attachment',
-        compute='_compute_documents'
-    )
+    company_id = fields.Many2one('res.company', string='Société', default=lambda self: self.env.company)
 
-    company_id = fields.Many2one(
-        'res.company',
-        string='Société',
-        default=lambda self: self.env.company
-    )
-
-    # Méthodes de calcul
-    @api.depends('start_date', 'end_date')
-    def _compute_duration(self):
-        for booking in self:
-            if booking.start_date and booking.end_date:
-                delta = booking.end_date - booking.start_date
-                booking.duration = delta.total_seconds() / 3600
-            else:
-                booking.duration = 0.0
-
-    def _compute_documents(self):
-        for booking in self:
-            booking.document_ids = self.env['ir.attachment'].search([
-                ('res_model', '=', 'lms_resources_trainers.resource_booking'),
-                ('res_id', '=', booking.id)
-            ])
-
-    # Contraintes
+    # =====================
+    # CONTRAINTES
+    # =====================
     @api.constrains('start_date', 'end_date')
     def _check_dates(self):
         for booking in self:
@@ -345,12 +318,15 @@ class ResourceBooking(models.Model):
         for booking in self:
             if booking.participants_count < 0:
                 raise ValidationError(_('Le nombre de participants doit être positif.'))
+
             if booking.resource_id.capacity and booking.participants_count > booking.resource_id.capacity:
                 raise ValidationError(_(
-                    f'La capacité maximale de la ressource est {booking.resource_id.capacity} personnes.'
-                ))
+                    'La capacité maximale de la ressource est %d personnes.'
+                ) % booking.resource_id.capacity)
 
-    # Méthodes d'action
+    # =====================
+    # MÉTHODES
+    # =====================
     @api.model
     def create(self, vals):
         if vals.get('name', _('Nouvelle réservation')) == _('Nouvelle réservation'):
@@ -358,10 +334,10 @@ class ResourceBooking(models.Model):
         return super().create(vals)
 
     def action_confirm(self):
-        """Confirmer la réservation"""
+        """Confirme la réservation"""
         for booking in self:
             if not booking.resource_id.action_check_availability(booking.start_date, booking.end_date):
-                raise UserError(_('La ressource n\'est pas disponible sur cette plage horaire.'))
+                raise UserError(_('La ressource n\'est pas disponible sur cette période.'))
 
             booking.write({
                 'state': 'confirmed',
@@ -372,41 +348,33 @@ class ResourceBooking(models.Model):
             booking._send_confirmation_email()
 
     def action_cancel(self):
-        """Annuler la réservation"""
+        """Annule la réservation"""
         self.write({'state': 'cancelled'})
 
-    def action_start_usage(self):
-        """Marquer la réservation comme en cours d'utilisation"""
-        self.write({'state': 'in_use'})
-
-    def action_complete(self):
-        """Marquer la réservation comme terminée"""
-        self.write({'state': 'completed'})
-
     def _send_confirmation_email(self):
-        """Envoyer l'email de confirmation"""
-        template = self.env.ref('lms_resources_trainers.mail_template_resource_booking')
-        for booking in self:
-            if booking.requester_id.email:
-                template.send_mail(booking.id, force_send=True)
+        """Envoie l'email de confirmation"""
+        template = self.env.ref('lms_resources_trainers.mail_template_resource_booking', raise_if_not_found=False)
+        if template:
+            for booking in self:
+                if booking.requester_id.email:
+                    template.send_mail(booking.id, force_send=True)
 
-    # Méthode cron pour vérifier les réservations en cours
     @api.model
     def _cron_check_active_bookings(self):
-        """Vérifier les réservations actives"""
+        """Vérifie les réservations actives"""
         now = fields.Datetime.now()
 
-        # Marquer les réservations qui doivent commencer
-        starting_bookings = self.search([
+        # Réservations qui doivent commencer
+        starting = self.search([
             ('state', '=', 'confirmed'),
             ('start_date', '<=', now),
             ('end_date', '>', now)
         ])
-        starting_bookings.action_start_usage()
+        starting.write({'state': 'in_use'})
 
-        # Marquer les réservations terminées
-        completed_bookings = self.search([
+        # Réservations terminées
+        completed = self.search([
             ('state', 'in', ['confirmed', 'in_use']),
             ('end_date', '<', now)
         ])
-        completed_bookings.action_complete()
+        completed.write({'state': 'completed'})

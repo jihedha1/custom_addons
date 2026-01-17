@@ -22,7 +22,7 @@
         'security/ir.model.access.csv',
 
         # Données de base
-        'data/evaluation_data.xml',
+        #'data/evaluation_data.xml',
         'data/cold_assessment_cron.xml',
 
         # Vues

@@ -1,28 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Actions -->
         <record id="action_cold_assessment" model="ir.actions.act_window">
             <field name="name">Évaluations à Froid</field>
             <field name="res_model">lms_evaluation_results.cold_assessment</field>
             <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle évaluation à froid
+                </p>
+                <p>
+                    Gérer les évaluations J+30 et J+90 (conformité Qualiopi).
+                </p>
+            </field>
         </record>
 
         <record id="action_results_dashboard" model="ir.actions.act_window">
             <field name="name">Tableau de bord Résultats</field>
             <field name="res_model">lms_evaluation_results.results_dashboard</field>
             <field name="view_mode">form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer un nouveau tableau de bord
+                </p>
+                <p>
+                    Analyser les indicateurs de performance et satisfaction.
+                </p>
+            </field>
         </record>
+
+        <!-- Menu public sur le site web -->
         <record id="menu_formations_resultats" model="website.menu">
             <field name="name">Nos Résultats</field>
             <field name="url">/formations/resultats</field>
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence">30</field>
         </record>
-        <!-- Menu principal -->
+
+        <!-- Menu principal admin -->
         <menuitem id="menu_lms_evaluation"
                   name="Évaluations &amp; Résultats"
                   sequence="20"
-                  parent="website.menu_website_configuration"/>
+                  />
 
         <!-- Sous-menus -->
         <menuitem id="menu_cold_assessments"
@@ -36,6 +56,8 @@
                   parent="menu_lms_evaluation"
                   sequence="20"
                   action="action_results_dashboard"/>
+
+        <!-- Commentez ou supprimez ces menus pour le moment -->
 
         <menuitem id="menu_evaluation_reports"
                   name="Rapports"
@@ -54,7 +76,14 @@
                   sequence="20"
                   action="action_schedule_assessment_wizard"/>
 
-        <!-- Actions déjà définies dans d'autres fichiers -->
+
+        <!-- Menu simplifié pour les rapports -->
+        <menuitem id="menu_evaluation_config"
+                  name="Configuration"
+                  parent="menu_lms_evaluation"
+                  sequence="30"/>
+
+        <!-- Vous pouvez ajouter ces menus plus tard quand les wizards seront créés -->
 
     </data>
 </odoo>

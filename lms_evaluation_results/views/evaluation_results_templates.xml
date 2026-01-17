@@ -80,13 +80,13 @@
 
                                         <!-- Statut -->
                                         <div class="mt-3">
-                                            <t t-if="completion_rate >= 80">
+                                            <t t-if="completion_rate &gt;= 80">
                                                 <span class="badge badge-success px-3 py-2" style="border-radius: 20px;">
                                                     <i class="fa fa-check-circle mr-1"></i>
                                                     Objectif atteint
                                                 </span>
                                             </t>
-                                            <t t-elif="completion_rate >= 60">
+                                            <t t-elif="completion_rate &gt;= 60">
                                                 <span class="badge badge-warning px-3 py-2" style="border-radius: 20px;">
                                                     <i class="fa fa-exclamation-triangle mr-1"></i>
                                                     En progression
@@ -130,13 +130,13 @@
 
                                         <!-- Statut -->
                                         <div class="mt-3">
-                                            <t t-if="satisfaction_rate >= 85">
+                                            <t t-if="satisfaction_rate &gt;= 85">
                                                 <span class="badge badge-success px-3 py-2" style="border-radius: 20px;">
                                                     <i class="fa fa-thumbs-up mr-1"></i>
                                                     Excellence
                                                 </span>
                                             </t>
-                                            <t t-elif="satisfaction_rate >= 70">
+                                            <t t-elif="satisfaction_rate &gt;= 70">
                                                 <span class="badge badge-info px-3 py-2" style="border-radius: 20px;">
                                                     <i class="fa fa-smile-o mr-1"></i>
                                                     Satisfaisant
@@ -180,7 +180,7 @@
 
                                         <!-- Statut -->
                                         <div class="mt-3">
-                                            <t t-if="success_rate >= 75">
+                                            <t t-if="success_rate &gt;= 75">
                                                 <span class="badge badge-success px-3 py-2" style="border-radius: 20px;">
                                                     <i class="fa fa-star mr-1"></i>
                                                     Performant
@@ -224,13 +224,13 @@
 
                                         <!-- Statut -->
                                         <div class="mt-3">
-                                            <t t-if="dropout_rate <= 10">
+                                            <t t-if="dropout_rate &lt;= 10">
                                                 <span class="badge badge-success px-3 py-2" style="border-radius: 20px;">
                                                     <i class="fa fa-check-circle mr-1"></i>
                                                     Excellent
                                                 </span>
                                             </t>
-                                            <t t-elif="dropout_rate <= 20">
+                                            <t t-elif="dropout_rate &lt;= 20">
                                                 <span class="badge badge-warning px-3 py-2" style="border-radius: 20px;">
                                                     <i class="fa fa-info-circle mr-1"></i>
                                                     À surveiller

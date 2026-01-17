@@ -5,9 +5,10 @@
         <record id="view_slide_channel_form_inherit_objectives" model="ir.ui.view">
             <field name="name">slide.channel.form.inherit.objectives</field>
             <field name="model">slide.channel</field>
-            <field name="inherit_id" ref="website_slides.slide_channel_view_form"/>
+            <field name="inherit_id" ref="formevo.slide_channel_form_custom"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@name='general']" position="inside">
+                <!-- Syntaxe correcte pour hériter d'une vue form -->
+                <xpath expr="//form" position="inside">
                     <group name="objectives_group" string="Objectifs SMART">
                         <field name="smart_objective_ids" colspan="4" nolabel="1">
                             <tree string="Objectifs" editable="bottom">
@@ -22,46 +23,52 @@
                         </field>
                     </group>
                 </xpath>
-
-                <xpath expr="//page[@name='configuration']" position="inside">
-                    <group string="Positionnement">
-                        <field name="placement_survey_id" widget="many2one" options="{'no_create': True}"/>
-                        <field name="auto_assign_placement" string="Assigner auto le positionnement"/>
-                    </group>
-                </xpath>
             </field>
         </record>
 
-        <!-- Vue liste étendue pour les cours -->
-        <record id="view_slide_channel_tree_inherit_objectives" model="ir.ui.view">
-            <field name="name">slide.channel.tree.inherit.objectives</field>
+        <!-- Pour les vues tree, vous ne pouvez pas utiliser xpath directement -->
+        <!-- Créez plutôt une vue tree complète ou héritez différemment -->
+
+        <!-- Vue tree alternative : créez une nouvelle vue -->
+        <record id="view_slide_channel_tree_custom" model="ir.ui.view">
+            <field name="name">slide.channel.tree.custom</field>
             <field name="model">slide.channel</field>
-            <field name="inherit_id" ref="website_slides.slide_channel_view_tree"/>
+            <field name="priority">20</field> <!-- Priorité élevée pour écraser -->
             <field name="arch" type="xml">
-                <xpath expr="//tree" position="inside">
+                <tree string="Formations">
+                    <field name="name"/>
                     <field name="smart_objective_count" string="Objectifs"/>
                     <field name="has_placement_survey" string="Positionnement" widget="boolean_button"/>
-                </xpath>
+                    <!-- Ajoutez d'autres champs selon vos besoins -->
+                    <field name="partner_ids" widget="many2many_tags"/>
+                    <field name="visibility"/>
+                </tree>
             </field>
         </record>
 
-        <!-- Vue kanban étendue pour les cours -->
-        <record id="view_slide_channel_kanban_inherit_objectives" model="ir.ui.view">
-            <field name="name">slide.channel.kanban.inherit.objectives</field>
+        <!-- Vue kanban alternative -->
+        <record id="view_slide_channel_kanban_custom" model="ir.ui.view">
+            <field name="name">slide.channel.kanban.custom</field>
             <field name="model">slide.channel</field>
-            <field name="inherit_id" ref="website_slides.slide_channel_view_kanban"/>
+            <field name="priority">20</field>
             <field name="arch" type="xml">
-                <xpath expr="//t[@t-name='slide.channel.kanban.box']" position="attributes">
-                    <attribute name="t-inherit">website_slides.slide_channel_kanban_view</attribute>
-                    <attribute name="t-inherit-mode">extension</attribute>
-                </xpath>
-                <xpath expr="//div[hasclass('o_kanban_card_content')]" position="inside">
-                    <div class="o_kanban_tags_section">
-                        <span class="badge badge-pill bg-primary" t-if="record.smart_objective_count.value">
-                            <i class="fa fa-bullseye me-1"/>Objectifs: <t t-esc="record.smart_objective_count.value"/>
-                        </span>
-                    </div>
-                </xpath>
+                <kanban>
+                    <field name="name"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_card_content">
+                                    <!-- Votre contenu personnalisé ici -->
+                                    <div class="o_kanban_tags_section">
+                                        <span class="badge badge-pill bg-primary" t-if="record.smart_objective_count.value">
+                                            <i class="fa fa-bullseye me-1"/>Objectifs: <t t-esc="record.smart_objective_count.value"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
             </field>
         </record>
     </data>

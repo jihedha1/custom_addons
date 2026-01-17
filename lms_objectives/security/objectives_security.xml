@@ -1,38 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="0">
+    <data noupdate="1">
+        <!-- Catégorie pour les groupes LMS -->
+        <record id="module_category_lms_objectives" model="ir.module.category">
+            <field name="name">LMS Objectives</field>
+            <field name="description">Permissions pour les objectifs LMS</field>
+            <field name="sequence">100</field>
+        </record>
 
-        <!-- Groupes de sécurité -->
-        <record id="group_objectives_editor" model="res.groups">
-            <field name="name">Éditeur Objectifs</field>
-            <field name="category_id" ref="base.module_category_hidden"/>
+        <!-- Groupes pour les objectifs LMS -->
+        <record id="group_objectives_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="module_category_lms_objectives"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
+        <record id="group_objectives_editor" model="res.groups">
+            <field name="name">Editor</field>
+            <field name="category_id" ref="module_category_lms_objectives"/>
+            <field name="implied_ids" eval="[(4, ref('group_objectives_user'))]"/>
+        </record>
+
         <record id="group_objectives_manager" model="res.groups">
-            <field name="name">Manager Objectifs</field>
-            <field name="category_id" ref="base.module_category_hidden"/>
+            <field name="name">Manager</field>
+            <field name="category_id" ref="module_category_lms_objectives"/>
             <field name="implied_ids" eval="[(4, ref('group_objectives_editor'))]"/>
         </record>
-
-        <!-- Règles d'accès -->
-        <record id="smart_objective_rule" model="ir.rule">
-            <field name="name">Éditeurs: leurs objectifs</field>
-            <field name="model_id" ref="model_formation_smart_objective"/>
-            <field name="groups" eval="[(4, ref('group_objectives_editor'))]"/>
-            <field name="domain_force">
-                [('channel_id.create_uid', '=', user.id)]
-            </field>
-        </record>
-
-        <record id="placement_assessment_rule" model="ir.rule">
-            <field name="name">Éditeurs: leurs évaluations</field>
-            <field name="model_id" ref="model_formation_placement_assessment"/>
-            <field name="groups" eval="[(4, ref('group_objectives_editor'))]"/>
-            <field name="domain_force">
-                ['|', ('partner_id', '=', user.partner_id.id), ('channel_id.create_uid', '=', user.id)]
-            </field>
-        </record>
-
     </data>
 </odoo>

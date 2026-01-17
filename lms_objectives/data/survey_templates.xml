@@ -5,8 +5,8 @@
         <!-- Template email : Assignation questionnaire positionnement -->
         <record id="mail_template_placement_assignment" model="mail.template">
             <field name="name">Assignation questionnaire positionnement</field>
-            <field name="model_id" ref="model_formation_placement_assessment"/>
-            <field name="email_from">${object.channel_id.create_uid.email or ''}</field>
+            <field name="model_id" ref="model_lms_objectives_placement_assessment"/>
+            <field name="email_from">${object.create_uid.email or ''}</field>
             <field name="email_to">${object.partner_id.email or ''}</field>
             <field name="subject">Questionnaire de positionnement - ${object.channel_id.name}</field>
             <field name="body_html"><![CDATA[
@@ -29,7 +29,7 @@
                 </ul>
 
                 <p>
-                    <a href="${object.user_input_id.survey_id.public_url}"
+                    <a href="${object.survey_url or '#'}"
                        style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
                         Accéder au questionnaire
                     </a>
@@ -44,8 +44,8 @@
         <!-- Template email : Rappel questionnaire -->
         <record id="mail_template_placement_reminder" model="mail.template">
             <field name="name">Rappel questionnaire positionnement</field>
-            <field name="model_id" ref="model_formation_placement_assessment"/>
-            <field name="email_from">${object.channel_id.create_uid.email or ''}</field>
+            <field name="model_id" ref="model_lms_objectives_placement_assessment"/>
+            <field name="email_from">${object.create_uid.email or ''}</field>
             <field name="email_to">${object.partner_id.email or ''}</field>
             <field name="subject">[RAPPEL] Questionnaire de positionnement - ${object.channel_id.name}</field>
             <field name="body_html"><![CDATA[
@@ -55,11 +55,11 @@
                 <strong>${object.channel_id.name}</strong>.</p>
 
                 <div style="background-color: #fff3cd; padding: 15px; margin: 15px 0; border-left: 4px solid #ffc107;">
-                    <h4 style="margin-top: 0; color: #856404;">À compléter avant le ${object.deadline_date}</h4>
+                    <h4 style="margin-top: 0; color: #856404;">À compléter avant le ${object.deadline_date or 'bientôt'}</h4>
                 </div>
 
                 <p>
-                    <a href="${object.user_input_id.survey_id.public_url}"
+                    <a href="${object.survey_url or '#'}"
                        style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
                         Accéder au questionnaire
                     </a>
@@ -72,8 +72,8 @@
         <!-- Template email : Résultats positionnement -->
         <record id="mail_template_placement_results" model="mail.template">
             <field name="name">Résultats positionnement</field>
-            <field name="model_id" ref="model_formation_placement_assessment"/>
-            <field name="email_from">${object.channel_id.create_uid.email or ''}</field>
+            <field name="model_id" ref="model_lms_objectives_placement_assessment"/>
+            <field name="email_from">${object.create_uid.email or ''}</field>
             <field name="email_to">${object.partner_id.email or ''}</field>
             <field name="subject">Résultats de votre positionnement - ${object.channel_id.name}</field>
             <field name="body_html"><![CDATA[
@@ -84,10 +84,10 @@
 
                 <div style="background-color: #e8f4fd; padding: 15px; margin: 15px 0; border-left: 4px solid #17a2b8;">
                     <h4 style="margin-top: 0;">Vos résultats :</h4>
-                    <p><strong>Score :</strong> ${object.score}%</p>
-                    <p><strong>Niveau détecté :</strong> ${dict(object._fields['level'].selection).get(object.level)}</p>
+                    <p><strong>Score :</strong> ${object.score or 0}%</p>
+                    <p><strong>Niveau détecté :</strong> ${object.level or 'Non défini'}</p>
                     <p><strong>Recommandations :</strong></p>
-                    ${object.recommendations}
+                    <p>${object.recommendations or 'Aucune recommandation spécifique.'}</p>
                 </div>
 
                 <p>Ces résultats nous permettront d'adapter le contenu de la formation à votre profil.</p>

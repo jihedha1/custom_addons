@@ -22,14 +22,12 @@ class ScheduleAssessmentWizard(models.TransientModel):
     survey_30_id = fields.Many2one(
         'survey.survey',
         string='Questionnaire J+30',
-        domain="[('is_published', '=', True)]",
         help='Questionnaire pour l\'évaluation à 30 jours'
     )
 
     survey_90_id = fields.Many2one(
         'survey.survey',
         string='Questionnaire J+90',
-        domain="[('is_published', '=', True)]",
         help='Questionnaire pour l\'évaluation à 90 jours'
     )
 

@@ -4,103 +4,144 @@
 
         <!-- Tree view objectifs SMART -->
         <record id="view_smart_objective_tree" model="ir.ui.view">
-            <field name="name">formation.smart.objective.tree</field>
-            <field name="model">formation.smart.objective</field>
+            <field name="name">lms_objectives.smart_objective.tree</field>
+            <field name="model">lms_objectives.smart_objective</field>
             <field name="arch" type="xml">
                 <tree string="Objectifs SMART">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="channel_id"/>
+                    <field name="objective_type"/>
+                    <field name="level"/>
                     <field name="mastery_level"/>
                     <field name="evaluation_method"/>
                     <field name="weight"/>
                     <field name="is_mandatory"/>
-                    <field name="achievement_rate" widget="progressbar" options="{'current_value': 'achievement_rate', 'max_value': '100'}"/>
+                    <field name="status" widget="badge"/>
                 </tree>
             </field>
         </record>
 
         <!-- Form view objectifs SMART -->
         <record id="view_smart_objective_form" model="ir.ui.view">
-            <field name="name">formation.smart.objective.form</field>
-            <field name="model">formation.smart.objective</field>
+            <field name="name">lms_objectives.smart_objective.form</field>
+            <field name="model">lms_objectives.smart_objective</field>
             <field name="arch" type="xml">
                 <form string="Objectif SMART">
                     <header>
-                        <field name="achievement_rate" widget="progressbar" options="{'current_value': 'achievement_rate', 'max_value': '100'}"/>
+                        <field name="status" widget="statusbar"
+                               statusbar_visible="draft,active,in_progress,achieved"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" placeholder="Intitulé de l'objectif..."/>
                             </h1>
-                            <field name="channel_id"/>
                         </div>
+
+                        <group>
+                            <group>
+                                <field name="channel_id"/>
+                                <field name="objective_type"/>
+                                <field name="level"/>
+                            </group>
+                            <group>
+                                <field name="sequence"/>
+                                <field name="weight"/>
+                                <field name="is_mandatory"/>
+                            </group>
+                        </group>
 
                         <notebook>
                             <page string="Critères SMART" name="smart_criteria">
                                 <group>
                                     <group string="Spécifique (S)">
-                                        <label for="specific"/>
                                         <field name="specific" nolabel="1"/>
                                     </group>
                                     <group string="Mesurable (M)">
-                                        <label for="measurable"/>
                                         <field name="measurable" nolabel="1"/>
                                     </group>
                                     <group string="Atteignable (A)">
-                                        <label for="achievable"/>
                                         <field name="achievable" nolabel="1"/>
                                     </group>
                                     <group string="Pertinent (R)">
-                                        <label for="relevant"/>
                                         <field name="relevant" nolabel="1"/>
                                     </group>
                                     <group string="Temporel (T)">
-                                        <label for="time_bound"/>
                                         <field name="time_bound" nolabel="1"/>
                                     </group>
                                 </group>
                             </page>
 
-                            <page string="Classification" name="classification">
+                            <page string="Évaluation" name="evaluation">
                                 <group>
                                     <group string="Compétences">
                                         <field name="skill_ids" widget="many2many_tags"/>
                                         <field name="mastery_level"/>
-                                        <field name="evaluation_method"/>
                                     </group>
-                                    <group string="Métadonnées">
-                                        <field name="sequence"/>
-                                        <field name="weight"/>
-                                        <field name="is_mandatory"/>
+                                    <group string="Méthode">
+                                        <field name="evaluation_method"/>
+                                        <field name="success_criteria"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Suivi" name="tracking">
+                                <group>
+                                    <group>
+                                        <field name="current_progress"/>
+                                        <field name="last_evaluation_date"/>
+                                        <field name="evaluation_score"/>
                                     </group>
                                 </group>
                             </page>
                         </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
 
-        <!-- Search view objectifs SMART -->
+        <!-- Search view -->
         <record id="view_smart_objective_search" model="ir.ui.view">
-            <field name="name">formation.smart.objective.search</field>
-            <field name="model">formation.smart.objective</field>
+            <field name="name">lms_objectives.smart_objective.search</field>
+            <field name="model">lms_objectives.smart_objective</field>
             <field name="arch" type="xml">
                 <search string="Rechercher objectifs">
                     <field name="name"/>
                     <field name="channel_id"/>
-                    <field name="mastery_level"/>
-                    <field name="evaluation_method"/>
+                    <field name="objective_type"/>
+                    <field name="level"/>
                     <filter string="Obligatoires" name="mandatory" domain="[('is_mandatory', '=', True)]"/>
-                    <filter string="Avec compétences" name="with_skills" domain="[('skill_ids', '!=', False)]"/>
+                    <filter string="Actifs" name="active" domain="[('status', '=', 'active')]"/>
                     <separator/>
                     <group expand="0" string="Grouper par">
                         <filter string="Formation" name="group_by_channel" context="{'group_by': 'channel_id'}"/>
-                        <filter string="Niveau" name="group_by_level" context="{'group_by': 'mastery_level'}"/>
+                        <filter string="Type" name="group_by_type" context="{'group_by': 'objective_type'}"/>
+                        <filter string="Niveau" name="group_by_level" context="{'group_by': 'level'}"/>
+                        <filter string="Statut" name="group_by_status" context="{'group_by': 'status'}"/>
                     </group>
                 </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_smart_objective" model="ir.actions.act_window">
+            <field name="name">Objectifs SMART</field>
+            <field name="res_model">lms_objectives.smart_objective</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créez vos premiers objectifs pédagogiques SMART
+                </p>
+                <p>
+                    Les objectifs SMART vous permettent de définir des objectifs
+                    Spécifiques, Mesurables, Atteignables, Pertinents et Temporels
+                    pour vos formations.
+                </p>
             </field>
         </record>
 

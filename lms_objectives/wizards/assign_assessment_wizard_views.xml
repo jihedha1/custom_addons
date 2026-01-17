@@ -4,8 +4,8 @@
 
         <!-- Assistant assignation questionnaire -->
         <record id="view_assign_assessment_wizard_form" model="ir.ui.view">
-            <field name="name">formation.assign.assessment.wizard.form</field>
-            <field name="model">formation.assign.assessment.wizard</field>
+            <field name="name">lms_objectives.assign_assessment_wizard.form</field>
+            <field name="model">lms_objectives.assign_assessment_wizard</field>
             <field name="arch" type="xml">
                 <form string="Assigner questionnaire positionnement">
                     <header>
@@ -26,11 +26,9 @@
                             </group>
                         </group>
 
-                        <group>
-                            <label for="partner_ids" string="Apprenants"/>
-                            <field name="partner_ids" nolabel="1" widget="many2many_tags"
-                                   options="{'no_create': True}"
-                                   domain="[('is_training_participant', '=', True)]"/>
+                        <!-- Version 1 : Ajoutez le champ partner_ids -->
+                        <group string="Apprenants">
+                            <field name="partner_ids" required="1" nolabel="1"/>
                         </group>
 
                         <group>
@@ -47,7 +45,7 @@
         <!-- Action pour ouvrir l'assistant -->
         <record id="action_assign_assessment_wizard" model="ir.actions.act_window">
             <field name="name">Assigner questionnaire positionnement</field>
-            <field name="res_model">formation.assign.assessment.wizard</field>
+            <field name="res_model">lms_objectives.assign_assessment_wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="context">{'default_channel_id': active_id}</field>

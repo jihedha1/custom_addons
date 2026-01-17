@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Rapport PDF Plan individualisé -->
+    <record id="action_report_individual_plan" model="ir.actions.report">
+        <field name="name">Plan de formation individualisé</field>
+        <field name="model">lms_objectives.individual_plan</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">lms_objectives.report_individual_plan_document</field>
+        <field name="report_file">lms_objectives.report_individual_plan_document</field>
+        <field name="binding_model_id" ref="model_lms_objectives_individual_plan"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Template du rapport -->
+    <template id="report_individual_plan_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="plan">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- En-tête -->
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <h1 style="color: #2B6559; border-bottom: 3px solid #7AF7A7; padding-bottom: 10px;">
+                                    Plan de Formation Individualisé
+                                </h1>
+                                <h3 class="text-muted mt-2">
+                                    <t t-esc="plan.name"/>
+                                </h3>
+                            </div>
+                        </div>
+
+                        <!-- Informations principales -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <strong>Apprenant :</strong> <t t-esc="plan.partner_id.name"/><br/>
+                                <t t-if="plan.partner_id.email">
+                                    <strong>Email :</strong> <t t-esc="plan.partner_id.email"/><br/>
+                                </t>
+                                <t t-if="plan.partner_id.phone">
+                                    <strong>Téléphone :</strong> <t t-esc="plan.partner_id.phone"/><br/>
+                                </t>
+                            </div>
+                            <div class="col-6">
+                                <strong>Formation :</strong> <t t-esc="plan.course_id.name"/><br/>
+                                <strong>Type de plan :</strong> <t t-esc="dict(plan._fields['plan_type'].selection).get(plan.plan_type)"/><br/>
+                                <strong>Date de début :</strong> <t t-esc="plan.start_date" t-options="{'widget': 'date'}"/><br/>
+                                <strong>Date de fin :</strong> <t t-esc="plan.end_date" t-options="{'widget': 'date'}"/><br/>
+                            </div>
+                        </div>
+
+                        <!-- Objectifs spécifiques -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h4 style="color: #2B6559; border-left: 4px solid #7AF7A7; padding-left: 10px;">
+                                    Objectifs spécifiques
+                                </h4>
+                                <div class="ml-3" t-if="plan.specific_objectives">
+                                    <t t-raw="plan.specific_objectives"/>
+                                </div>
+                                <div class="ml-3" t-else="">
+                                    <p class="text-muted">Objectifs à définir</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Objectifs SMART liés -->
+                        <t t-if="plan.objective_ids">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h4 style="color: #2B6559; border-left: 4px solid #7AF7A7; padding-left: 10px;">
+                                        Objectifs SMART de la formation
+                                    </h4>
+                                    <table class="table table-sm">
+                                        <thead style="background-color: #f8f9fa;">
+                                            <tr>
+                                                <th>Objectif</th>
+                                                <th>Type</th>
+                                                <th>Niveau</th>
+                                                <th>Évaluation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="plan.objective_ids" t-as="obj">
+                                                <tr>
+                                                    <td><t t-esc="obj.name"/></td>
+                                                    <td><t t-esc="dict(obj._fields['objective_type'].selection).get(obj.objective_type)"/></td>
+                                                    <td><t t-esc="dict(obj._fields['level'].selection).get(obj.level)"/></td>
+                                                    <td><t t-esc="dict(obj._fields['evaluation_method'].selection).get(obj.evaluation_method)"/></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Approche pédagogique -->
+                        <t t-if="plan.pedagogical_approach">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h4 style="color: #2B6559; border-left: 4px solid #7AF7A7; padding-left: 10px;">
+                                        Approche pédagogique
+                                    </h4>
+                                    <div class="ml-3">
+                                        <t t-raw="plan.pedagogical_approach"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Adaptations -->
+                        <t t-if="plan.adaptations">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h4 style="color: #2B6559; border-left: 4px solid #7AF7A7; padding-left: 10px;">
+                                        Adaptations nécessaires
+                                    </h4>
+                                    <div class="ml-3">
+                                        <t t-raw="plan.adaptations"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Critères d'évaluation -->
+                        <t t-if="plan.evaluation_criteria">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h4 style="color: #2B6559; border-left: 4px solid #7AF7A7; padding-left: 10px;">
+                                        Critères d'évaluation
+                                    </h4>
+                                    <div class="ml-3">
+                                        <t t-raw="plan.evaluation_criteria"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Résultats positionnement -->
+                        <t t-if="plan.assessment_id">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h4 style="color: #2B6559; border-left: 4px solid #7AF7A7; padding-left: 10px;">
+                                        Résultats du positionnement
+                                    </h4>
+                                    <div class="ml-3">
+                                        <strong>Niveau détecté :</strong>
+                                        <t t-esc="dict(plan.assessment_id._fields['level'].selection).get(plan.assessment_id.level)"/><br/>
+                                        <strong>Score :</strong> <t t-esc="plan.assessment_id.score"/>%<br/>
+                                        <t t-if="plan.assessment_id.recommendations">
+                                            <strong>Recommandations :</strong>
+                                            <t t-raw="plan.assessment_id.recommendations"/>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Signatures -->
+                        <div class="row mt-5">
+                            <div class="col-6 text-center">
+                                <p><strong>L'apprenant</strong></p>
+                                <t t-if="plan.signature">
+                                    <img t-att-src="'data:image/png;base64,%s' % plan.signature"
+                                         style="max-height: 80px;" alt="Signature"/>
+                                    <p class="text-muted">
+                                        <t t-esc="plan.signature_name"/><br/>
+                                        Signé le <t t-esc="plan.signature_date" t-options="{'widget': 'date'}"/>
+                                    </p>
+                                </t>
+                                <t t-else="">
+                                    <p style="border-top: 1px solid #000; width: 200px; margin: 50px auto 10px;">
+                                        Signature
+                                    </p>
+                                    <p class="text-muted">Date : ___/___/______</p>
+                                </t>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p><strong>Le responsable pédagogique</strong></p>
+                                <p style="border-top: 1px solid #000; width: 200px; margin: 50px auto 10px;">
+                                    Signature
+                                </p>
+                                <p class="text-muted">Date : ___/___/______</p>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="row mt-4 pt-4" style="border-top: 2px solid #7AF7A7;">
+                            <div class="col-12 text-center text-muted small">
+                                <p class="mb-0">
+                                    Document généré le <t t-esc="context_timestamp(datetime.datetime.now())" t-options="{'widget': 'datetime'}"/>
+                                </p>
+                                <p class="mb-0">
+                                    Référence : <t t-esc="plan.name"/>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

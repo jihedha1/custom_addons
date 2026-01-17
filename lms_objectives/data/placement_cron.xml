@@ -5,7 +5,7 @@
         <!-- CRON : Assignation automatique des questionnaires -->
         <record id="cron_auto_assign_placement" model="ir.cron">
             <field name="name">Assignation auto questionnaires positionnement</field>
-            <field name="model_id" ref="model_formation_placement_assessment"/>
+            <field name="model_id" ref="model_lms_objectives_placement_assessment"/>
             <field name="state">code</field>
             <field name="code">model._cron_auto_assign_placement()</field>
             <field name="interval_number">1</field>
@@ -19,7 +19,7 @@
         <!-- CRON : Rappels questionnaires en retard -->
         <record id="cron_remind_placement" model="ir.cron">
             <field name="name">Rappels questionnaires positionnement</field>
-            <field name="model_id" ref="model_formation_placement_assessment"/>
+            <field name="model_id" ref="model_lms_objectives_placement_assessment"/>
             <field name="state">code</field>
             <field name="code">model._cron_remind_placement()</field>
             <field name="interval_number">1</field>

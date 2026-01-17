@@ -4,8 +4,8 @@
 
         <!-- Tree view plans individualisés -->
         <record id="view_individual_plan_tree" model="ir.ui.view">
-            <field name="name">formation.individual.plan.tree</field>
-            <field name="model">formation.individual.plan</field>
+            <field name="name">lms_objectives.individual_plan.tree</field>
+            <field name="model">lms_objectives.individual_plan</field>
             <field name="arch" type="xml">
                 <tree string="Plans individualisés">
                     <field name="name"/>
@@ -21,21 +21,21 @@
 
         <!-- Form view plans individualisés -->
         <record id="view_individual_plan_form" model="ir.ui.view">
-            <field name="name">formation.individual.plan.form</field>
-            <field name="model">formation.individual.plan</field>
+            <field name="name">lms_objectives.individual_plan.form</field>
+            <field name="model">lms_objectives.individual_plan</field>
             <field name="arch" type="xml">
                 <form string="Plan individualisé">
                     <header>
                         <button name="action_validate" type="object" string="Valider"
-                                class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                                class="oe_highlight" invisible="state != 'draft'"/>
                         <button name="action_sign" type="object" string="Faire signer"
-                                attrs="{'invisible': [('state', '!=', 'validated')]}"/>
+                                invisible="state != 'validated'"/>
                         <button name="action_mark_signed" type="object" string="Marquer signé"
-                                attrs="{'invisible': [('state', '!=', 'signed')]}"/>
+                                invisible="state != 'signed'"/>
                         <button name="action_start_progress" type="object" string="Démarrer"
-                                attrs="{'invisible': [('state', 'not in', ['signed', 'validated'])]}"/>
+                                invisible="state not in ['signed', 'validated']"/>
                         <button name="action_complete" type="object" string="Terminer"
-                                class="oe_highlight" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
+                                class="oe_highlight" invisible="state != 'in_progress'"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,validated,signed,in_progress,completed,cancelled"/>
                     </header>
                     <sheet>
@@ -76,7 +76,7 @@
                                 <field name="evaluation_criteria" nolabel="1"/>
                             </page>
 
-                            <page string="Signature" name="signature" attrs="{'invisible': [('state', 'not in', ['signed', 'completed'])]}">
+                            <page string="Signature" name="signature" invisible="state not in ['signed', 'completed']">
                                 <group>
                                     <field name="signature" widget="image" readonly="1"/>
                                     <field name="signature_name" readonly="1"/>
@@ -94,14 +94,14 @@
                                             <span class="o_stat_text">Progression</span>
                                         </div>
 
-                                        <div class="o_stat_info" attrs="{'invisible': [('completion_date', '=', False)]}">
+                                        <div class="o_stat_info" invisible="not completion_date">
                                             <span class="o_stat_value">
                                                 <field name="completion_date" readonly="1"/>
                                             </span>
                                             <span class="o_stat_text">Date d'achèvement</span>
                                         </div>
 
-                                        <div class="o_stat_info" attrs="{'invisible': [('evaluation_score', '=', 0)]}">
+                                        <div class="o_stat_info" invisible="evaluation_score == 0">
                                             <span class="o_stat_value">
                                                 <field name="evaluation_score" readonly="1"/>%
                                             </span>
@@ -118,8 +118,8 @@
 
         <!-- Search view plans individualisés -->
         <record id="view_individual_plan_search" model="ir.ui.view">
-            <field name="name">formation.individual.plan.search</field>
-            <field name="model">formation.individual.plan</field>
+            <field name="name">lms_objectives.individual_plan.search</field>
+            <field name="model">lms_objectives.individual_plan</field>
             <field name="arch" type="xml">
                 <search string="Rechercher plans">
                     <field name="name"/>

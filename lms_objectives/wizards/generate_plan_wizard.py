@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from datetime import timedelta
 
 
 class GeneratePlanWizard(models.TransientModel):
@@ -8,13 +9,13 @@ class GeneratePlanWizard(models.TransientModel):
     _description = 'Assistant génération plan individualisé'
 
     assessment_id = fields.Many2one(
-        'formation.placement.assessment',
+        'lms_objectives.placement_assessment',
         string='Évaluation',
         required=True
     )
 
     template_id = fields.Many2one(
-        'formation.plan.template',
+        'lms_objectives.plan_template',
         string='Modèle',
         help="Modèle de plan à utiliser"
     )
@@ -34,6 +35,28 @@ class GeneratePlanWizard(models.TransientModel):
         compute='_compute_adapt_for_disability'
     )
 
+    # Ajoutez ces champs manquants
+    start_date = fields.Date(
+        string='Date de début',
+        required=True,
+        default=fields.Date.today
+    )
+
+    end_date = fields.Date(
+        string='Date de fin',
+        required=True
+    )
+
+    include_assessment = fields.Boolean(
+        string='Inclure les résultats du positionnement',
+        default=True
+    )
+
+    auto_sign = fields.Boolean(
+        string='Générer pour signature électronique',
+        default=False
+    )
+
     def _compute_adapt_for_disability(self):
         for wizard in self:
             wizard.adapt_for_disability = wizard.assessment_id.partner_id.has_disability
@@ -50,7 +73,7 @@ class GeneratePlanWizard(models.TransientModel):
         # Préparer le contenu
         specific_objectives = ""
         if self.include_objectives:
-            objectives = self.env['formation.smart.objective'].search([
+            objectives = self.env['lms_objectives.smart_objective'].search([
                 ('channel_id', '=', channel.id)
             ])
             specific_objectives = "<h4>Objectifs SMART adaptés :</h4><ul>"
@@ -72,7 +95,7 @@ class GeneratePlanWizard(models.TransientModel):
 
         # Créer le plan
         plan_vals = {
-            'name': self.env['ir.sequence'].next_by_code('formation.individual.plan'),
+            'name': self.env['ir.sequence'].next_by_code('lms_objectives.individual_plan'),
             'assessment_id': assessment.id,
             'partner_id': partner.id,
             'channel_id': channel.id,
@@ -80,18 +103,18 @@ class GeneratePlanWizard(models.TransientModel):
             'pedagogical_approach': self._generate_pedagogical_approach(assessment),
             'adaptations': adaptations,
             'evaluation_criteria': self._generate_evaluation_criteria(assessment),
-            'estimated_hours': channel.total_duration_hours,
-            'start_date': fields.Date.today(),
-            'end_date': fields.Date.today() + self._calculate_duration(channel),
+            'estimated_hours': channel.total_duration_hours if hasattr(channel, 'total_duration_hours') else 35,
+            'start_date': self.start_date,
+            'end_date': self.end_date,
         }
 
-        plan = self.env['formation.individual.plan'].create(plan_vals)
+        plan = self.env['lms_objectives.individual_plan'].create(plan_vals)
 
         # Rediriger vers le plan créé
         return {
             'type': 'ir.actions.act_window',
             'name': _('Plan individualisé'),
-            'res_model': 'formation.individual.plan',
+            'res_model': 'lms_objectives.individual_plan',
             'res_id': plan.id,
             'view_mode': 'form',
             'target': 'current',
@@ -158,7 +181,6 @@ class GeneratePlanWizard(models.TransientModel):
 
     def _calculate_duration(self, channel):
         """Calculer la durée estimée"""
-        from datetime import timedelta
         # Base : 1 semaine pour 35h de formation
-        weeks = channel.total_duration_hours / 35
+        weeks = (channel.total_duration_hours if hasattr(channel, 'total_duration_hours') else 35) / 35
         return timedelta(days=int(weeks * 7))

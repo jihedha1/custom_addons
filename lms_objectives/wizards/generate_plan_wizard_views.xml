@@ -10,11 +10,7 @@
                     <sheet>
                         <group>
                             <group>
-                                <field name="partner_id" widget="many2one" required="1"/>
-                                <field name="course_id" widget="many2one" required="1"/>
-                                <field name="plan_type" widget="radio" required="1"/>
-                            </group>
-                            <group>
+                                <field name="assessment_id" required="1"/>
                                 <field name="start_date" required="1"/>
                                 <field name="end_date" required="1"/>
                                 <field name="template_id" widget="many2one" options="{'no_create': True}"/>
@@ -22,13 +18,14 @@
                         </group>
 
                         <group string="Options">
-                            <field name="include_objectives" string="Inclure les objectifs du cours"/>
-                            <field name="include_assessment" string="Inclure les résultats du positionnement"/>
+                            <field name="include_objectives" string="Inclure les objectifs SMART"/>
+                            <field name="include_recommendations" string="Inclure les recommandations"/>
+                            <field name="adapt_for_disability" string="Adapter pour handicap"/>
                             <field name="auto_sign" string="Générer pour signature électronique"/>
                         </group>
 
                         <footer>
-                            <button name="generate_plan" string="Générer" type="object" class="btn-primary"/>
+                            <button name="action_generate" string="Générer" type="object" class="btn-primary"/>
                             <button string="Annuler" class="btn-secondary" special="cancel"/>
                         </footer>
                     </sheet>
@@ -42,7 +39,7 @@
             <field name="res_model">lms_objectives.generate_plan_wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="binding_model_id" ref="lms_objectives.model_lms_objectives_individual_plan"/>
+            <field name="binding_model_id" ref="model_lms_objectives_individual_plan"/>
             <field name="binding_type">action</field>
         </record>
     </data>

@@ -5,34 +5,9 @@
         <menuitem id="menu_lms_objectives"
                   name="Objectifs Pédagogiques"
                   sequence="10"
-                  parent="website.menu_website_configuration"/>
+                  />
 
-        <!-- Sous-menus -->
-        <menuitem id="menu_objectives_main"
-                  name="Objectifs SMART"
-                  parent="menu_lms_objectives"
-                  sequence="10"
-                  action="action_smart_objective"/>
-
-        <menuitem id="menu_placement_assessments"
-                  name="Positionnements"
-                  parent="menu_lms_objectives"
-                  sequence="20"
-                  action="action_placement_assessment"/>
-
-        <menuitem id="menu_individual_plans"
-                  name="Plans Individualisés"
-                  parent="menu_lms_objectives"
-                  sequence="30"
-                  action="action_individual_plan"/>
-
-        <menuitem id="menu_objectives_dashboard"
-                  name="Tableau de bord"
-                  parent="menu_lms_objectives"
-                  sequence="40"
-                  action="action_objectives_dashboard"/>
-
-        <!-- Actions déjà définies dans d'autres fichiers -->
+        <!-- Actions d'abord, puis menus qui y font référence -->
         <record id="action_smart_objective" model="ir.actions.act_window">
             <field name="name">Objectifs SMART</field>
             <field name="res_model">lms_objectives.smart_objective</field>
@@ -55,5 +30,33 @@
             <field name="res_model">lms_objectives.individual_plan</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+        <!-- Maintenant les menus qui font référence aux actions -->
+        <menuitem id="menu_objectives_main"
+                  name="Objectifs SMART"
+                  parent="menu_lms_objectives"
+                  sequence="10"
+                  action="action_smart_objective"/>
+
+        <menuitem id="menu_placement_assessments"
+                  name="Positionnements"
+                  parent="menu_lms_objectives"
+                  sequence="20"
+                  action="action_placement_assessment"/>
+
+        <menuitem id="menu_individual_plans"
+                  name="Plans Individualisés"
+                  parent="menu_lms_objectives"
+                  sequence="30"
+                  action="action_individual_plan"/>
+
+        <!-- Commentez le tableau de bord pour l'instant -->
+        <!--
+        <menuitem id="menu_objectives_dashboard"
+                  name="Tableau de bord"
+                  parent="menu_lms_objectives"
+                  sequence="40"
+                  action="action_objectives_dashboard"/>
+        -->
     </data>
 </odoo>
