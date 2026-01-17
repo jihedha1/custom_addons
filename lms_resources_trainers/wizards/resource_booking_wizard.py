@@ -41,9 +41,11 @@ class ResourceBookingWizard(models.TransientModel):
         default=lambda self: self.env.user.partner_id
     )
 
+    # CORRECTION : utiliser res.partner au lieu de trainer_profile
     trainer_id = fields.Many2one(
-        'lms_resources_trainers.trainer_profile',
-        string='Formateur'
+        'res.partner',  # CORRIGÉ
+        string='Formateur',
+        domain="[('is_trainer', '=', True)]"  # Ajouter le domaine
     )
 
     course_id = fields.Many2one(
@@ -84,6 +86,17 @@ class ResourceBookingWizard(models.TransientModel):
         default=True
     )
 
+    # Champs calculés pour afficher les infos de la ressource
+    resource_capacity = fields.Integer(
+        string='Capacité',
+        compute='_compute_resource_info'
+    )
+
+    resource_location = fields.Char(
+        string='Localisation',
+        compute='_compute_resource_info'
+    )
+
     # Méthodes de calcul
     @api.depends('start_date', 'end_date')
     def _compute_duration(self):
@@ -93,6 +106,17 @@ class ResourceBookingWizard(models.TransientModel):
                 wizard.duration_hours = delta.total_seconds() / 3600
             else:
                 wizard.duration_hours = 0.0
+
+    @api.depends('resource_id')
+    def _compute_resource_info(self):
+        """Calcule les informations de la ressource"""
+        for wizard in self:
+            if wizard.resource_id:
+                wizard.resource_capacity = wizard.resource_id.capacity
+                wizard.resource_location = wizard.resource_id.location
+            else:
+                wizard.resource_capacity = 0
+                wizard.resource_location = ''
 
     @api.depends('resource_id', 'start_date', 'end_date')
     def _compute_availability(self):

@@ -23,7 +23,7 @@
         <!-- Template pour formateur inactif -->
         <record id="mail_template_trainer_inactive" model="mail.template">
             <field name="name">Notification formateur inactif</field>
-            <field name="model_id" ref="model_lms_resources_trainers_trainer_profile"/>
+            <field name="model_id" ref="model_res_partner"/>  <!-- CORRIGÉ -->
             <field name="email_from">${object.company_id.email or 'formation@example.com'}</field>
             <field name="email_to">${object.email}</field>
             <field name="subject">Mise à jour de votre profil formateur</field>
@@ -44,7 +44,7 @@
         <!-- Template pour réservation de ressource -->
         <record id="mail_template_resource_booking" model="mail.template">
             <field name="name">Confirmation réservation ressource</field>
-            <field name="model_id" ref="model_lms_resources_trainers.resource_booking"/>
+            <field name="model_id" ref="model_lms_resources_trainers_resource_booking"/>
             <field name="email_from">${object.company_id.email or 'formation@example.com'}</field>
             <field name="email_to">${object.requester_id.email}</field>
             <field name="subject">Confirmation réservation: ${object.resource_id.name}</field>
@@ -69,7 +69,7 @@
         <!-- Template pour évaluation de support -->
         <record id="mail_template_material_evaluation" model="mail.template">
             <field name="name">Demande évaluation support pédagogique</field>
-            <field name="model_id" ref="model_lms_resources_trainers.material_evaluation"/>
+            <field name="model_id" ref="model_lms_resources_trainers_material_evaluation"/>
             <field name="email_from">${object.company_id.email or 'formation@example.com'}</field>
             <field name="email_to">${object.evaluator_id.email}</field>
             <field name="subject">Évaluation du support: ${object.material_name}</field>

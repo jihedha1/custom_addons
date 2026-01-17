@@ -18,7 +18,7 @@
                                     <field name="start_date"/>
                                     <field name="end_date"/>
                                     <field name="signature_date"/>
-                                    <field name="signed_document" filename="signed_filename" widget="binary" string="Document signé"/>
+                                    <field name="signed_pdf" filename="signed_filename" widget="binary" string="Document signé"/>
                                 </tree>
                             </field>
                         </group>

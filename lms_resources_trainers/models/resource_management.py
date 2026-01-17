@@ -42,6 +42,28 @@ class ResourceManagement(models.Model):
         'equipment_id',
         string='Équipements'
     )
+    photos_ids = fields.Many2many(
+        'ir.attachment',
+        'resource_photo_rel',
+        'resource_id',
+        'attachment_id',
+        string='Photos',
+        help="Photos de la ressource"
+    )
+    calendar_event_id = fields.Many2one(
+        'calendar.event',
+        string='Événement calendrier',
+        help="Événement calendrier lié à cette réservation"
+    )
+
+    document_ids = fields.Many2many(
+        'ir.attachment',
+        'resource_document_rel',
+        'resource_id',
+        'attachment_id',
+        string='Documents',
+        help="Documentation technique, plans, etc."
+    )
 
     technical_specifications = fields.Html(string='Spécifications techniques')
 
@@ -101,6 +123,10 @@ class ResourceManagement(models.Model):
         default=lambda self: self.env.company
     )
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to handle batch creation"""
+        return super().create(vals_list)
     # =====================
     # MÉTHODES COMPUTE
     # =====================
@@ -200,6 +226,33 @@ class ResourceManagement(models.Model):
             'domain': [('resource_id', '=', self.id)],
             'context': {'default_resource_id': self.id}
         }
+    def action_open_booking_wizard(self):
+        """Ouvre le formulaire de création de réservation"""
+        self.ensure_one()
+        return {
+            'name': _('Réserver - %s') % self.name,
+            'type': 'ir.actions.act_window',
+            'res_model': 'lms_resources_trainers.resource_booking',
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_resource_id': self.id,
+                'default_requester_id': self.env.user.partner_id.id,
+            }
+        }
+
+    def action_check_availability_wizard(self):
+        """Méthode sans paramètres pour le bouton"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Vérification disponibilité'),
+                'message': _('Veuillez spécifier les dates dans un assistant dédié.'),
+                'type': 'info',
+            }
+        }
 
 
 class ResourceType(models.Model):
@@ -275,8 +328,9 @@ class ResourceBooking(models.Model):
     )
 
     trainer_id = fields.Many2one(
-        'lms_resources_trainers.trainer_profile',
-        string='Formateur'
+        'res.partner',
+        string='Formateur',
+        domain=[('is_trainer', '=', True)]
     )
 
     course_id = fields.Many2one(
@@ -378,3 +432,5 @@ class ResourceBooking(models.Model):
             ('end_date', '<', now)
         ])
         completed.write({'state': 'completed'})
+
+    # Ajouter dans la classe ResourceManagement, après action_view_bookings

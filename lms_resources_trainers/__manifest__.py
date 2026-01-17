@@ -57,8 +57,9 @@
 
     'data': [
         # Sécurité (TOUJOURS EN PREMIER)
-        'security/ir.model.access.csv',
         'security/resources_security.xml',
+        'security/ir.model.access.csv',
+
 
         # Données de base
         'data/resources_data.xml',
@@ -81,29 +82,7 @@
         'wizards/trainer_document_wizard_views.xml',
     ],
 
-    'demo': [
-        'data/resources_demo.xml',
-    ],
-
     'installable': True,
     'application': False,  # ✅ Module complémentaire
     'auto_install': False,
-
-    'post_init_hook': '_post_init_hook',
 }
-
-
-def _post_init_hook(cr, registry):
-    """Actions post-installation"""
-    import logging
-    _logger = logging.getLogger(__name__)
-
-    from odoo import api, SUPERUSER_ID
-    env = api.Environment(cr, SUPERUSER_ID, {})
-
-    # Vérifier types de documents
-    DocumentType = env['lms_resources_trainers.trainer_document_type']
-    if not DocumentType.search_count([]):
-        _logger.info('✅ Création types de documents par défaut...')
-
-    _logger.info('✅ Module lms_resources_trainers installé avec succès')

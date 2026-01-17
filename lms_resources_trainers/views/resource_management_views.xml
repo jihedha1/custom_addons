@@ -29,10 +29,11 @@
             <field name="arch" type="xml">
                 <form string="Gestion des Ressources">
                     <header>
+                        <!-- CORRECTION : remplacer states par invisible -->
                         <button name="action_make_available" string="Disponible" type="object" class="oe_highlight"
-                                states="maintenance,out_of_service"/>
+                                invisible="state not in ['maintenance', 'out_of_service']"/>
                         <button name="action_put_in_maintenance" string="Maintenance" type="object"
-                                states="available" context="{'default_duration_days': 7}"/>
+                                invisible="state != 'available'" context="{'default_duration_days': 7}"/>
                         <field name="state" widget="statusbar" statusbar_visible="available,occupied,maintenance,out_of_service"/>
                     </header>
                     <sheet>
@@ -47,29 +48,22 @@
                             </div>
                         </div>
                         <div class="oe_button_box" name="button_box">
-                            <button name="action_view_bookings"
-                                    type="object"
-                                    class="oe_stat_button"
-                                    icon="fa-calendar">
+                            <button name="action_view_bookings" type="object" class="oe_stat_button" icon="fa-calendar">
                                 <div class="o_stat_info">
                                     <field name="upcoming_bookings" widget="statinfo" string="Réservations"/>
                                 </div>
                             </button>
-                            <button name="%(action_open_resource_booking_wizard)d"
-                                    type="action"
-                                    class="oe_stat_button"
-                                    icon="fa-book"
-                                    context="{'default_resource_id': active_id}">
+
+                            <!-- BOUTON SIMPLIFIÉ -->
+                            <button name="action_open_booking_wizard" type="object" class="oe_stat_button" icon="fa-book">
                                 <div class="o_stat_info">
-                                    <field name="string">Réserver</field>
+                                    <span class="o_stat_text">Réserver</span>
                                 </div>
                             </button>
-                            <button name="action_check_availability_wizard"
-                                    type="object"
-                                    class="oe_stat_button"
-                                    icon="fa-check">
+
+                            <button name="action_check_availability_wizard" type="object" class="oe_stat_button" icon="fa-check">
                                 <div class="o_stat_info">
-                                    <field name="string">Vérifier dispo</field>
+                                    <span class="o_stat_text">Vérifier dispo</span>
                                 </div>
                             </button>
                         </div>

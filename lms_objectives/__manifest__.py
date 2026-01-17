@@ -28,6 +28,7 @@
         'views/individual_plan_views.xml',
         'views/slide_channel_views.xml',
         'views/res_partner_views.xml',
+        'views/plan_template_views.xml',
         #'views/objectives_dashboard.xml',
         'views/objectives_menu_views.xml',
         'wizards/generate_plan_wizard_views.xml',

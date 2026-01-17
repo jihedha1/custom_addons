@@ -53,7 +53,7 @@ class IndividualPlan(models.Model):
         tracking=True
     )
 
-    # Type de plan (AJOUTÉ)
+    # Type de plan
     plan_type = fields.Selection([
         ('initial', 'Initial'),
         ('standard', 'Standard'),
@@ -62,19 +62,19 @@ class IndividualPlan(models.Model):
         ('adapted', 'Adapté'),
     ], string='Type de plan', default='standard', required=True, tracking=True)
 
-    # Template utilisé (AJOUTÉ)
+    # Template utilisé
     template_id = fields.Many2one(
         'lms_objectives.plan_template',
         string='Modèle utilisé',
         ondelete='set null'
     )
 
-    # Objectifs liés - CORRIGÉ avec nom de table personnalisé
+    # Objectifs liés
     objective_ids = fields.Many2many(
         'lms_objectives.smart_objective',
         string='Objectifs associés',
         help="Objectifs SMART de la formation inclus dans ce plan",
-        relation='lms_plan_objective_rel',  # Nom court pour éviter l'erreur
+        relation='lms_plan_objective_rel',
         column1='individual_plan_id',
         column2='smart_objective_id'
     )
@@ -140,7 +140,7 @@ class IndividualPlan(models.Model):
         store=True
     )
 
-    # Signature électronique
+    # Signature manuelle (alternative pour Community)
     signature = fields.Binary(
         string='Signature apprenant',
         attachment=True
@@ -155,33 +155,22 @@ class IndividualPlan(models.Model):
         string='Nom signataire'
     )
 
-    # Documents Sign
-    sign_request_id = fields.Many2one(
-        'sign.request',
-        string='Demande de signature',
-        ondelete='set null'
+    # Alternative pour Community: stocker le PDF signé
+    signed_pdf = fields.Binary(
+        string='PDF signé',
+        attachment=True,
+        help="Télécharger le plan signé manuellement"
     )
 
-    signed_document = fields.Binary(
-        string='Document signé',
-        attachment=True
+    signed_pdf_filename = fields.Char(
+        string='Nom du fichier PDF'
     )
 
-    signed_filename = fields.Char(
-        string='Nom du fichier signé'
-    )
-
-    # Documents
-    document_id = fields.Many2one(
-        'documents.document',
-        string='Document archivé',
-        ondelete='set null'
-    )
-
+    # Documents (alternative pour Community)
     attachment_ids = fields.Many2many(
         'ir.attachment',
         string='Annexes',
-        relation='lms_plan_attachment_rel'  # Nom court pour éviter d'autres erreurs
+        relation='lms_plan_attachment_rel'
     )
 
     # Suivi
@@ -204,12 +193,14 @@ class IndividualPlan(models.Model):
     )
 
     # Séquences
-    @api.model
-    def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code(
-                'lms_objectives.individual_plan') or _('New')
-        return super(IndividualPlan, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to handle batch creation"""
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code(
+                    'lms_objectives.individual_plan') or _('New')
+        return super(IndividualPlan, self).create(vals_list)
 
     # Contraintes
     @api.constrains('start_date', 'end_date')
@@ -226,47 +217,20 @@ class IndividualPlan(models.Model):
         self.write({'state': 'validated'})
         self.message_post(body=_('Plan validé par le formateur'))
 
-    def action_sign(self):
-        """Ouvrir l'assistant de signature Sign"""
+    def action_sign_manual(self):
+        """Ouvrir l'interface de signature manuelle"""
         self.ensure_one()
 
-        # Vérifier si Sign est installé
-        if not self.env['ir.module.module'].search([('name', '=', 'sign'), ('state', '=', 'installed')]):
-            # Si Sign n'est pas installé, utiliser la signature manuelle
-            return {
-                'name': _('Signature manuelle'),
-                'type': 'ir.actions.act_window',
-                'res_model': 'lms_objectives.individual_plan',
-                'view_mode': 'form',
-                'res_id': self.id,
-                'views': [(False, 'form')],
-                'target': 'current'
-            }
-
-        # Si Sign est installé, procéder avec la signature électronique
-        # Générer le PDF du plan
-        pdf_content = self._generate_pdf_content()
-
-        # Créer une demande de signature
-        sign_template = self.env.ref('lms_objectives.sign_template_individual_plan', raise_if_not_found=False)
-
-        if not sign_template:
-            raise ValidationError(_("Le modèle de signature n'est pas configuré"))
-
         return {
+            'name': _('Signature manuelle du plan'),
             'type': 'ir.actions.act_window',
-            'name': _('Signer le plan'),
-            'res_model': 'sign.send.request',
+            'res_model': 'lms_objectives.individual_plan',
             'view_mode': 'form',
+            'res_id': self.id,
+            'views': [(False, 'form')],
             'target': 'new',
             'context': {
-                'default_template_id': sign_template.id,
-                'default_signer_ids': [(0, 0, {
-                    'partner_id': self.partner_id.id,
-                    'role_id': self.env.ref('sign.sign_item_role_customer').id,
-                })],
-                'default_reference': self.name,
-                'default_subject': _('Plan de formation individualisé - %s') % self.name,
+                'form_view_ref': 'lms_objectives.individual_plan_sign_form_view',
             }
         }
 
@@ -279,14 +243,28 @@ class IndividualPlan(models.Model):
         })
         self.message_post(body=_('Plan signé par l\'apprenant'))
 
+    def action_upload_signed_pdf(self):
+        """Télécharger un PDF signé"""
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Télécharger PDF signé'),
+            'res_model': 'ir.attachment',
+            'view_mode': 'form',
+            'views': [(False, 'form')],
+            'target': 'new',
+            'context': {
+                'default_res_model': 'lms_objectives.individual_plan',
+                'default_res_id': self.id,
+                'default_name': f'Plan_{self.name}_signe.pdf',
+            }
+        }
+
     def action_start_progress(self):
         """Démarrer le plan"""
         self.write({'state': 'in_progress'})
         self.message_post(body=_('Plan démarré'))
-
-    def action_start(self):
-        """Alias pour action_start_progress"""
-        return self.action_start_progress()
 
     def action_complete(self):
         """Terminer le plan"""
@@ -301,45 +279,3 @@ class IndividualPlan(models.Model):
         """Générer un PDF du plan"""
         self.ensure_one()
         return self.env.ref('lms_objectives.action_report_individual_plan').report_action(self)
-
-    def _generate_pdf_content(self):
-        """Générer le contenu PDF pour la signature"""
-        self.ensure_one()
-
-        report = self.env.ref('lms_objectives.action_report_individual_plan')
-        pdf_content, _ = report._render_qweb_pdf(self.ids)
-
-        return pdf_content
-
-
-class PlanTemplate(models.Model):
-    """Modèle de plan de formation"""
-    _name = 'lms_objectives.plan_template'
-    _description = 'Modèle de plan de formation'
-
-    name = fields.Char(
-        string='Nom du modèle',
-        required=True
-    )
-
-    description = fields.Text(
-        string='Description'
-    )
-
-    content = fields.Html(
-        string='Contenu du modèle',
-        help="Utiliser ${variable} pour les champs dynamiques"
-    )
-
-    plan_type = fields.Selection([
-        ('initial', 'Initial'),
-        ('standard', 'Standard'),
-        ('remediation', 'Remédiation'),
-        ('accelerated', 'Accéléré'),
-        ('adapted', 'Adapté'),
-    ], string='Type de plan')
-
-    active = fields.Boolean(
-        string='Actif',
-        default=True
-    )

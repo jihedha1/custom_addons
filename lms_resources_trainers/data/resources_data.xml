@@ -30,25 +30,30 @@
         <!-- Types de documents formateurs -->
         <record id="trainer_doc_cv" model="lms_resources_trainers.trainer_document_type">
             <field name="name">Curriculum Vitae</field>
+            <field name="code">CV</field>  <!-- AJOUTÉ -->
             <field name="is_mandatory">True</field>
         </record>
 
         <record id="trainer_doc_diploma" model="lms_resources_trainers.trainer_document_type">
             <field name="name">Diplôme</field>
+            <field name="code">DIPLOMA</field>  <!-- AJOUTÉ -->
             <field name="is_mandatory">True</field>
         </record>
 
         <record id="trainer_doc_certification" model="lms_resources_trainers.trainer_document_type">
             <field name="name">Certification</field>
+            <field name="code">CERTIFICATION</field>  <!-- AJOUTÉ -->
         </record>
 
         <record id="trainer_doc_authorization" model="lms_resources_trainers.trainer_document_type">
             <field name="name">Habilitation</field>
+            <field name="code">AUTHORIZATION</field>  <!-- AJOUTÉ -->
             <field name="has_expiry_date">True</field>
         </record>
 
         <record id="trainer_doc_id_card" model="lms_resources_trainers.trainer_document_type">
             <field name="name">Carte d'identité</field>
+            <field name="code">ID_CARD</field>  <!-- AJOUTÉ -->
             <field name="is_mandatory">True</field>
         </record>
     </data>

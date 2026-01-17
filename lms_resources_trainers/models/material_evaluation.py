@@ -145,6 +145,31 @@ class MaterialEvaluation(models.Model):
         string='Société',
         default=lambda self: self.env.company
     )
+    days_until_deadline = fields.Integer(
+        string='Jours avant échéance',
+        compute='_compute_days_until_deadline',
+        store=True
+    )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to handle batch creation"""
+        for vals in vals_list:
+            if vals.get('name', _('Nouvelle évaluation')) == _('Nouvelle évaluation'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('lms.material.evaluation') or _(
+                    'Nouvelle évaluation')
+        return super().create(vals_list)
+
+    @api.depends('deadline_date')
+    def _compute_days_until_deadline(self):
+        """Calcule jours avant deadline"""
+        today = fields.Date.today()
+        for evaluation in self:
+            if evaluation.deadline_date:
+                delta = evaluation.deadline_date - today
+                evaluation.days_until_deadline = delta.days
+            else:
+                evaluation.days_until_deadline = 0
 
     # Méthodes de calcul
     @api.depends('content_quality', 'pedagogical_relevance', 'technical_quality', 'accessibility')

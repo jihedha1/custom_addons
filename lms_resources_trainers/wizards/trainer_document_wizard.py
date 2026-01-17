@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from datetime import timedelta
 
 
 class TrainerDocumentWizard(models.TransientModel):
@@ -9,9 +10,10 @@ class TrainerDocumentWizard(models.TransientModel):
 
     # Champs du wizard
     trainer_id = fields.Many2one(
-        'lms_resources_trainers.trainer_profile',
+        'res.partner',  # CORRIGÉ : utiliser res.partner au lieu de trainer_profile
         string='Formateur',
-        required=True
+        required=True,
+        domain="[('is_trainer', '=', True)]"  # Ajouter le domaine
     )
 
     document_type_id = fields.Many2one(
@@ -45,14 +47,26 @@ class TrainerDocumentWizard(models.TransientModel):
 
     notes = fields.Text(string='Notes')
 
+    # Champ pour conditionner le champ expiry_date
+    document_type_has_expiry_date = fields.Boolean(
+        string='Document avec expiration',
+        compute='_compute_document_type_info'
+    )
+
     # Méthodes
+    @api.depends('document_type_id')
+    def _compute_document_type_info(self):
+        """Calcule les informations du type de document"""
+        for wizard in self:
+            wizard.document_type_has_expiry_date = wizard.document_type_id.has_expiry_date if wizard.document_type_id else False
+
     @api.onchange('document_type_id')
     def _onchange_document_type_id(self):
         """Mettre à jour les informations selon le type de document"""
         if self.document_type_id:
             self.name = self.document_type_id.name
 
-            if self.document_type_id.has_expiry_date:
+            if self.document_type_id.has_expiry_date and self.document_type_id.validity_duration:
                 self.expiry_date = fields.Date.today() + timedelta(days=self.document_type_id.validity_duration * 30)
 
     @api.constrains('expiry_date')
@@ -88,13 +102,13 @@ class TrainerDocumentWizard(models.TransientModel):
         # Mettre à jour l'attachement avec le bon res_id
         attachment.write({'res_id': document.id})
 
-        # Retourner vers le formateur
+        # Retourner vers le formateur (res.partner)
         return {
             'name': _('Document ajouté'),
             'type': 'ir.actions.act_window',
-            'res_model': 'lms_resources_trainers.trainer_profile',
+            'res_model': 'res.partner',
             'view_mode': 'form',
             'res_id': self.trainer_id.id,
             'target': 'current',
-            'context': {'form_view_ref': 'lms_resources_trainers.view_trainer_profile_form'}
+            'context': {'form_view_ref': 'base.view_partner_form'}
         }

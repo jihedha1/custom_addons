@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ✅ Extension de la vue formation pour ressources -->
+        <record id="view_slide_channel_form_resources" model="ir.ui.view">
+            <field name="name">slide.channel.form.resources</field>
+            <field name="model">slide.channel</field>
+            <field name="inherit_id" ref="lms_public_info.view_slide_channel_form_qualiopi"/>
+            <field name="arch" type="xml">
+
+                <!-- Ajouter onglet Ressources après Informations Complémentaires -->
+                <xpath expr="//page[@name='qualiopi_info']" position="after">
+                    <page string="Ressources &amp; Supports" name="resources_materials">
+
+                        <group>
+                            <group string="Ressources nécessaires">
+                                <field name="required_resources_ids" widget="many2many_tags"/>
+                                <field name="required_room_capacity"/>
+                                <field name="required_equipment_ids" widget="many2many_tags"/>
+                            </group>
+
+                            <group string="Actions">
+                                <button name="action_check_resources_availability"
+                                        string="Vérifier disponibilité"
+                                        type="object"
+                                        class="btn-primary"
+                                        icon="fa-check-circle"/>
+
+                                <button name="action_view_bookings"
+                                        string="Voir réservations"
+                                        type="object"
+                                        class="btn-secondary"
+                                        icon="fa-calendar"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Réservations">
+                                <field name="resource_booking_ids" nolabel="1">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="resource_id"/>
+                                        <field name="start_date"/>
+                                        <field name="end_date"/>
+                                        <field name="state" widget="badge"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="Évaluations supports">
+                                <field name="material_evaluation_ids" nolabel="1">
+                                    <tree>
+                                        <field name="material_name"/>
+                                        <field name="material_type"/>
+                                        <field name="evaluator_id"/>
+                                        <field name="overall_score" widget="progressbar"/>
+                                        <field name="state" widget="badge"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+
+                        <!-- Statistiques -->
+                        <group>
+                            <group string="Statistiques">
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="booking_count" widget="statinfo"/>
+                                    </span>
+                                    <span class="o_stat_text">Réservations</span>
+                                </div>
+
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="material_count" widget="statinfo"/>
+                                    </span>
+                                    <span class="o_stat_text">Supports évalués</span>
+                                </div>
+
+                                <div class="o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="average_material_score" widget="percentage"/>
+                                    </span>
+                                    <span class="o_stat_text">Note moyenne supports</span>
+                                </div>
+                            </group>
+                        </group>
+
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

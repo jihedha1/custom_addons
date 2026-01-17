@@ -30,14 +30,15 @@
             <field name="arch" type="xml">
                 <form string="Évaluation de Support Pédagogique">
                     <header>
+                        <!-- CORRECTION : remplacer states par invisible -->
                         <button name="action_start_evaluation" string="Démarrer" type="object" class="oe_highlight"
-                                states="draft"/>
+                                invisible="state != 'draft'"/>
                         <button name="action_complete_evaluation" string="Terminer" type="object" class="oe_highlight"
-                                states="in_progress"/>
+                                invisible="state != 'in_progress'"/>
                         <button name="action_approve" string="Approuver" type="object"
-                                states="completed" attrs="{'invisible': [('approval_status','!=','pending')]}"/>
+                                invisible="state != 'completed' or approval_status != 'pending'"/>
                         <button name="action_request_revision" string="Demander révision" type="object"
-                                states="completed"/>
+                                invisible="state != 'completed'"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed,cancelled"/>
                     </header>
                     <sheet>

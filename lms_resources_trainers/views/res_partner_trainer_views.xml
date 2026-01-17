@@ -8,10 +8,10 @@
             <field name="inherit_id" ref="lms_public_info.view_partner_form_trainer"/>
             <field name="arch" type="xml">
 
-                <!-- Ajouter onglet Documents après Formateur -->
-                <xpath expr="//page[@string='Formateur']" position="after">
-                    <page string="Documents &amp; Validités" attrs="{'invisible': [('is_trainer', '=', False)]}">
-
+                <!-- Option 1: Ajouter tous les onglets à la fin du notebook -->
+                <xpath expr="//notebook" position="inside">
+                    <!-- Onglet Documents & Validités -->
+                    <page string="Documents &amp; Validités" invisible="not is_trainer">
                         <group>
                             <group string="Statut Documents">
                                 <field name="document_count" widget="statinfo"/>
@@ -25,7 +25,7 @@
                                         string="Activer"
                                         type="object"
                                         class="oe_highlight"
-                                        attrs="{'invisible': [('trainer_state', '!=', 'draft')]}"/>
+                                        invisible="trainer_state != 'draft'"/>
 
                                 <button name="action_view_documents"
                                         string="Voir Documents"
@@ -49,7 +49,51 @@
                                                decoration-warning="state=='pending'"
                                                decoration-danger="state=='expired'"/>
                                         <button name="action_validate" string="Valider" type="object"
-                                                                                     icon="fa-check" attrs="{'invisible': [('state', '!=', 'pending')]}"/>
+                                                icon="fa-check" invisible="state != 'pending'"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </page>
+
+                    <!-- Onglet Tarification -->
+                    <page string="Tarification" invisible="not is_trainer">
+                        <group>
+                            <group string="Tarifs">
+                                <field name="hourly_rate"/>
+                                <field name="daily_rate" readonly="1"/>
+                            </group>
+
+                            <group string="Statistiques">
+                                <field name="training_session_count"/>
+                                <field name="average_training_rating" widget="progressbar"/>
+                            </group>
+                        </group>
+                    </page>
+
+                    <!-- Onglet Disponibilités -->
+                    <page string="Disponibilités" invisible="not is_trainer">
+                        <group>
+                            <group string="Statut">
+                                <field name="availability_status" widget="radio"/>
+                            </group>
+
+                            <group string="Actions">
+                                <button name="action_view_availability"
+                                        string="Gérer Planning"
+                                        type="object"
+                                        class="btn-primary"
+                                        icon="fa-calendar"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Planning Hebdomadaire">
+                                <field name="availability_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="day_of_week" widget="selection"/>
+                                        <field name="start_time" widget="float_time"/>
+                                        <field name="end_time" widget="float_time"/>
                                     </tree>
                                 </field>
                             </page>
@@ -57,56 +101,8 @@
                     </page>
                 </xpath>
 
-            <!-- Ajouter onglet Tarification -->
-            <xpath expr="//page[@string='Documents &amp; Validités']" position="after">
-                <page string="Tarification" attrs="{'invisible': [('is_trainer', '=', False)]}">
-                    <group>
-                        <group string="Tarifs">
-                            <field name="hourly_rate"/>
-                            <field name="daily_rate" readonly="1"/>
-                        </group>
+            </field>
+        </record>
 
-                        <group string="Statistiques">
-                            <field name="training_session_count"/>
-                            <field name="average_training_rating" widget="progressbar"/>
-                        </group>
-                    </group>
-                </page>
-            </xpath>
-
-            <!-- Ajouter onglet Disponibilités -->
-            <xpath expr="//page[@string='Tarification']" position="after">
-                <page string="Disponibilités" attrs="{'invisible': [('is_trainer', '=', False)]}">
-                    <group>
-                        <group string="Statut">
-                            <field name="availability_status" widget="radio"/>
-                        </group>
-
-                        <group string="Actions">
-                            <button name="action_view_availability"
-                                    string="Gérer Planning"
-                                    type="object"
-                                    class="btn-primary"
-                                    icon="fa-calendar"/>
-                        </group>
-                    </group>
-
-                    <notebook>
-                        <page string="Planning Hebdomadaire">
-                            <field name="availability_ids" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name="day_of_week" widget="selection"/>
-                                    <field name="start_time" widget="float_time"/>
-                                    <field name="end_time" widget="float_time"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                </page>
-            </xpath>
-
-        </field>
-    </record>
-
-</data>
+    </data>
 </odoo>

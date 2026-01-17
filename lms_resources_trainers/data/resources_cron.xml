@@ -10,34 +10,49 @@
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall">False</field>
-            <field name="active">True</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
         </record>
 
-        <!-- Cron pour supprimer les formateurs inactifs après 3 mois -->
+        <!-- ✅ CORRIGÉ : Utiliser res.partner au lieu de trainer_profile -->
         <record id="cron_clean_inactive_trainers" model="ir.cron">
             <field name="name">Nettoyage formateurs inactifs</field>
-            <field name="model_id" ref="model_lms_resources_trainers_trainer_profile"/>
+            <field name="model_id" ref="base.model_res_partner"/>
             <field name="state">code</field>
             <field name="code">model._cron_clean_inactive_trainers()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
             <field name="numbercall">-1</field>
-            <field name="doall">False</field>
-            <field name="active">True</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
         </record>
 
-        <!-- Cron pour envoyer les notifications avant formation -->
-        <record id="cron_send_training_reminders" model="ir.cron">
-            <field name="name">Notifications avant formation</field>
-            <field name="model_id" ref="model_calendar_event"/>
+        <!-- ✅ SUPPRIMÉ : Notifications avant formation (redondant avec lms_public_info) -->
+
+        <!-- ✅ AJOUT : Vérifier réservations actives -->
+        <record id="cron_check_active_bookings" model="ir.cron">
+            <field name="name">Mise à jour statut réservations</field>
+            <field name="model_id" ref="model_lms_resources_trainers_resource_booking"/>
             <field name="state">code</field>
-            <field name="code">model._cron_send_training_reminders()</field>
+            <field name="code">model._cron_check_active_bookings()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ✅ AJOUT : Vérifier évaluations en retard -->
+        <record id="cron_check_overdue_evaluations" model="ir.cron">
+            <field name="name">Vérification évaluations en retard</field>
+            <field name="model_id" ref="model_lms_resources_trainers_material_evaluation"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_overdue_evaluations()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall">False</field>
-            <field name="active">True</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
         </record>
     </data>
 </odoo>

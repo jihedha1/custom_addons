@@ -7,6 +7,64 @@
                   sequence="30"
                   parent="website.menu_website_configuration"/>
 
+        <!-- ==================== -->
+        <!-- DÉFINIR LES ACTIONS D'ABORD -->
+        <!-- ==================== -->
+
+        <!-- Action pour les formateurs -->
+        <record id="action_trainer_profile" model="ir.actions.act_window">
+            <field name="name">Profils Formateurs</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_trainer', '=', True)]</field>
+            <field name="context">{'search_default_is_trainer': 1}</field>
+        </record>
+
+        <!-- Action pour les réservations -->
+        <record id="action_resource_booking" model="ir.actions.act_window">
+            <field name="name">Réservations de ressources</field>
+            <field name="res_model">lms_resources_trainers.resource_booking</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Consultez et gérez les réservations de salles et d'équipements.
+                </p>
+            </field>
+        </record>
+
+        <!-- Action pour le calendrier des réservations -->
+        <record id="action_resource_booking_calendar" model="ir.actions.act_window">
+            <field name="name">Calendrier des réservations</field>
+            <field name="res_model">lms_resources_trainers.resource_booking</field>
+            <field name="view_mode">calendar,tree,form</field>
+        </record>
+
+        <!-- Action pour la gestion des ressources -->
+        <record id="action_resource_management" model="ir.actions.act_window">
+            <field name="name">Ressources</field>
+            <field name="res_model">lms_resources_trainers.resource_management</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Action pour les évaluations -->
+        <record id="action_material_evaluation" model="ir.actions.act_window">
+            <field name="name">Évaluations des supports</field>
+            <field name="res_model">lms_resources_trainers.material_evaluation</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Action pour le tableau de bord -->
+        <record id="action_resources_dashboard" model="ir.actions.act_window">
+            <field name="name">Tableau de bord Ressources</field>
+            <field name="res_model">lms_resources_trainers.dashboard</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+        </record>
+
+        <!-- ==================== -->
+        <!-- PUIS LES MENUS -->
+        <!-- ==================== -->
+
         <!-- Sous-menu Formateurs -->
         <menuitem id="menu_trainers"
                   name="Formateurs"
@@ -62,16 +120,5 @@
                   sequence="40"
                   action="action_resources_dashboard"/>
 
-        <!-- Actions supplémentaires -->
-        <record id="action_resource_booking" model="ir.actions.act_window">
-            <field name="name">Réservations de ressources</field>
-            <field name="res_model">lms_resources_trainers.resource_booking</field>
-            <field name="view_mode">tree,form,calendar</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Consultez et gérez les réservations de salles et d'équipements.
-                </p>
-            </field>
-        </record>
     </data>
 </odoo>

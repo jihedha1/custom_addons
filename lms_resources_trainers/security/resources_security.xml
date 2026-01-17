@@ -13,11 +13,11 @@
             <field name="category_id" ref="base.module_category_hidden"/>
         </record>
 
-        <!-- Règles de sécurité -->
-        <record id="trainer_profile_rule_user" model="ir.rule">
-            <field name="name">Profil formateur - Utilisateur</field>
-            <field name="model_id" ref="model_lms_resources_trainers_trainer_profile"/>
-            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+        <!-- ✅ AJOUT : Règles pour trainer_document -->
+        <record id="trainer_document_rule_user" model="ir.rule">
+            <field name="name">Documents formateur - Utilisateur</field>
+            <field name="model_id" ref="model_lms_resources_trainers_trainer_document"/>
+            <field name="domain_force">[('trainer_id.company_id', '=', user.company_id.id)]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
@@ -25,6 +25,15 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- ✅ AJOUT : Règles pour trainer_availability -->
+        <record id="trainer_availability_rule_user" model="ir.rule">
+            <field name="name">Disponibilités formateur - Utilisateur</field>
+            <field name="model_id" ref="model_lms_resources_trainers_trainer_availability"/>
+            <field name="domain_force">[('trainer_id.company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- Règles existantes -->
         <record id="resource_management_rule_user" model="ir.rule">
             <field name="name">Ressources - Utilisateur</field>
             <field name="model_id" ref="model_lms_resources_trainers_resource_management"/>

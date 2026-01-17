@@ -10,7 +10,7 @@
                 <tree string="Plans individualisés">
                     <field name="name"/>
                     <field name="partner_id"/>
-                    <field name="channel_id"/>
+                    <field name="course_id"/>
                     <field name="state" widget="badge"/>
                     <field name="start_date"/>
                     <field name="end_date"/>
@@ -26,38 +26,74 @@
             <field name="arch" type="xml">
                 <form string="Plan individualisé">
                     <header>
+                        <!-- Bouton Valider - visible seulement en état draft -->
                         <button name="action_validate" type="object" string="Valider"
-                                class="oe_highlight" invisible="state != 'draft'"/>
-                        <button name="action_sign" type="object" string="Faire signer"
-                                invisible="state != 'validated'"/>
-                        <button name="action_mark_signed" type="object" string="Marquer signé"
-                                invisible="state != 'signed'"/>
+                                class="oe_highlight" states="draft"/>
+
+                        <!-- Bouton Signature manuelle - visible après validation -->
+                        <button name="action_sign_manual" type="object" string="Signer manuellement"
+                                states="validated"/>
+
+                        <!-- Bouton Marquer signé - visible après signature manuelle -->
+                        <button name="action_mark_signed" type="object" string="Confirmer signature"
+                                states="validated"/>
+
+                        <!-- Bouton Démarrer - visible après signature -->
                         <button name="action_start_progress" type="object" string="Démarrer"
-                                invisible="state not in ['signed', 'validated']"/>
+                                states="signed"/>
+
+                        <!-- Bouton Terminer - visible quand en cours -->
                         <button name="action_complete" type="object" string="Terminer"
-                                class="oe_highlight" invisible="state != 'in_progress'"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,validated,signed,in_progress,completed,cancelled"/>
+                                class="oe_highlight" states="in_progress"/>
+
+                        <!-- Bouton Annuler -->
+                        <button name="write" type="object" string="Annuler"
+                                states="draft,validated,signed,in_progress"
+                                confirm="Êtes-vous sûr de vouloir annuler ce plan ?"
+                                attrs="{'invisible': [('state', '=', 'cancelled')]}">
+                            <field name="state">cancelled</field>
+                        </button>
+
+                        <!-- Widget statusbar -->
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,validated,signed,in_progress,completed,cancelled"
+                               clickable="true"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>
                             </h1>
+                            <h3>
+                                <field name="plan_type" widget="badge"/>
+                            </h3>
                         </div>
 
                         <group>
                             <group string="Contexte">
                                 <field name="assessment_id"/>
-                                <field name="partner_id" readonly="1"/>
-                                <field name="channel_id" readonly="1"/>
+                                <field name="partner_id"/>
+                                <field name="course_id"/>
+                                <field name="template_id"/>
                             </group>
-                            <group string="Planning">
+                            <group string="Planning et responsable">
                                 <field name="start_date"/>
                                 <field name="end_date"/>
                                 <field name="estimated_hours"/>
                                 <field name="progress"/>
+                                <field name="supervisor_id"/>
                             </group>
                         </group>
+
+                        <!-- Section objectifs associés -->
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <strong>Objectifs SMART associés :</strong>
+                                    <field name="objective_ids" widget="many2many_tags"/>
+                                </div>
+                            </div>
+                        </div>
 
                         <notebook>
                             <page string="Objectifs spécifiques" name="objectives">
@@ -76,41 +112,148 @@
                                 <field name="evaluation_criteria" nolabel="1"/>
                             </page>
 
-                            <page string="Signature" name="signature" invisible="state not in ['signed', 'completed']">
-                                <group>
-                                    <field name="signature" widget="image" readonly="1"/>
-                                    <field name="signature_name" readonly="1"/>
-                                    <field name="signature_date" readonly="1"/>
-                                </group>
+                            <page string="Notes" name="notes">
+                                <field name="notes" nolabel="1"/>
+                            </page>
+
+                            <page string="Signature" name="signature" attrs="{'invisible': [('state', 'not in', ['signed', 'completed'])]}">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <group string="Signature manuelle">
+                                            <label for="signature" string="Signature numérique"/>
+                                            <field name="signature" widget="image" class="oe_avatar" readonly="state != 'validated'"/>
+
+                                            <label for="signature_name" string="Nom du signataire"/>
+                                            <field name="signature_name" placeholder="Saisir le nom complet" readonly="state != 'validated'"/>
+
+                                            <label for="signature_date" string="Date de signature"/>
+                                            <field name="signature_date" readonly="state != 'validated'"/>
+                                        </group>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <group string="PDF signé">
+                                            <div class="alert alert-warning">
+                                                <strong>Option alternative :</strong>
+                                                <p>Télécharger un PDF signé manuellement</p>
+                                            </div>
+                                            <field name="signed_pdf_filename" string="Fichier PDF"/>
+                                            <field name="signed_pdf" filename="signed_pdf_filename"/>
+
+                                            <div class="mt-2">
+                                                <button name="action_generate_pdf" type="object" string="Générer le PDF du plan" class="btn-secondary"/>
+                                            </div>
+                                        </group>
+                                    </div>
+                                </div>
+                            </page>
+
+                            <page string="Annexes" name="attachments">
+                                <field name="attachment_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="mimetype"/>
+                                        <field name="datas" filename="name" invisible="1"/>
+                                    </tree>
+                                    <form>
+                                        <field name="name"/>
+                                        <field name="datas" filename="name"/>
+                                    </form>
+                                </field>
                             </page>
 
                             <page string="Suivi" name="tracking">
-                                <group>
-                                    <group string="Avancement">
+                                <div class="row">
+                                    <div class="col-md-4">
                                         <div class="o_stat_info">
                                             <span class="o_stat_value">
                                                 <field name="progress" readonly="1"/>%
                                             </span>
                                             <span class="o_stat_text">Progression</span>
                                         </div>
+                                    </div>
 
-                                        <div class="o_stat_info" invisible="not completion_date">
+                                    <div class="col-md-4" attrs="{'invisible': [('completion_date', '=', False)]}">
+                                        <div class="o_stat_info">
                                             <span class="o_stat_value">
                                                 <field name="completion_date" readonly="1"/>
                                             </span>
                                             <span class="o_stat_text">Date d'achèvement</span>
                                         </div>
+                                    </div>
 
-                                        <div class="o_stat_info" invisible="evaluation_score == 0">
+                                    <div class="col-md-4" attrs="{'invisible': [('evaluation_score', '=', 0)]}">
+                                        <div class="o_stat_info">
                                             <span class="o_stat_value">
                                                 <field name="evaluation_score" readonly="1"/>%
                                             </span>
                                             <span class="o_stat_text">Score final</span>
                                         </div>
-                                    </group>
-                                </group>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-success" attrs="{'invisible': [('state', '!=', 'completed')]}">
+                                            <strong>Plan terminé avec succès !</strong>
+                                            <p>Formation achevée le <field name="completion_date" readonly="1"/></p>
+                                        </div>
+                                    </div>
+                                </div>
                             </page>
                         </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Form view pour signature manuelle (popup) -->
+        <record id="individual_plan_sign_form_view" model="ir.ui.view">
+            <field name="name">lms_objectives.individual_plan.sign.form</field>
+            <field name="model">lms_objectives.individual_plan</field>
+            <field name="arch" type="xml">
+                <form string="Signature manuelle du plan">
+                    <header>
+                        <button name="action_mark_signed" type="object" string="Confirmer la signature" class="btn-primary"/>
+                        <button special="cancel" string="Annuler" class="btn-secondary"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Signature du plan: <field name="name"/></h1>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <group string="Informations">
+                                    <field name="partner_id" readonly="1"/>
+                                    <field name="course_id" readonly="1"/>
+                                    <field name="start_date" readonly="1"/>
+                                    <field name="end_date" readonly="1"/>
+                                </group>
+                            </div>
+                            <div class="col-md-6">
+                                <group string="Signature">
+                                    <label for="signature" string="Signature numérique"/>
+                                    <field name="signature" widget="image" class="oe_avatar"/>
+
+                                    <label for="signature_name" string="Nom du signataire"/>
+                                    <field name="signature_name" placeholder="Nom et prénom"/>
+
+                                    <label for="signature_date" string="Date de signature"/>
+                                    <field name="signature_date" default="context_today"/>
+                                </group>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <strong>Instructions:</strong>
+                                    <p>1. L'apprenant peut signer sur un écran tactile ou télécharger le PDF pour signature</p>
+                                    <p>2. Après signature, confirmer avec le bouton "Confirmer la signature"</p>
+                                    <p>3. Le plan sera marqué comme signé et passera à l'état suivant</p>
+                                </div>
+                            </div>
+                        </div>
                     </sheet>
                 </form>
             </field>
@@ -124,20 +267,38 @@
                 <search string="Rechercher plans">
                     <field name="name"/>
                     <field name="partner_id"/>
-                    <field name="channel_id"/>
+                    <field name="course_id"/>
+                    <field name="plan_type"/>
                     <field name="state"/>
+
                     <filter string="À valider" name="to_validate" domain="[('state', '=', 'draft')]"/>
                     <filter string="À signer" name="to_sign" domain="[('state', '=', 'validated')]"/>
                     <filter string="En cours" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                    <filter string="Terminés" name="completed" domain="[('state', '=', 'completed')]"/>
+
                     <separator/>
+
                     <filter string="Mes plans" name="my_plans" domain="[('partner_id', '=', uid.partner_id.id)]"/>
+
                     <group expand="0" string="Grouper par">
-                        <filter string="Formation" name="group_by_channel" context="{'group_by': 'channel_id'}"/>
+                        <filter string="Formation" name="group_by_course" context="{'group_by': 'course_id'}"/>
+                        <filter string="Type de plan" name="group_by_type" context="{'group_by': 'plan_type'}"/>
                         <filter string="Statut" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Apprenant" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
                     </group>
                 </search>
             </field>
+        </record>
+
+        <!-- Action pour ouvrir la vue de signature -->
+        <record id="action_individual_plan_sign_manual" model="ir.actions.act_window">
+            <field name="name">Signer manuellement</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">lms_objectives.individual_plan</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="individual_plan_sign_form_view"/>
+            <field name="target">new</field>
+            <field name="context">{'form_view_ref': 'lms_objectives.individual_plan.sign.form'}</field>
         </record>
 
     </data>

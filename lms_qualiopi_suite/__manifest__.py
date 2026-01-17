@@ -19,13 +19,14 @@
     'license': 'LGPL-3',
     'depends': [
         'formevo',
+        'lms_evaluation_results',
         'lms_public_info',
         'lms_presence',
         'lms_quality',
         'lms_public_kpi',
         'lms_objectives',
         'lms_resources_trainers',
-        'lms_trainers_competency',
+
     ],
     'data': [],
     'installable': True,

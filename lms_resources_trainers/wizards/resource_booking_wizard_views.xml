@@ -8,39 +8,36 @@
             <field name="arch" type="xml">
                 <form string="Réserver une ressource">
                     <sheet>
-                        <div class="alert alert-info" role="alert" attrs="{'invisible': [('is_available','=',True)]}">
+                        <!-- Champ caché pour la disponibilité -->
+                        <field name="is_available" invisible="1"/>
+
+                        <!-- CORRECTION : remplacer attrs par invisible -->
+                        <div class="alert alert-info" role="alert" invisible="is_available">
                             <strong>Attention:</strong> Cette ressource n'est pas disponible sur cette plage horaire.
                         </div>
-                        <div class="alert alert-success" role="alert" attrs="{'invisible': [('is_available','=',False)]}">
+                        <div class="alert alert-success" role="alert" invisible="not is_available">
                             <strong>Disponible:</strong> Cette ressource est libre pour cette plage horaire.
                         </div>
 
                         <group>
                             <group string="Ressource">
                                 <field name="resource_id" widget="many2one" options="{'no_create': True}"/>
-                                <div class="row">
-                                    <label class="col-3">Capacité:</label>
-                                    <span class="col-9">
-                                        <field name="resource_id.capacity" readonly="1" nolabel="1"/>
-                                    </span>
-                                </div>
-                                <div class="row">
-                                    <label class="col-3">Localisation:</label>
-                                    <span class="col-9">
-                                        <field name="resource_id.location" readonly="1" nolabel="1"/>
-                                    </span>
-                                </div>
+
+                                <!-- CORRECTION : ajouter les champs avec leurs propres labels -->
+                                <field name="resource_capacity" readonly="1" string="Capacité"/>
+                                <field name="resource_location" readonly="1" string="Localisation"/>
                             </group>
+
                             <group string="Plage horaire">
                                 <field name="start_date" required="1"/>
                                 <field name="end_date" required="1"/>
-                                <field name="duration_hours" readonly="1"/>
+                                <field name="duration_hours" readonly="1" string="Durée (heures)"/>
                             </group>
                         </group>
 
                         <group string="Détails de la réservation">
                             <field name="requester_id" widget="many2one"/>
-                            <field name="trainer_id" widget="many2one"/>
+                            <field name="trainer_id" widget="many2one" domain="[('is_trainer', '=', True)]"/>
                             <field name="course_id" widget="many2one" options="{'no_create': True}"/>
                             <field name="participants_count"/>
                             <field name="purpose" placeholder="Objet de la réservation..." colspan="2"/>
@@ -53,8 +50,10 @@
 
                         <footer>
                             <button name="action_check_availability" string="Vérifier disponibilité" type="object" class="btn-secondary"/>
+
+                            <!-- CORRECTION : remplacer attrs par invisible -->
                             <button name="action_book_resource" string="Réserver" type="object" class="btn-primary"
-                                    attrs="{'invisible': [('is_available','=',False)]}"/>
+                                    invisible="not is_available"/>
                             <button string="Annuler" class="btn-secondary" special="cancel"/>
                         </footer>
                     </sheet>

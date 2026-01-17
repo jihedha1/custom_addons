@@ -3,6 +3,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import timedelta
 
+
 class ResPartnerTrainerExtended(models.Model):
     """Extension res.partner pour ajouter les fonctionnalités Ressources (US-D1)"""
     _inherit = 'res.partner'
@@ -20,6 +21,7 @@ class ResPartnerTrainerExtended(models.Model):
         string='Tarif journalier (€)',
         compute='_compute_daily_rate',
         store=True,
+        compute_sudo=True,
         help="Calculé automatiquement : tarif horaire × 7"
     )
 
@@ -39,48 +41,70 @@ class ResPartnerTrainerExtended(models.Model):
 
     document_count = fields.Integer(
         string='Nombre de documents',
-        compute='_compute_document_stats'
+        compute='_compute_document_count',
+        compute_sudo=True
     )
 
     mandatory_documents_complete = fields.Boolean(
         string='Documents obligatoires complets',
-        compute='_compute_document_stats',
-        store=True
+        compute='_compute_mandatory_documents_complete',
+        store=True,
+        compute_sudo=True
     )
 
     expiring_documents_count = fields.Integer(
         string='Documents expirant bientôt',
-        compute='_compute_document_stats'
+        compute='_compute_expiring_documents_count',
+        compute_sudo=True
     )
 
-    @api.depends('trainer_document_ids', 'trainer_document_ids.state',
-                 'trainer_document_ids.expiry_date')
-    def _compute_document_stats(self):
-        """Calcule statistiques documents"""
+    # Méthodes de calcul séparées pour éviter l'incohérence
+    @api.depends('trainer_document_ids')
+    def _compute_document_count(self):
+        """Calcule le nombre de documents"""
         for partner in self:
             if not partner.is_trainer:
                 partner.document_count = 0
+            else:
+                partner.document_count = len(partner.trainer_document_ids)
+
+    @api.depends('trainer_document_ids', 'trainer_document_ids.state',
+                 'trainer_document_ids.document_type_id')
+    def _compute_mandatory_documents_complete(self):
+        """Vérifie si tous les documents obligatoires sont valides"""
+        for partner in self:
+            if not partner.is_trainer:
                 partner.mandatory_documents_complete = False
-                partner.expiring_documents_count = 0
                 continue
 
-            docs = partner.trainer_document_ids
-            partner.document_count = len(docs)
-
-            # Vérifier documents obligatoires
             mandatory_types = self.env['lms_resources_trainers.trainer_document_type'].search([
                 ('is_mandatory', '=', True)
             ])
-            valid_mandatory = docs.filtered(
+
+            if not mandatory_types:
+                partner.mandatory_documents_complete = True
+                continue
+
+            valid_mandatory = partner.trainer_document_ids.filtered(
                 lambda d: d.state == 'valid' and d.document_type_id.is_mandatory
             )
             partner.mandatory_documents_complete = len(valid_mandatory) >= len(mandatory_types)
 
-            # Documents expirant dans 30 jours
+    @api.depends('trainer_document_ids', 'trainer_document_ids.expiry_date',
+                 'trainer_document_ids.state')
+    def _compute_expiring_documents_count(self):
+        """Compte les documents expirant dans 30 jours"""
+        for partner in self:
+            if not partner.is_trainer:
+                partner.expiring_documents_count = 0
+                continue
+
             today = fields.Date.today()
             threshold = today + timedelta(days=30)
-            expiring = docs.filtered(
-                lambda d: d.expiry_date and today <= d.expiry_date <= threshold and d.state == 'valid'
+            expiring = partner.trainer_document_ids.filtered(
+                lambda d: d.expiry_date and
+                          today <= d.expiry_date <= threshold and
+                          d.state == 'valid'
             )
             partner.expiring_documents_count = len(expiring)
 
@@ -105,13 +129,15 @@ class ResPartnerTrainerExtended(models.Model):
     # =====================
     training_session_count = fields.Integer(
         string='Sessions animées',
-        compute='_compute_training_stats'
+        compute='_compute_training_stats',
+        compute_sudo=True
     )
 
     average_training_rating = fields.Float(
         string='Note moyenne',
         digits=(3, 2),
-        compute='_compute_training_stats'
+        compute='_compute_training_stats',
+        compute_sudo=True
     )
 
     @api.depends('is_trainer')
@@ -129,7 +155,7 @@ class ResPartnerTrainerExtended(models.Model):
             ])
             partner.training_session_count = len(channels)
 
-            # Note moyenne (placeholder)
+            # Note moyenne (placeholder - à implémenter avec les évaluations)
             partner.average_training_rating = 0.0
 
     # =====================

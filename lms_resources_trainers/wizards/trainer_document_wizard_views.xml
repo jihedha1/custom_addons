@@ -8,15 +8,13 @@
             <field name="arch" type="xml">
                 <form string="Ajouter un document">
                     <sheet>
+                        <!-- Champ caché pour la condition -->
+                        <field name="document_type_has_expiry_date" invisible="1"/>
+
                         <group>
                             <group string="Formateur">
-                                <field name="trainer_id" widget="many2one" readonly="1"/>
-                                <div class="row">
-                                    <label class="col-3">Statut:</label>
-                                    <span class="col-9">
-                                        <field name="trainer_id.state" readonly="1" nolabel="1" widget="badge"/>
-                                    </span>
-                                </div>
+                                <field name="trainer_id" widget="many2one" domain="[('is_trainer', '=', True)]"/>
+
                             </group>
                             <group string="Document">
                                 <field name="document_type_id" widget="many2one" required="1"/>
@@ -31,7 +29,8 @@
 
                         <group string="Dates">
                             <field name="issue_date"/>
-                            <field name="expiry_date" attrs="{'required': [('document_type_id.has_expiry_date','=',True)]}"/>
+                            <!-- CORRECTION : remplacer attrs par required -->
+                            <field name="expiry_date" required="document_type_has_expiry_date"/>
                         </group>
 
                         <group string="Notes">
@@ -53,8 +52,9 @@
             <field name="res_model">lms_resources_trainers.trainer_document_wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-            <field name="binding_model_id" ref="lms_resources_trainers.model_lms_resources_trainers_trainer_profile"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>  <!-- CORRIGÉ -->
             <field name="binding_type">action</field>
+            <field name="context">{'default_trainer_id': active_id}</field>
         </record>
     </data>
 </odoo>
