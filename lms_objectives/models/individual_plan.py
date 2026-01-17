@@ -275,6 +275,10 @@ class IndividualPlan(models.Model):
         })
         self.message_post(body=_('Plan terminé avec succès'))
 
+    def action_cancel(self):
+        self.state = 'cancelled'
+        return True
+
     def action_generate_pdf(self):
         """Générer un PDF du plan"""
         self.ensure_one()

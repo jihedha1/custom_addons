@@ -29,11 +29,12 @@
         'views/cold_assessment_views.xml',
         'views/results_dashboard_views.xml',
         'views/evaluation_results_templates.xml',
-        'views/evaluation_menu_views.xml',
 
         # Wizards
         'wizards/schedule_assessment_wizard_views.xml',
         'wizards/export_results_wizard_views.xml',
+
+        'views/evaluation_menu_views.xml',
     ],
     'demo': [
         # Données de démo (commentées pour éviter les erreurs)

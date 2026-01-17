@@ -26,38 +26,25 @@
             <field name="arch" type="xml">
                 <form string="Plan individualisé">
                     <header>
-                        <!-- Bouton Valider - visible seulement en état draft -->
-                        <button name="action_validate" type="object" string="Valider"
-                                class="oe_highlight" states="draft"/>
-
-                        <!-- Bouton Signature manuelle - visible après validation -->
-                        <button name="action_sign_manual" type="object" string="Signer manuellement"
-                                states="validated"/>
-
-                        <!-- Bouton Marquer signé - visible après signature manuelle -->
-                        <button name="action_mark_signed" type="object" string="Confirmer signature"
-                                states="validated"/>
-
-                        <!-- Bouton Démarrer - visible après signature -->
-                        <button name="action_start_progress" type="object" string="Démarrer"
-                                states="signed"/>
-
-                        <!-- Bouton Terminer - visible quand en cours -->
-                        <button name="action_complete" type="object" string="Terminer"
-                                class="oe_highlight" states="in_progress"/>
-
-                        <!-- Bouton Annuler -->
-                        <button name="write" type="object" string="Annuler"
-                                states="draft,validated,signed,in_progress"
-                                confirm="Êtes-vous sûr de vouloir annuler ce plan ?"
-                                attrs="{'invisible': [('state', '=', 'cancelled')]}">
-                            <field name="state">cancelled</field>
-                        </button>
-
                         <!-- Widget statusbar -->
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,validated,signed,in_progress,completed,cancelled"
                                clickable="true"/>
+
+                        <!-- Boutons conditionnels basés sur l'état -->
+                        <button name="action_validate" type="object" string="Valider"
+                                class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_sign_manual" type="object" string="Signer manuellement"
+                                invisible="state != 'validated'"/>
+                        <button name="action_mark_signed" type="object" string="Confirmer signature"
+                                invisible="state != 'validated'"/>
+                        <button name="action_start_progress" type="object" string="Démarrer"
+                                invisible="state != 'signed'"/>
+                        <button name="action_complete" type="object" string="Terminer"
+                                class="oe_highlight" invisible="state != 'in_progress'"/>
+                        <button name="action_cancel" type="object" string="Annuler"
+                                confirm="Êtes-vous sûr de vouloir annuler ce plan ?"
+                                invisible="state in ['cancelled', 'completed']"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -88,7 +75,7 @@
                         <!-- Section objectifs associés -->
                         <div class="row mt-4">
                             <div class="col-md-12">
-                                <div class="alert alert-info">
+                                <div class="alert alert-info" role="alert">
                                     <strong>Objectifs SMART associés :</strong>
                                     <field name="objective_ids" widget="many2many_tags"/>
                                 </div>
@@ -116,29 +103,26 @@
                                 <field name="notes" nolabel="1"/>
                             </page>
 
-                            <page string="Signature" name="signature" attrs="{'invisible': [('state', 'not in', ['signed', 'completed'])]}">
+                            <page string="Signature" name="signature" invisible="state not in ['signed', 'completed']">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <group string="Signature manuelle">
                                             <label for="signature" string="Signature numérique"/>
-                                            <field name="signature" widget="image" class="oe_avatar" readonly="state != 'validated'"/>
-
+                                            <field name="signature" widget="image" class="oe_avatar"/>
                                             <label for="signature_name" string="Nom du signataire"/>
-                                            <field name="signature_name" placeholder="Saisir le nom complet" readonly="state != 'validated'"/>
-
+                                            <field name="signature_name" placeholder="Saisir le nom complet"/>
                                             <label for="signature_date" string="Date de signature"/>
-                                            <field name="signature_date" readonly="state != 'validated'"/>
+                                            <field name="signature_date"/>
                                         </group>
                                     </div>
                                     <div class="col-md-6">
                                         <group string="PDF signé">
-                                            <div class="alert alert-warning">
+                                            <div class="alert alert-warning" role="alert">
                                                 <strong>Option alternative :</strong>
                                                 <p>Télécharger un PDF signé manuellement</p>
                                             </div>
                                             <field name="signed_pdf_filename" string="Fichier PDF"/>
                                             <field name="signed_pdf" filename="signed_pdf_filename"/>
-
                                             <div class="mt-2">
                                                 <button name="action_generate_pdf" type="object" string="Générer le PDF du plan" class="btn-secondary"/>
                                             </div>
@@ -172,7 +156,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4" attrs="{'invisible': [('completion_date', '=', False)]}">
+                                    <div class="col-md-4" invisible="not completion_date">
                                         <div class="o_stat_info">
                                             <span class="o_stat_value">
                                                 <field name="completion_date" readonly="1"/>
@@ -181,7 +165,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4" attrs="{'invisible': [('evaluation_score', '=', 0)]}">
+                                    <div class="col-md-4" invisible="evaluation_score == 0">
                                         <div class="o_stat_info">
                                             <span class="o_stat_value">
                                                 <field name="evaluation_score" readonly="1"/>%
@@ -193,7 +177,7 @@
 
                                 <div class="row mt-4">
                                     <div class="col-md-12">
-                                        <div class="alert alert-success" attrs="{'invisible': [('state', '!=', 'completed')]}">
+                                        <div class="alert alert-success" role="alert" invisible="state != 'completed'">
                                             <strong>Plan terminé avec succès !</strong>
                                             <p>Formation achevée le <field name="completion_date" readonly="1"/></p>
                                         </div>
@@ -234,10 +218,8 @@
                                 <group string="Signature">
                                     <label for="signature" string="Signature numérique"/>
                                     <field name="signature" widget="image" class="oe_avatar"/>
-
                                     <label for="signature_name" string="Nom du signataire"/>
                                     <field name="signature_name" placeholder="Nom et prénom"/>
-
                                     <label for="signature_date" string="Date de signature"/>
                                     <field name="signature_date" default="context_today"/>
                                 </group>
@@ -246,7 +228,7 @@
 
                         <div class="row mt-4">
                             <div class="col-md-12">
-                                <div class="alert alert-info">
+                                <div class="alert alert-info" role="alert">
                                     <strong>Instructions:</strong>
                                     <p>1. L'apprenant peut signer sur un écran tactile ou télécharger le PDF pour signature</p>
                                     <p>2. Après signature, confirmer avec le bouton "Confirmer la signature"</p>

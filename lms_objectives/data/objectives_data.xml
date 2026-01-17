@@ -32,66 +32,18 @@
             <field name="name">Plan standard</field>
             <field name="plan_type">standard</field>
             <field name="description">Modèle de plan de formation standard</field>
-            <field name="content"><![CDATA[
-                <h3>Plan de formation individualisé</h3>
-                <h4>Apprenant : ${partner_name}</h4>
-                <h4>Formation : ${course_name}</h4>
-
-                <h5>Objectifs personnalisés</h5>
-                <p>${specific_objectives}</p>
-
-                <h5>Approche pédagogique</h5>
-                <p>${pedagogical_approach}</p>
-
-                <h5>Modalités d'évaluation</h5>
-                <p>${evaluation_criteria}</p>
-            ]]></field>
         </record>
 
         <record id="plan_template_remediation" model="lms_objectives.plan_template">
             <field name="name">Plan de remédiation</field>
             <field name="plan_type">remediation</field>
             <field name="description">Plan pour apprenants ayant besoin de renforcement</field>
-            <field name="content"><![CDATA[
-                <h3>Plan de remédiation</h3>
-                <h4>Apprenant : ${partner_name}</h4>
-                <h4>Formation : ${course_name}</h4>
-
-                <div class="alert alert-warning">
-                    <h5>Points à renforcer</h5>
-                    <p>${improvement_areas}</p>
-                </div>
-
-                <h5>Objectifs de remédiation</h5>
-                <p>${specific_objectives}</p>
-
-                <h5>Approche pédagogique adaptée</h5>
-                <p>Progression plus lente, plus d'exemples pratiques, accompagnement renforcé</p>
-                <p>${pedagogical_approach}</p>
-            ]]></field>
         </record>
 
         <record id="plan_template_accelerated" model="lms_objectives.plan_template">
             <field name="name">Plan accéléré</field>
             <field name="plan_type">accelerated</field>
             <field name="description">Plan pour apprenants de niveau avancé</field>
-            <field name="content"><![CDATA[
-                <h3>Plan de formation accéléré</h3>
-                <h4>Apprenant : ${partner_name}</h4>
-                <h4>Formation : ${course_name}</h4>
-
-                <div class="alert alert-success">
-                    <h5>Points forts identifiés</h5>
-                    <p>${strengths}</p>
-                </div>
-
-                <h5>Objectifs avancés</h5>
-                <p>${specific_objectives}</p>
-
-                <h5>Approche pédagogique</h5>
-                <p>Rythme accéléré, focus sur les aspects avancés, projets complexes</p>
-                <p>${pedagogical_approach}</p>
-            ]]></field>
         </record>
 
     </data>

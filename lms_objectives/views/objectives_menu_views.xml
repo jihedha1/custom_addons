@@ -49,6 +49,7 @@
                   parent="menu_lms_objectives"
                   sequence="30"
                   action="action_individual_plan"/>
+        <menuitem id="menu_plan_template" name="Modèles de plans" parent="lms_objectives.menu_lms_objectives" action="action_plan_template" sequence="25"/>
 
         <!-- Commentez le tableau de bord pour l'instant -->
         <!--
