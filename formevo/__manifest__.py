@@ -25,6 +25,7 @@
 
         'wizard/user_group_wizard_view.xml',
         'wizard/course_assign_wizard_view.xml',
+        'views/portal_student_templates.xml',
         'wizard/export_progress_wizard_view.xml',
 
         'views/course_progress_views.xml',

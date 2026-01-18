@@ -15,29 +15,6 @@
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
-        <!-- Enseignants peuvent créer et gérer leurs cours -->
-        <record id="rule_slide_channel_teacher_create" model="ir.rule">
-            <field name="name">Slide Channel: Teachers can create courses</field>
-            <field name="model_id" ref="website_slides.model_slide_channel"/>
-            <field name="domain_force">['|', ('user_id','=',user.id), ('user_id','=',False)]</field>
-            <field name="groups" eval="[(4, ref('formevo.group_yonn_elearning_teacher'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <!-- Enseignants peuvent gérer les slides de leurs cours -->
-        <record id="rule_slide_slide_teacher_manage" model="ir.rule">
-            <field name="name">Slide: Teachers can manage slides of own courses</field>
-            <field name="model_id" ref="website_slides.model_slide_slide"/>
-            <field name="domain_force">[('channel_id.user_id','=',user.id)]</field>
-            <field name="groups" eval="[(4, ref('formevo.group_yonn_elearning_teacher'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
 
         <!-- Enseignants: leurs étudiants -->
         <record id="rule_tracking_teacher_students" model="ir.rule">
@@ -63,11 +40,11 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
-        <!-- ========== RÈGLES POUR SLIDE.CHANNEL ========== -->
+        <!-- ========== RÈGLES POUR SLIDE.CHANNEL (COURS) ========== -->
 
-        <!-- Apprenants: cours où ils sont inscrits -->
+        <!-- CORRECTION CRITIQUE: Apprenants voient UNIQUEMENT les cours où ils sont inscrits -->
         <record id="rule_channel_student_enrolled" model="ir.rule">
-            <field name="name">Channel: Student Enrolled</field>
+            <field name="name">Channel: Student Enrolled Only</field>
             <field name="model_id" ref="website_slides.model_slide_channel"/>
             <field name="domain_force">[('slide_partner_ids.partner_id', '=', user.partner_id.id)]</field>
             <field name="groups" eval="[(4, ref('group_yonn_elearning_student'))]"/>
@@ -77,16 +54,16 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- Enseignants: leurs cours -->
-        <record id="rule_channel_teacher_own" model="ir.rule">
-            <field name="name">Channel: Teacher Own</field>
+        <!-- Enseignants peuvent créer et gérer leurs cours -->
+        <record id="rule_slide_channel_teacher_create" model="ir.rule">
+            <field name="name">Slide Channel: Teachers can create courses</field>
             <field name="model_id" ref="website_slides.model_slide_channel"/>
-            <field name="domain_force">[('user_id', '=', user.id)]</field>
-            <field name="groups" eval="[(4, ref('group_yonn_elearning_teacher'))]"/>
+            <field name="domain_force">['|', ('user_id','=',user.id), ('user_id','=',False)]</field>
+            <field name="groups" eval="[(4, ref('formevo.group_yonn_elearning_teacher'))]"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
         </record>
 
         <!-- Directeurs: tout -->
@@ -99,6 +76,103 @@
             <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="True"/>
             <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- ========== RÈGLES POUR SLIDE.SLIDE (CONTENUS) ========== -->
+
+        <!-- CORRECTION CRITIQUE: Apprenants voient UNIQUEMENT les slides de leurs cours -->
+        <record id="rule_slide_student_enrolled_courses" model="ir.rule">
+            <field name="name">Slide: Student Enrolled Courses Only</field>
+            <field name="model_id" ref="website_slides.model_slide_slide"/>
+            <field name="domain_force">[('channel_id.slide_partner_ids.partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Enseignants peuvent gérer les slides de leurs cours -->
+        <record id="rule_slide_slide_teacher_manage" model="ir.rule">
+            <field name="name">Slide: Teachers can manage slides of own courses</field>
+            <field name="model_id" ref="website_slides.model_slide_slide"/>
+            <field name="domain_force">[('channel_id.user_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('formevo.group_yonn_elearning_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- Directeurs: tout -->
+        <record id="rule_slide_director_all" model="ir.rule">
+            <field name="name">Slide: Director All</field>
+            <field name="model_id" ref="website_slides.model_slide_slide"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_director'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- ========== RÈGLES POUR SLIDE.SLIDE.PARTNER (PROGRESSION) ========== -->
+
+        <!-- Apprenants: leur propre progression uniquement -->
+        <record id="rule_slide_partner_student_own" model="ir.rule">
+            <field name="name">Slide Partner: Student Own Progress</field>
+            <field name="model_id" ref="website_slides.model_slide_slide_partner"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Enseignants: progression de leurs étudiants -->
+        <record id="rule_slide_partner_teacher_students" model="ir.rule">
+            <field name="name">Slide Partner: Teacher Students Progress</field>
+            <field name="model_id" ref="website_slides.model_slide_slide_partner"/>
+            <field name="domain_force">[('channel_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_teacher'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Directeurs: tout -->
+        <record id="rule_slide_partner_director_all" model="ir.rule">
+            <field name="name">Slide Partner: Director All</field>
+            <field name="model_id" ref="website_slides.model_slide_slide_partner"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_director'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- ========== MASQUER LES MENUS POUR LES APPRENANTS ========== -->
+
+        <!-- Masquer le menu "Cours" du backend pour les apprenants -->
+        <record id="website_slides.slide_channel_action_overview" model="ir.actions.act_window">
+            <field name="groups_id" eval="[(6, 0, [ref('formevo.group_yonn_elearning_teacher'), ref('formevo.group_yonn_elearning_director')])]"/>
+        </record>
+
+        <!-- ========== RÈGLE POUR YONN.COURSE.PROGRESS ========== -->
+
+        <!-- Apprenants: leur propre progression -->
+        <record id="rule_course_progress_student_own" model="ir.rule">
+            <field name="name">Course Progress: Student Own</field>
+            <field name="model_id" ref="formevo.model_yonn_course_progress"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('group_yonn_elearning_student'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
         </record>
 
     </data>
